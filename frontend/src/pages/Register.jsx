@@ -5,6 +5,7 @@ import { AiOutlineUserAdd } from "react-icons/ai";
 
 import { AuthContext } from "../context/AuthContext";
 import { BASE_URL } from "../utils/config";
+import axiosInstance from "@utils/axiosInstance";
 import { notify } from "@utils/notify";
 import { Button, Form, Input } from "antd";
 import stylesRegister from "@resources/styles/Register.module.css";
@@ -23,18 +24,11 @@ export const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    console.log("e: ", e);
     try {
-      const res = await fetch(`${BASE_URL}/auth/register`, {
-        method: "post",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
-      const result = await res.json();
+      const res = await axiosInstance.post("/auth/register", credentials);
       if (!res.ok) {
-        notify("error", "Đăng ký thất bại", result.message, 3);
+        notify("error", "Đăng ký thất bại", res.message, 3);
         return;
       }
       dispatch({ type: "REGISTER_SUCCESS" });
