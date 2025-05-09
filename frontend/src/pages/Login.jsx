@@ -6,6 +6,7 @@ import { Form, Input, Button } from "antd";
 import { AuthContext } from "../context/AuthContext";
 import { BASE_URL } from "@utils/config";
 import { notify } from "@utils/notify";
+import axiosInstance from "@utils/axiosInstance";
 
 export const Login = () => {
   const { dispatch } = useContext(AuthContext);
@@ -17,33 +18,23 @@ export const Login = () => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(values),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        notify("error", "Đăng nhập thất bại", result.message, 3);
-        dispatch({ type: "LOGIN_FAILURE", payload: result.message });
-      } else {
-        notify(
-          "success",
-          "Đăng nhập thành công",
-          "Chào mừng bạn đã quay lại!",
-          2
-        );
-        dispatch({ type: "LOGIN_SUCCESS", payload: result.data });
-        navigate("/");
-      }
+      const res = await axiosInstance.post("/auth/login", values);
+      notify(
+        "success",
+        "Đăng nhập thành công",
+        "Chào mừng bạn đã quay lại!",
+        2
+      );
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      navigate("/");
     } catch (err) {
-      notify("error", "Lỗi", err.message, 3);
-      dispatch({ type: "LOGIN_FAILURE", payload: err.message });
+      console.log("err: ", err);
+      const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";
+      notify("error", "Đăng nhập thất bại", errorMessage, 2);
+      dispatch({
+        type: "LOGIN_FAILURE",
+        payload: errorMessage,
+      });
     } finally {
       setLoading(false);
     }

@@ -26,15 +26,16 @@ export const Register = () => {
   const handleSubmit = async (e) => {
     console.log("e: ", e);
     try {
-      const res = await axiosInstance.post("/auth/register", credentials);
-      if (!res.ok) {
-        notify("error", "Đăng ký thất bại", res.message, 3);
-        return;
-      }
+      await axiosInstance.post("/auth/register", credentials);
       dispatch({ type: "REGISTER_SUCCESS" });
       navigate("/login");
     } catch (err) {
-      notify("error", "Đăng ký thất bại", err.message, 3);
+      notify(
+        "error",
+        "Đăng ký thất bại",
+        err.response?.data?.message ?? err.message,
+        3
+      );
     }
   };
 
