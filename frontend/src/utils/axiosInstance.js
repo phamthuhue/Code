@@ -13,6 +13,7 @@ const axiosInstance = axios.create({
 });
 
 // Bạn có thể thêm interceptors ở đây nếu cần
+console.log("axiosInstance: ", axiosInstance);
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
