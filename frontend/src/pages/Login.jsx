@@ -1,45 +1,51 @@
-import React, { useContext } from "react";
-import { useState } from "react";
-
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { BiUserCircle } from "react-icons/bi";
+import { Form, Input, Button } from "antd";
 
 import { AuthContext } from "../context/AuthContext";
-import { BASE_URL } from "../utils/config";
+import { BASE_URL } from "@utils/config";
+import { notify } from "@utils/notify";
 
 export const Login = () => {
-  const [credentials, setCredentials] = useState({
-    email: undefined,
-    password: undefined,
-  });
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
-  const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-  };
-  const handleClick = async (e) => {
-    e.preventDefault();
+  const [loading, setLoading] = useState(false);
+
+  const onFinish = async (values) => {
+    setLoading(true);
     dispatch({ type: "LOGIN_START" });
+
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "post",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(values),
       });
+
       const result = await res.json();
+
       if (!res.ok) {
-        alert(result.message);
-        // navigate("/login");
-        return;
+        notify("error", "Đăng nhập thất bại", result.message, 3);
+        dispatch({ type: "LOGIN_FAILURE", payload: result.message });
+      } else {
+        notify(
+          "success",
+          "Đăng nhập thành công",
+          "Chào mừng bạn đã quay lại!",
+          2
+        );
+        dispatch({ type: "LOGIN_SUCCESS", payload: result.data });
+        navigate("/");
       }
-      dispatch({ type: "LOGIN_SUCCESS", payload: result.data });
-      navigate("/");
     } catch (err) {
+      notify("error", "Lỗi", err.message, 3);
       dispatch({ type: "LOGIN_FAILURE", payload: err.message });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,27 +60,43 @@ export const Login = () => {
             Đăng ký
           </Link>
         </p>
-        <form className="flex flex-col">
-          <input
-            type="email"
+
+        <Form
+          name="login"
+          layout="vertical"
+          onFinish={onFinish}
+          requiredMark="optional"
+        >
+          <Form.Item
+            label="Email"
             name="email"
-            id="email"
-            placeholder="Email"
-            required
-            onChange={handleChange}
-          />
-          <input
-            type="password"
+            rules={[
+              { required: true, message: "Vui lòng nhập email!" },
+              { type: "email", message: "Email không hợp lệ!" },
+            ]}
+          >
+            <Input placeholder="Nhập email của bạn" />
+          </Form.Item>
+
+          <Form.Item
+            label="Mật khẩu"
             name="password"
-            id="password"
-            placeholder="Mật khẩu"
-            required
-            onChange={handleChange}
-          />
-          <button type="submit" onClick={handleClick} className="submitButton">
-            Đăng nhập
-          </button>
-        </form>
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          >
+            <Input.Password placeholder="Nhập mật khẩu của bạn" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              className="w-full submitButton"
+            >
+              Đăng nhập
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );

@@ -1,0 +1,41 @@
+/* styles.css */
+.input-field {
+    height: 40px;
+    border-radius: 4px;
+  }
+  
+  .submitButton {
+    margin-top: 20px;
+  }
+  
+  .ant-form-item-label {
+    margin-bottom: 8px;
+  }
+  
+  .ant-input {
+    height: 40px;
+    font-weight: 400;
+  }
+  
+  .ant-input-password {
+    height: 40px;
+    padding: 0 10px;
+  }
+  
+  .ant-btn {
+    height: 40px;
+  }
+  /* Style cho label trong form */
+.ant-form-item-label label {
+  color: #ffffffd1 !important;; /* Màu trắng dịu */
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+/* Style cho label khi có dấu * bắt buộc */
+.ant-form-item-required::before {
+  color: #ff4d4f; /* đỏ cảnh báo */
+  margin-right: 4px;
+}
+
+  

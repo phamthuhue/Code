@@ -1,61 +1,134 @@
-import React, {useState, useContext} from 'react'
+import React, { useState, useContext } from "react";
 
-import { Link, useNavigate } from 'react-router-dom'
-import {AiOutlineUserAdd} from "react-icons/ai"
+import { Link, useNavigate } from "react-router-dom";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
-import { AuthContext } from '../context/AuthContext'
-import { BASE_URL } from '../utils/config'
-
+import { AuthContext } from "../context/AuthContext";
+import { BASE_URL } from "../utils/config";
+import { notify } from "@utils/notify";
+import { Button, Form, Input } from "antd";
+import stylesRegister from "@resources/styles/Register.module.css";
 export const Register = () => {
-  const {dispatch} = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
     username: undefined,
     email: undefined,
-    password: undefined
-  })
+    password: undefined,
+  });
 
-  const handleChange = e =>{
-    setCredentials(prev =>({...prev, [e.target.id]:e.target.value}) )
-  }
+  const handleChange = (e) => {
+    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
 
-  const handleClick = async e =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "post",
-        headers:{
-          "content-type": "application/json"
-        }, 
-        body: JSON.stringify(credentials)
-      })
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
       const result = await res.json();
-      if(!res.ok){
-        alert(result.message);
-        navigate("/register");
+      if (!res.ok) {
+        notify("error", "Đăng ký thất bại", result.message, 3);
         return;
-      } 
-      dispatch({type:"REGISTER_SUCCESS"});
-      navigate("/login")
+      }
+      dispatch({ type: "REGISTER_SUCCESS" });
+      navigate("/login");
     } catch (err) {
-      alert(err.message)
-    };
-  }
+      notify("error", "Đăng ký thất bại", err.message, 3);
+    }
+  };
 
   return (
-    <div className='w-full custom-height flex items-center justify-center text-white font-light bg-gradient-to-b from-lightGreen to-white'>       
-        <div className="authContainer">
-            <AiOutlineUserAdd className='h-14 w-auto'/>
-            <h2>Đăng ký</h2>
-            <p>Bạn đã có tài khoản? <Link to="/login" className='text-white font-bold no-underline'>Đăng nhập</Link></p>
-            <form className='flex flex-col'>
-              <input type="text" name="name" id="username" placeholder='Tên đăng nhập' onChange={handleChange} className='my-3 rounded p-2 bg-lightGreen'/>
-              <input type="email" name="email" id="email" placeholder='Email' onChange={handleChange}/>
-              <input type="password" name="password" id="password" placeholder='Mật khẩu' onChange={handleChange}/>
-              <button type="submit" onClick={handleClick} className='submitButton'>Đăng ký</button>
-            </form>
+    <div className="w-full custom-height flex items-center justify-center text-white font-light bg-gradient-to-b from-lightGreen to-white">
+      <div className="authContainer">
+        <div className={stylesRegister.titleForm}>
+          <AiOutlineUserAdd className="h-14 w-auto" />
+          <h2>Đăng ký</h2>
+          <p>
+            Bạn đã có tài khoản?{" "}
+            <Link to="/login" className="text-white font-bold no-underline">
+              Đăng nhập
+            </Link>
+          </p>
         </div>
-    </div>    
-  )
-}
+
+        <Form
+          onFinish={handleSubmit} // Hàm xử lý khi submit form
+          initialValues={credentials} // Giá trị ban đầu của form
+          layout="vertical" // Đặt layout của form
+        >
+          <Form.Item
+            label="Tên đăng nhập"
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên đăng nhập!" },
+              { min: 4, message: "Tên đăng nhập phải có ít nhất 4 ký tự!" },
+            ]}
+            labelCol={{ span: 24 }} // Đảm bảo label không bị lệch
+            wrapperCol={{ span: 24 }} // Căn chỉnh wrapper với label
+          >
+            <Input
+              id="username"
+              onChange={handleChange} // Cập nhật giá trị của username
+              className="input-field"
+              placeholder="Nhập tên đăng nhập của bạn" // Thêm placeholder
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Vui lòng nhập email!" },
+              { type: "email", message: "Vui lòng nhập email hợp lệ!" },
+            ]}
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+          >
+            <Input
+              id="email"
+              onChange={handleChange} // Cập nhật giá trị của email
+              className="input-field"
+              placeholder="Nhập email của bạn" // Thêm placeholder
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[
+              { required: true, message: "Vui lòng nhập mật khẩu!" },
+              { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
+            ]}
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+          >
+            <Input.Password
+              id="password"
+              onChange={handleChange} // Cập nhật giá trị của password
+              className="input-field"
+              placeholder="Nhập mật khẩu của bạn" // Thêm placeholder
+            />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ span: 24 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="submitButton"
+              block // Để button chiếm hết chiều rộng
+            >
+              Đăng ký
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  );
+};

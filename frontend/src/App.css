@@ -1,24 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@200;300;500;700&display=swap');
-
+@import url('./styles.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/*Forms*/
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;}
-
-input[type="email"],
-input[type="password"]
-{
-  padding: 0.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.25rem;
-  background-color: #CCD4E7;
-}
 
 /*Navbar*/
 .nav {
