@@ -1,6 +1,5 @@
 export const itineraries = [
     {
-      id: "01",
       title: "Phố cổ Hội An",
       details: [
         {
@@ -25,7 +24,6 @@ export const itineraries = [
       ]
     },
     {
-        "id": "02",
         "title": "Đảo Cát Bà",
         "details": [
           {
@@ -50,7 +48,6 @@ export const itineraries = [
         ]
     },
     {
-        "id": "04",
         "title": "Danh thắng Tràng An",
         "details": [
           {
@@ -75,7 +72,6 @@ export const itineraries = [
         ]
       },
       {
-        "id": "03",
         "title": "Thị trấn Sa Pa",
         "details": [
           {
@@ -100,7 +96,6 @@ export const itineraries = [
         ]
       },
       {
-        "id": "08",
         "title": "Đảo Ngọc Phú Quốc",
         "details": [
           {
@@ -125,7 +120,6 @@ export const itineraries = [
         ]
       },
       {
-        "id": "06",
         "title": "Đảo Lý Sơn",
         "details": [
           {
@@ -151,7 +145,6 @@ export const itineraries = [
       },
 
       {
-        "id": "07",
         "title": "Bán đảo Sơn Trà",
         "details": [
           {
@@ -176,7 +169,6 @@ export const itineraries = [
         ]
       },
       {
-        "id": "05",
         "title": "Cố đô Huế",
         "details": [
           {

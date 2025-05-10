@@ -1,23 +1,28 @@
 import express from "express";
+import { verifyUser} from "../utils/verifyToken.js";
 import {
   createGuide,
   getAllGuides,
   getGuideById,
-  createGuideReview,
-  getGuideReviews
-} from "../controllers/guideController.js";
-import { verifyUser} from "../utils/verifyToken.js";
+  updateGuide,
+  deleteGuide
+} from '../controllers/guideController.js';
 
 const router = express.Router();
 
-router.post("/", createGuide);
-router.get("/", getAllGuides);
-router.get("/:id", getGuideById);
+// Tạo mới hướng dẫn viên
+router.post('/',verifyUser, createGuide);
 
-// Đánh giá guide (cần đăng nhập)
-router.post("/review", verifyUser, createGuideReview);
+// Lấy tất cả hướng dẫn viên
+router.get('/', getAllGuides);
 
-// Lấy đánh giá theo guide
-router.get("/:guideId/reviews", getGuideReviews);
+// Lấy hướng dẫn viên theo ID
+router.get('/:id', getGuideById);
+
+// Cập nhật hướng dẫn viên
+router.put('/:id', updateGuide);
+
+// Xóa hướng dẫn viên
+router.delete('/:id', deleteGuide);
 
 export default router;

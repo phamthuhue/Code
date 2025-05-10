@@ -11,23 +11,15 @@ import { BASE_URL } from '../utils/config'
 import {AuthContext} from "../context/AuthContext.js"
 import useFetch from '../hooks/useFetch'
 
-// import { tours } from './../assets/data/tours';
-// import { itineraries } from './../assets/data/itineraries';
-// import { tourGuides } from './../assets/data/tourguides';
-
 export const TourDetails = () => {  
-  const { id } = useParams();
+  const params = useParams();
+  const { id } = params;
   const reviewsMsgRef = useRef()
   const { user } = useContext(AuthContext)
   
-  // find tour by id
-  // const tour = tours.find(t => t.id === id)
-  // const itinerary = itineraries.find((item) => item.id === id);
-  // const guide = tourGuides.find((item) => item.id === id);
-  
   const {data:tour} = useFetch(`${BASE_URL}/tours/${id}`)
-  const { data: itinerary } = useFetch(`${BASE_URL}/itineraries/${id}`);
-  const { data: guide } = useFetch(`${BASE_URL}/tourGuides/${id}`);
+  const { data: itinerary } = useFetch(`${BASE_URL}/itineraries?tourId=${id}`);
+  const { data: guide } = useFetch(`${BASE_URL}/guides?tourId=${id}`);
 
   const { title, photo, desc, price, reviews, city, maxGroupSize, date } = tour
   const options = { day: 'numeric', month: 'long', year: 'numeric' }
