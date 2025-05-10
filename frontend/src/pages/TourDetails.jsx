@@ -20,8 +20,10 @@ export const TourDetails = () => {
   const {data:tour} = useFetch(`${BASE_URL}/tours/${id}`)
   const { data: itinerary } = useFetch(`${BASE_URL}/itineraries?tourId=${id}`);
   const { data: guide } = useFetch(`${BASE_URL}/guides?tourId=${id}`);
+  const { data: reviews } = useFetch(`${BASE_URL}/reviews?tourId=${id}`);
 
-  const { title, photo, desc, price, reviews, city, maxGroupSize, date } = tour
+
+  const { title, photo, desc, price, city, maxGroupSize, date } = tour
   const options = { day: 'numeric', month: 'long', year: 'numeric' }
   const [tourRating, setTourRating] = useState(0)
       
@@ -111,25 +113,28 @@ export const TourDetails = () => {
             <div id="itinerary" className="detailContainer">
               <h5 className="text-2xl flex items-center gap-2">
                 <BsCalendarCheck className="text-darkGreen" />
-                Lịch trình tại {itinerary.title}
+                Lịch trình
               </h5>
 
               {/* Details */}
               <div className="mt-4">
-                {itinerary.details.map((detail, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-2 mb-2 bg-lightGreen p-2 rounded-md shadow-sm"
-                  >
-                    {/* <BsClockFill className="text-darkGreen text-xl flex-shrink-0" /> */}
-                    <div>
-                      <p className="text-lg font-semibold text-darkGreen">{detail.time}</p>
-                      <p className="text-sm text-darkGray">{detail.description}</p>
+                {itinerary?.details?.length > 0 ? (
+                  itinerary.details.map((detail, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-2 mb-2 bg-lightGreen p-2 rounded-md shadow-sm"
+                    >
+                      <div>
+                        <p className="text-lg font-semibold text-darkGreen">{detail.time}</p>
+                        <p className="text-sm text-darkGray">{detail.description}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 italic">Chưa có lịch trình nào được cung cấp.</p>
+                )}
               </div>
-
+              
               {/* Notes */}
               <div className="itinerary-notes mt-3">
                 <h4 className="text-xl font-semibold text-darkGreen flex items-center gap-2">
@@ -137,15 +142,19 @@ export const TourDetails = () => {
                   Lưu ý:
                 </h4>
                 <ul className="list-none mt-3 pl-4 space-y-2">
-                  {itinerary.notes.map((note, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-2 text-sm text-darkGray bg-lightYellow p-1 rounded-md"
-                    >
-                      <BsCheckCircle className="text-success text-lg flex-shrink-0" />
-                      {note}
-                    </li>
-                  ))}
+                  {itinerary?.notes?.length > 0 ? (
+                    itinerary.notes.map((note, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-sm text-darkGray bg-lightYellow p-1 rounded-md"
+                      >
+                        <BsCheckCircle className="text-success text-lg flex-shrink-0" />
+                        {note}
+                      </li>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">Chưa có ghi chú nào được cung cấp.</p>
+                  )}
                 </ul>
               </div>
             </div>
