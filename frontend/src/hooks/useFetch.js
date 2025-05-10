@@ -11,9 +11,11 @@ const useFetch = (url) => {
       setLoading(true);
       try {
         const res = await axios.get(url);
+        console.log('res: ', res);
         setData(res.data.data); // Giả định rằng dữ liệu nằm trong `res.data.data`
         setError(null);
       } catch (err) {
+        console.log('err: ', err);
         setError(err.message || "Something went wrong");
         setData([]);
       } finally {

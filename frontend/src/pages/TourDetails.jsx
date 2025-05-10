@@ -111,12 +111,12 @@ export const TourDetails = () => {
             <div id="itinerary" className="detailContainer">
               <h5 className="text-2xl flex items-center gap-2">
                 <BsCalendarCheck className="text-darkGreen" />
-                Lịch trình tại {itinerary.title}
+                Lịch trình tại {itinerary?.title}
               </h5>
 
               {/* Details */}
               <div className="mt-4">
-                {itinerary.details.map((detail, index) => (
+                {itinerary?.details?.map((detail, index) => (
                   <div
                     key={index}
                     className="flex items-start gap-2 mb-2 bg-lightGreen p-2 rounded-md shadow-sm"
@@ -137,7 +137,7 @@ export const TourDetails = () => {
                   Lưu ý:
                 </h4>
                 <ul className="list-none mt-3 pl-4 space-y-2">
-                  {itinerary.notes.map((note, index) => (
+                  {itinerary?.notes?.map((note, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-2 text-sm text-darkGray bg-lightYellow p-1 rounded-md"
