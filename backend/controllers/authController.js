@@ -25,12 +25,11 @@ export const register = async(req, res)=>{
         })
 
     } catch (err) {
-        res
-        .status(500)
-        .json({
-            success: false,
-            message: "Failed to create. Try again",
-        })
+        console.error(err);  // Ghi log ra console
+        res.status(500).json({
+        success: false,
+        message: err.message || "Failed to create. Try again 2222",
+    });
     }
 }
 

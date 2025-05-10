@@ -11,9 +11,10 @@ export const Register = () => {
   const navigate = useNavigate()
 
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    email: undefined,
-    password: undefined
+    username: "",
+    email: "",
+    password: "",
+    role: "68197074c5516375b00c795c"  // ObjectId thực của Role "user"
   })
 
   const handleChange = e =>{
@@ -39,6 +40,7 @@ export const Register = () => {
       dispatch({type:"REGISTER_SUCCESS"});
       navigate("/login")
     } catch (err) {
+      console.log(err,1111)
       alert(err.message)
     };
   }

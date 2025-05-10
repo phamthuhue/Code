@@ -18,7 +18,7 @@ export const createUser = async(req,res)=>{
         .status(500)
         .json({
             success: false,
-            message: "Failed to create. Try again"
+            message: "Failed to create. Try again 1111"
         })
     }
 }

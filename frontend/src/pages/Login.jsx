@@ -14,6 +14,8 @@ export const Login = () => {
     email: undefined,
     password: undefined
   })
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {dispatch} = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,8 +26,11 @@ export const Login = () => {
 
   const handleClick = async e =>{
     e.preventDefault();
+    // Xử lý upload ảnh
+    handleUpload()
+    //
+
     dispatch({type:"LOGIN_START"})
-   
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "post",
@@ -47,6 +52,27 @@ export const Login = () => {
       dispatch({type:"LOGIN_FAILURE", payload: err.message})
     };
   }
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    const ket_api = '09fe8dcf843058e62e253cbb7bf41405';
+    try {
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${ket_api}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      setImageUrl(data.data.url);
+    } catch (err) {
+      console.error('Lỗi upload ảnh:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   
   return (
@@ -58,6 +84,17 @@ export const Login = () => {
             <form className='flex flex-col'>
                 <input type="email" name="email" id="email" placeholder='Email' required onChange={handleChange}/>
                 <input type="password" name="password" id="password" placeholder='Mật khẩu' required onChange={handleChange}/>
+                <div>
+      <input type="file" accept="image/*" onChange={handleUpload} />
+      {loading && <p>Đang upload...</p>}
+      {imageUrl && (
+        <div>
+          <p>Ảnh đã upload:</p>
+          <img src={imageUrl} alt="Uploaded" style={{ width: '300px' }} />
+          <p>Link: <a href={imageUrl} target="_blank" rel="noopener noreferrer">{imageUrl}</a></p>
+        </div>
+      )}
+    </div>
                 <button type="submit" onClick={handleClick} className='submitButton'>Đăng nhập</button>
             </form>
         </div>

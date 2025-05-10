@@ -5,17 +5,17 @@ import { PiMountainsBold } from "react-icons/pi";
 import { Items } from './Items'
 import { BASE_URL } from '../../utils/config.js'
 import useFetch from '../../hooks/useFetch'
-import axios from 'axios';
 
 export const ToursItems = () => {
-  console.log(`${BASE_URL}/tours`);
-  useEffect(() => {
-    const fetchTours = async () => {
-      const res = await axios.get("http://localhost:8000/api/v1/tours");
-      console.log(res.data); // ← bạn muốn log ra đây đúng không?
-    };
-    fetchTours();
-  }, []);
+  // console.log(`${BASE_URL}/tours`);
+  // useEffect(() => {
+  //   const fetchTours = async () => {
+  //     const res = await axios.get("http://localhost:8000/api/v1/tours");
+  //     console.log("1")
+  //     console.log(res.data);
+  //   };
+  //   fetchTours();
+  // }, []);
   const {data: tours, loading, error} = useFetch(`${BASE_URL}/tours`)
   
   return (
@@ -23,7 +23,7 @@ export const ToursItems = () => {
         <div className='sectionTitle'>
             <PiMountainsBold size={20} className='text-darkGreen'/>
             <div>Tour du lịch của chúng tôi</div>
-            <p>Tìm kiếm nơi bạn muốn du lịch</p>
+            <p>Tìm kiếm nơi bạn muốn trải nghiệm</p>
         </div>
         <div className='px-4'>
             {loading && <p>Loading...</p>}

@@ -1,15 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema(
   {
-    tour: { type: mongoose.Schema.Types.ObjectId, ref: "Tour", required: true },
-    name: { type: String, required: true },
-    
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     ratingTour: { type: Number, required: true, min: 0, max: 5 },
-    reviewText: { type: String, required: true },
-    
+    commentTour: { type: String, default: '' },
+    ratingGuide: { type: Number, required: true, min: 0, max: 5 },
+    commentGuide: { type: String, default: '' },
+
+    tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
+    guideId: { type: mongoose.Schema.Types.ObjectId, ref: 'Guide', required: true },
   },
-  { timestamps: true } // Thêm createdAt, updatedAt tự động
+  { timestamps: true }
 );
 
-export default mongoose.model("Review", reviewSchema, "reviews");
+const Review = mongoose.model('Review', reviewSchema);
+export default Review;

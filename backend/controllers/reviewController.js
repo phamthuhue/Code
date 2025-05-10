@@ -1,93 +1,119 @@
-import Review from "../models/Review.js"
-import { updateTourAvgRating } from "../utils/updateTourAvgRating.js";
+import Review from '../models/Review.js';
 
-// Tạo review
+// Tạo review mới
 export const createReview = async (req, res) => {
-    try {
-      const review = new Review(req.body);
-      const saved = await review.save();
-  
-      await updateTourAvgRating(review.tour);
-  
-      res.status(201).json({
-        success: true,
-        message: "Review created",
-        data: saved,
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Failed to create review" });
-    }
-  };
-  
-  // Cập nhật review
-  export const updateReview = async (req, res) => {
-    try {
-      const review = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!review) return res.status(404).json({ success: false, message: "Review not found" });
-  
-      await updateTourAvgRating(review.tour);
-  
-      res.status(200).json({
-        success: true,
-        message: "Review updated",
-        data: review,
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Failed to update review" });
-    }
-  };
-  
-  // Xóa review
-  export const deleteReview = async (req, res) => {
-    try {
-      const review = await Review.findByIdAndDelete(req.params.id);
-      if (!review) return res.status(404).json({ success: false, message: "Review not found" });
-  
-      await updateTourAvgRating(review.tour);
-  
-      res.status(200).json({ success: true, message: "Review deleted" });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Failed to delete review" });
-    }
-  };
-  
-  // Lấy 1 review
-  export const getReview = async (req, res) => {
-    try {
-      const review = await Review.findById(req.params.id);
-      if (!review) return res.status(404).json({ success: false, message: "Review not found" });
-  
-      res.status(200).json({ success: true, data: review });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Error fetching review" });
-    }
-  };
-  
-  // Lấy tất cả review
-  export const getAllReviews = async (req, res) => {
-    try {
-      const reviews = await Review.find().populate("tour", "title");
-      res.status(200).json({ success: true, data: reviews });
-    } catch (err) {
-      res.status(500).json({ success: false, message: "Error fetching reviews" });
-    }
-  };
+  try {
+    const {
+      userId,
+      tourId,
+      guideId,
+      ratingTour,
+      commentTour,
+      ratingGuide,
+      commentGuide,
+    } = req.body;
 
-  // Lấy tất cả review theo tour
-  export const getReviewsByTour = async (req, res) => {
-    try {
-      const { tourId } = req.params;
-      const reviews = await Review.find({ tour: tourId }).sort({ createdAt: -1 });
-  
-      res.status(200).json({
-        success: true,
-        data: reviews,
-      });
-    } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: "Failed to fetch reviews for the tour",
-      });
+    // Kiểm tra dữ liệu đầu vào
+    if (!tourId || !guideId || ratingTour == null || ratingGuide == null) {
+      return res.status(400).json({ success: false, message: 'Missing required fields.' });
     }
-  };
-  
+
+    const newReview = new Review({
+      userId,
+      tourId,
+      guideId,
+      ratingTour,
+      commentTour,
+      ratingGuide,
+      commentGuide,
+    });
+
+    await newReview.save();
+    res.status(201).json({ success: true, message: 'Review created successfully.', data: newReview });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to create review.', error: error.message });
+  }
+};
+
+// Lấy tất cả review
+export const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find()
+      .populate('userId', 'username')
+      .populate('tourId', 'title')
+      .populate('guideId', 'name');
+    res.status(200).json({ success: true, data: reviews });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch reviews.', error: error.message });
+  }
+};
+
+// Lấy review theo tourId
+export const getReviewsByTour = async (req, res) => {
+  try {
+    const { tourId } = req.params;
+    const reviews = await Review.find({ tourId })
+      .populate('userId', 'username')
+      .populate('guideId', 'name');
+    res.status(200).json({ success: true, data: reviews });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch tour reviews.', error: error.message });
+  }
+};
+
+// Lấy review theo guideId
+export const getReviewsByGuide = async (req, res) => {
+  try {
+    const { guideId } = req.params;
+    const reviews = await Review.find({ guideId })
+      .populate('userId', 'username')
+      .populate('tourId', 'title');
+    res.status(200).json({ success: true, data: reviews });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch guide reviews.', error: error.message });
+  }
+};
+
+// Sửa review
+export const updateReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      ratingTour,
+      commentTour,
+      ratingGuide,
+      commentGuide
+    } = req.body;
+
+    const updatedReview = await Review.findByIdAndUpdate(
+      id,
+      { ratingTour, commentTour, ratingGuide, commentGuide },
+      { new: true }
+    );
+
+    if (!updatedReview) {
+      return res.status(404).json({ success: false, message: 'Review not found.' });
+    }
+
+    res.status(200).json({ success: true, message: 'Review updated successfully.', data: updatedReview });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to update review.', error: error.message });
+  }
+};
+
+// Xóa review
+export const deleteReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedReview = await Review.findByIdAndDelete(id);
+
+    if (!deletedReview) {
+      return res.status(404).json({ success: false, message: 'Review not found.' });
+    }
+
+    res.status(200).json({ success: true, message: 'Review deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to delete review.', error: error.message });
+  }
+};

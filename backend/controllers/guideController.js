@@ -1,68 +1,77 @@
-import Guide from "../models/Guide.js";
-import GuideReview from "../models/GuideReview.js";
+import Guide from '../models/Guide.js';
 
 // Tạo mới hướng dẫn viên
 export const createGuide = async (req, res) => {
   try {
-    const { name, photo, bio, tours } = req.body;
+    const {
+      toursId,
+      name,
+      age,
+      gender,
+      dob,
+      address,
+      phone
+    } = req.body;
 
-    const newGuide = new Guide({ name, photo, bio, tours });
+    const newGuide = new Guide({
+      toursId,
+      name,
+      age,
+      gender,
+      dob,
+      address,
+      phone,
+      rating: 5,        // mặc định
+      countRating: 0    // mặc định
+    });
+
     await newGuide.save();
 
-    res.status(201).json({ success: true, message: "Guide created", data: newGuide });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Failed to create guide" });
+    res.status(201).json({ success: true, message: 'Guide created successfully', data: newGuide });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to create guide' });
   }
 };
 
-// Lấy danh sách tất cả hướng dẫn viên
 export const getAllGuides = async (req, res) => {
   try {
-    const guides = await Guide.find().populate("tours", "title");
+    const guides = await Guide.find().populate('toursId', 'title'); // Lấy tên tour nếu cần
     res.status(200).json({ success: true, data: guides });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to fetch guides" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch guides' });
   }
 };
 
-// Lấy chi tiết một hướng dẫn viên
 export const getGuideById = async (req, res) => {
   try {
-    const guide = await Guide.findById(req.params.id).populate("tours", "title");
-    if (!guide) {
-      return res.status(404).json({ success: false, message: "Guide not found" });
-    }
+    const guide = await Guide.findById(req.params.id).populate('toursId', 'title');
+    if (!guide) return res.status(404).json({ success: false, message: 'Guide not found' });
+
     res.status(200).json({ success: true, data: guide });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to fetch guide" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch guide' });
   }
 };
 
-// Gửi đánh giá cho hướng dẫn viên
-export const createGuideReview = async (req, res) => {
+export const updateGuide = async (req, res) => {
   try {
-    const { guideId, rating, comment } = req.body;
-    const userId = req.user.id; // cần middleware xác thực
+    const updated = await Guide.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ success: false, message: 'Guide not found' });
 
-    const newReview = new GuideReview({ guideId, userId, rating, comment });
-    await newReview.save();
-
-    res.status(201).json({ success: true, message: "Review submitted", data: newReview });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Failed to submit review" });
+    res.status(200).json({ success: true, message: 'Guide updated', data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to update guide' });
   }
 };
 
-// Lấy tất cả đánh giá theo hướng dẫn viên
-export const getGuideReviews = async (req, res) => {
+export const deleteGuide = async (req, res) => {
   try {
-    const guideId = req.params.guideId;
-    const reviews = await GuideReview.find({ guideId }).populate("userId", "username");
+    const deleted = await Guide.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ success: false, message: 'Guide not found' });
 
-    res.status(200).json({ success: true, data: reviews });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to fetch reviews" });
+    res.status(200).json({ success: true, message: 'Guide deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to delete guide' });
   }
 };
