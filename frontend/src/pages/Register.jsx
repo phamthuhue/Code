@@ -28,6 +28,12 @@ export const Register = () => {
         try {
             await axiosInstance.post("/auth/register", credentials);
             dispatch({ type: "REGISTER_SUCCESS" });
+             notify(
+                            "success",
+                            "Đăng ký thành công",
+                            "Chào mừng bạn đến với hệ thống!",
+                            2
+                        );
             navigate("/login");
         } catch (err) {
             notify(
