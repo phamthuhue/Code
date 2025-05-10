@@ -113,7 +113,7 @@ export const login = async (req, res) => {
             maxAge: 3 * 60 * 1000,
         })
             .status(200)
-            .json({ token, data: { ...rest }, role });
+            .json({ token, info: { ...rest }, role });
     } catch (err) {
         res.status(500).json({
             success: false,
