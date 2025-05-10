@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "start-dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "seed": "node seed/index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,5 +22,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^5.9.2",
     "mongoose": "^7.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

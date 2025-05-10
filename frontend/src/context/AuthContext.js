@@ -1,9 +1,11 @@
 import { createContext, useEffect, useReducer } from "react";
 
 const initialState = {
-    user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
+    user: localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user"))
+        : null,
     loading: false,
-    error: null
+    error: null,
 };
 
 export const AuthContext = createContext(initialState);
@@ -14,32 +16,32 @@ const AuthReducer = (state, action) => {
             return {
                 user: null,
                 loading: true,
-                error: null
+                error: null,
             };
         case "LOGIN_SUCCESS":
             // Lưu thông tin user và role trong state
             return {
                 user: action.payload, // action.payload chứa thông tin user và role
                 loading: false,
-                error: null
+                error: null,
             };
         case "LOGIN_FAILURE":
             return {
                 user: null,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case "REGISTER_SUCCESS":
             return {
                 user: null,
                 loading: false,
-                error: null
+                error: null,
             };
         case "LOGOUT":
             return {
                 user: null,
                 loading: false,
-                error: null
+                error: null,
             };
         default:
             return state;
@@ -60,7 +62,7 @@ export const AuthContextProvider = ({ children }) => {
                 user: state.user,
                 loading: state.loading,
                 error: state.error,
-                dispatch
+                dispatch,
             }}
         >
             {children}
