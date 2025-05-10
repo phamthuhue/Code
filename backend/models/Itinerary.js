@@ -1,15 +1,26 @@
-// models/Itinerary.js
 import mongoose from 'mongoose';
 
-const detailSchema = new mongoose.Schema({
-  time: { type: String, required: true },
-  description: { type: String, required: true }
-});
+const itinerarySchema = new mongoose.Schema(
+  {
+    tourId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tour',
+      required: true,
+    },
+    details: [
+      {
+        time: { type: String, required: true },
+        description: { type: String, required: true },
+      }
+    ],
+    notes: [
+      {
+        type: String
+      }
+    ]
+  },
+  { timestamps: true }
+);
 
-const itinerarySchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  details: [detailSchema],
-  notes: [String]
-});
-
-export default mongoose.model('Itinerary', itinerarySchema);
+const Itinerary = mongoose.model('Itinerary', itinerarySchema);
+export default Itinerary;
