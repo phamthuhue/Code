@@ -7,15 +7,6 @@ import { BASE_URL } from '../../utils/config.js'
 import useFetch from '../../hooks/useFetch'
 
 export const ToursItems = () => {
-  // console.log(`${BASE_URL}/tours`);
-  // useEffect(() => {
-  //   const fetchTours = async () => {
-  //     const res = await axios.get("http://localhost:8000/api/v1/tours");
-  //     console.log("1")
-  //     console.log(res.data);
-  //   };
-  //   fetchTours();
-  // }, []);
   const {data: tours, loading, error} = useFetch(`${BASE_URL}/tours`)
   
   return (
