@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react";
 
 import { PiMountainsBold } from "react-icons/pi";
 
