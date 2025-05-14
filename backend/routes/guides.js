@@ -3,7 +3,7 @@ import { verifyUser} from "../utils/verifyToken.js";
 import {
   createGuide,
   getAllGuides,
-  getGuideById,
+  getGuideByTourId,
   updateGuide,
   deleteGuide
 } from '../controllers/guideController.js';
@@ -11,18 +11,18 @@ import {
 const router = express.Router();
 
 // Tạo mới hướng dẫn viên
-router.post('/',verifyUser, createGuide);
+router.post("/",verifyUser, createGuide);
 
 // Lấy tất cả hướng dẫn viên
-router.get('/', getAllGuides);
+router.get("/", getAllGuides);
 
 // Lấy hướng dẫn viên theo ID
-router.get('/:id', getGuideById);
+router.get("/tour/:tourId", getGuideByTourId);
 
 // Cập nhật hướng dẫn viên
-router.put('/:id', updateGuide);
+router.put("/:id", updateGuide);
 
 // Xóa hướng dẫn viên
-router.delete('/:id', deleteGuide);
+router.delete("/:id", deleteGuide);
 
 export default router;

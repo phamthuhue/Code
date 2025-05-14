@@ -1,13 +1,27 @@
 import Itinerary from '../models/Itinerary.js';
 
-// GET all itineraries (with optional filter by tourId)
+// GET all itineraries
 export const getAllItineraries = async (req, res) => {
   try {
-    const { tourId } = req.query;
-    const query = tourId ? { tourId } : {};
-
-    const itineraries = await Itinerary.find(query);
+    const itineraries = await Itinerary.find({});
     res.json(itineraries);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET one itinerary by tourId
+export const getItineraryByTour = async (req, res) => {
+  try {
+    const { tourId } = req.params;
+    if (!tourId) {
+      return res.status(400).json({ error: 'tourId is required' });
+    }
+    const itinerary = await Itinerary.findOne({ tourId });
+    if (!itinerary) {
+      return res.status(404).json({ error: 'Itinerary not found for the given tourId' });
+    }
+    res.status(200).json({ success: true, data: itinerary });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

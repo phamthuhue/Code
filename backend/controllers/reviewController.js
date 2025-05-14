@@ -48,16 +48,35 @@ export const getAllReviews = async (req, res) => {
   }
 };
 
-// Lấy review theo tourId
+// GET /api/reviews/tour/:tourId?page=1&limit=5
 export const getReviewsByTour = async (req, res) => {
   try {
     const { tourId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const totalReviews = await Review.countDocuments({ tourId });
     const reviews = await Review.find({ tourId })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }) // Mới nhất lên đầu
       .populate('userId', 'username')
       .populate('guideId', 'name');
-    res.status(200).json({ success: true, data: reviews });
+
+    res.status(200).json({
+      success: true,
+      currentPage: page,
+      totalPages: Math.ceil(totalReviews / limit),
+      totalReviews,
+      data: reviews,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to fetch tour reviews.', error: error.message });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch tour reviews.',
+      error: error.message,
+    });
   }
 };
 
