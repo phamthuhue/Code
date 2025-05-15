@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
   credentials: true,
 };
 
@@ -29,13 +29,11 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRoute); // login và đăng ký không cần token
 app.use("/api/v1/tours", tourRoute);
 // Route cần token - áp dụng middleware từ đây trở đi
-app.use(verifyToken);
 
-// Routes
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/guides", guideRoute);
-app.use("/api/v1/itineraries", itineraryRoute);
+app.use("/api/v1/users", verifyToken, userRoute);
+app.use("/api/v1/reviews", verifyToken, reviewRoute);
+app.use("/api/v1/guides", verifyToken, guideRoute);
+app.use("/api/v1/itineraries", verifyToken, itineraryRoute);
 
 // Start server
 app.listen(port, () => {

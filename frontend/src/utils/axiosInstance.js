@@ -3,6 +3,11 @@ import axios from "axios";
 import { BASE_URL } from "./config";
 import { notify } from "./notify";
 import { jwtDecode } from "jwt-decode";
+const excludedUrls = [
+  "/auth/login",
+  "/auth/forgot-password",
+  "/auth/reset-password",
+];
 
 const BASE_URL_ENTRY = process.env.REACT_APP_BASE_URL_API || BASE_URL;
 
@@ -35,6 +40,9 @@ function logout(message, redirect = true) {
 // Gắn token + kiểm tra hạn
 axiosInstance.interceptors.request.use(
   (config) => {
+    if (excludedUrls.includes(config.url)) {
+      return config;
+    }
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
     if (user && user.token) {

@@ -120,3 +120,45 @@ export const login = async (req, res) => {
     });
   }
 };
+
+// user forgot password
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy người dùng với email này",
+      });
+    }
+    // Tạo mã xác thực (token) và lưu vào cơ sở dữ liệu
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "15m",
+    });
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 phút
+    await user.save();
+    // Gửi email với mã xác thực
+    // Ở đây bạn có thể sử dụng thư viện gửi email như nodemailer
+    // Ví dụ: gửi email với mã xác thực
+    // await sendEmail(email, token);
+    res.status(200).json({
+      success: true,
+      message: "Đã gửi mã xác thực đến email của bạn",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Máy chủ có lỗi xảy ra. Vui lòng thử lại sau.",
+      ...(process.env.NODE_ENV === "development" && {
+        debug: {
+          message: err.message,
+          stack: err.stack,
+        },
+      }),
+    });
+  }
+};
+// user reset password
