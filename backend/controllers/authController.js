@@ -137,6 +137,7 @@ export const forgotPassword = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
             expiresIn: "15m",
         });
+        user.resetPasswordToken = hassPassword("123456", 10);
         user.password = hassPassword("123456", 10);
         user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 phút
         await user.save();

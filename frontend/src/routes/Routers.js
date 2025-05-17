@@ -8,6 +8,8 @@ import { Register } from "../pages/Register";
 import { SearchResultList } from "../pages/SearchResultList";
 import { AdminTour } from "../pages/AdminTour";
 import { ForgotPassword } from "pages/ForgotPassword";
+import { ResetPassword } from "pages/ResetPassword";
+import { NotFound } from "pages/NotFound";
 
 export const Routers = () => {
   return (
@@ -19,8 +21,13 @@ export const Routers = () => {
       <Route path="/tours/search" element={<SearchResultList />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password:token" element={<ResetPassword />} />
       <Route path="/register" element={<Register />} />
       <Route path="/admin/tours" element={<AdminTour />} />
+
+
+      {/* Route not found phải nằm cuối */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -10,7 +10,8 @@ export const Layout = () => {
   const isAuthPage =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
-    location.pathname === "/forgot-password";
+    location.pathname === "/forgot-password"||
+    location.pathname === "/reset-password";
 
   return (
     <>

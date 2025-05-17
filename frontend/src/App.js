@@ -3,9 +3,9 @@ import { Layout } from "./components/Layout/Layout";
 
 function App() {
   return (
-    <body>
+    <div>
       <Layout/>
-    </body>
+    </div>
   );
 }
 
