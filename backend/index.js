@@ -17,8 +17,8 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
-  credentials: true,
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
 };
 
 // Middleware
@@ -37,6 +37,6 @@ app.use("/api/v1/itineraries", verifyToken, itineraryRoute);
 
 // Start server
 app.listen(port, () => {
-  connectDB(); // 👉 gọi kết nối ở đây
-  console.log(`🚀 Server running on port ${port}`);
+    connectDB(); // 👉 gọi kết nối ở đây
+    console.log(`🚀 Server running on port ${port}`);
 });
