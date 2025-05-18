@@ -1,10 +1,10 @@
 // routes/UserRoutes.jsx
 import React from "react";
 import { Route } from "react-router-dom";
-import { Home } from "../pages/Home";
-import { Tours } from "../pages/user/Tours";
-import { TourDetails } from "../pages/user/TourDetails";
-import { SearchResultList } from "../pages/SearchResultList";
+import { TourDetails } from "pages/user/TourDetails";
+import { SearchResultList } from "pages/user/SearchResultList";
+import { Home } from "pages/Home";
+import { Tours } from "pages/user/Tours";
 
 export const UserRoutes = () => (
   <>

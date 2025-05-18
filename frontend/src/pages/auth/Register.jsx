@@ -2,9 +2,8 @@ import React, { useState, useContext } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { AuthContext } from "../../context/AuthContext";
 
-import { AuthContext } from "../context/AuthContext";
-import { BASE_URL } from "../utils/config";
 import axiosInstance from "@utils/axiosInstance";
 import { notify } from "@utils/notify";
 import { Button, Form, Input } from "antd";

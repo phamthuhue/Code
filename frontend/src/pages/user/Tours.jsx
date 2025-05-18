@@ -2,7 +2,7 @@ import React from "react";
 
 import { SearchTour } from "../../components/Home/SearchTour";
 import { Items } from "../../components/Home/Items";
-import tourImg from "./../assets/images/vn.jpeg";
+import tourImg from "../../assets/images/vn.jpeg";
 import { BASE_URL } from "../../utils/config";
 import useFetch from "../../hooks/useFetch";
 

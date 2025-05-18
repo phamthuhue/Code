@@ -1,17 +1,16 @@
-// layouts/AdminLayout.jsx
-import { useAuthContext } from "context/AuthContext";
-import { React } from "react";
+// src/layouts/AdminLayout.jsx
+import AdminSideBar from "@components/AdminComponent/Sidebar";
+import React from "react";
+
 import { Outlet } from "react-router-dom";
 
 export const AdminLayout = () => {
-  const { user } = useAuthContext();
-  console.log("user: ", user);
   return (
-    <div>
-      <h2 style={{ background: "#333", color: "#fff", padding: "1rem" }}>
-        Admin Dashboard
-      </h2>
-      <Outlet />
+    <div className="admin-layout">
+      <AdminSideBar />
+      <div className="main-content">
+        <Outlet />
+      </div>
     </div>
   );
 };

@@ -2,9 +2,10 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { Login } from "pages/auth/Login";
-import { Register } from "pages/Register";
+
 import { ForgotPassword } from "pages/auth/ForgotPassword";
 import { ResetPassword } from "pages/auth/ResetPassword";
+import { Register } from "pages/auth/Register";
 export const AuthRoutes = () => (
   // Các route auth bên dưới là các route không cần bảo vệ
   // luôn bắt đầu bằng /auth

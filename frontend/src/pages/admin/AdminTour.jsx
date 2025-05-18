@@ -1,7 +1,7 @@
 import React from "react";
 // import Sidebar from "../components/Sidebar/Sidebar";
 // import Navbar from "../components/Navbar";
-import TourTable from "../components/AdminComponent/TourTable";
+import TourTable from "../../components/AdminComponent/TourTable";
 
 export const AdminTour = () => {
   return (
@@ -14,7 +14,9 @@ export const AdminTour = () => {
         {/* <Navbar /> */}
 
         <div className="bg-white p-4 rounded shadow mt-6">
-          <h2 className="text-2xl font-semibold text-blue-600 mb-4">Quản lý Tour Du Lịch</h2>
+          <h2 className="text-2xl font-semibold text-blue-600 mb-4">
+            Quản lý Tour Du Lịch
+          </h2>
           <TourTable />
         </div>
       </div>

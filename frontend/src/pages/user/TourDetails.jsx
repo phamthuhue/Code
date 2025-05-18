@@ -11,21 +11,14 @@ import {
 import { FaMoneyBillWave, FaCalendarAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
-
 import { Checkout } from "../../components/Cart/Checkout.jsx";
-import { AuthContext } from "../../context/AuthContext.js";
-import useFetchData from "../../hooks/usePaginatedReviews.js";
 
 import useFetch from "../../hooks/useFetch.js";
 import { BASE_URL } from "../../utils/config.js";
-import usePaginatedFetch from "../../hooks/usePaginatedReviews.js";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-
 export const TourDetails = () => {
   const params = useParams();
   const { id } = params;
-  const reviewsMsgRef = useRef();
-  const { user } = useContext(AuthContext);
 
   // const { data: tour, loading: tourLoading } = useFetchData(`/tours/${id}`);
   // const { data: itinerary, loading: itineraryLoading } = useFetchData(`/itineraries?tourId=${id}`);
