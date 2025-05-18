@@ -43,14 +43,24 @@ export const getAllGuides = async (req, res) => {
   }
 };
 
-export const getGuideById = async (req, res) => {
+// GET guide by tourid
+export const getGuideByTourId = async (req, res) => {
   try {
-    const guide = await Guide.findById(req.params.id).populate('toursId', 'title');
-    if (!guide) return res.status(404).json({ success: false, message: 'Guide not found' });
+    const { tourId } = req.params;
 
-    res.status(200).json({ success: true, data: guide });
+    if (!tourId) {
+      return res.status(400).json({ success: false, message: 'tourId is required' });
+    }
+
+    const guides = await Guide.findOne({ toursId: tourId }).populate('toursId', 'title');
+
+    if (!guides || guides.length === 0) {
+      return res.status(404).json({ success: false, message: 'No guides found for this tour' });
+    }
+
+    res.status(200).json({ success: true, data: guides });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to fetch guide' });
+    res.status(500).json({ success: false, message: 'Failed to fetch guides by tourId' });
   }
 };
 
