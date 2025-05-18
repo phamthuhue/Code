@@ -1,10 +1,8 @@
 import React from "react";
 import { Header } from "../Header/Header";
 import { Footer } from "../Footer/Footer";
-import { Routers } from "../../routes/Routers";
-import { useLocation } from "react-router-dom";
-
-export const Layout = () => {
+import { Outlet, useLocation } from "react-router-dom";
+export const UserLayout = () => {
   const location = useLocation();
 
   const isAuthPage =
@@ -16,7 +14,7 @@ export const Layout = () => {
   return (
     <>
       {!isAuthPage && <Header />}
-      <Routers />
+      <Outlet />
       {!isAuthPage && <Footer />}
     </>
   );

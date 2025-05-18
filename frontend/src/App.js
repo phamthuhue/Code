@@ -1,10 +1,9 @@
+import { Routers } from "routes/Routers";
 import "./App.css";
-import { Layout } from "./components/Layout/Layout";
-
 function App() {
   return (
     <div>
-      <Layout/>
+      <Routers />;
     </div>
   );
 }

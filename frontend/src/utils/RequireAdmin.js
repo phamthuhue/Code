@@ -1,0 +1,15 @@
+// utils/RequireAdmin.jsx
+import { AuthContext } from "context/AuthContext";
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
+
+export const RequireAdmin = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  console.log("user: ", user);
+
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
