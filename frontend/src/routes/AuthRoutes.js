@@ -1,10 +1,10 @@
 // routes/AdminRoutes.jsx
 import React from "react";
 import { Route } from "react-router-dom";
-import { Login } from "pages/Login";
+import { Login } from "pages/auth/Login";
 import { Register } from "pages/Register";
 import { ForgotPassword } from "pages/auth/ForgotPassword";
-import { ResetPassword } from "pages/ResetPassword";
+import { ResetPassword } from "pages/auth/ResetPassword";
 export const AuthRoutes = () => (
   // Các route auth bên dưới là các route không cần bảo vệ
   // luôn bắt đầu bằng /auth

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BiUserCircle } from "react-icons/bi";
 import { Form, Input, Button } from "antd";
 
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { notify } from "@utils/notify";
 import axiosInstance from "@utils/axiosInstance";
 
