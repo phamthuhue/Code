@@ -2,8 +2,8 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { Home } from "../pages/Home";
-import { Tours } from "../pages/Tours";
-import { TourDetails } from "../pages/TourDetails";
+import { Tours } from "../pages/user/Tours";
+import { TourDetails } from "../pages/user/TourDetails";
 import { SearchResultList } from "../pages/SearchResultList";
 
 export const UserRoutes = () => (
