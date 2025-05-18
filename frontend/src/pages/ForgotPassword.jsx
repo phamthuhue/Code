@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BiSolidLock } from "react-icons/bi";
 import { Form, Input, Button } from "antd";
 
@@ -21,7 +21,6 @@ export const ForgotPassword = () => {
         2
       );
     } catch (err) {
-      console.log("err: ", err);
       const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";
       notify("error", "Gửi liên kết thất bại ", errorMessage, 2);
     } finally {

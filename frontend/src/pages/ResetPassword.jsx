@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { BiSolidLock, BiSolidMedal } from "react-icons/bi";
+import { BiSolidMedal } from "react-icons/bi";
 import { Form, Input, Button } from "antd";
 
 import { notify } from "@utils/notify";
@@ -10,8 +10,6 @@ export const ResetPassword = () => {
   const navigate = useNavigate();
   const { token } = useParams();
   const [loading, setLoading] = useState(false);
-  console.log("token: ", token);
-
   const onFinish = async (values) => {
     setLoading(true);
     try {
