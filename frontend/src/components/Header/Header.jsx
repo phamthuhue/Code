@@ -48,13 +48,13 @@ export const Header = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to={"#"} className="nav">
-                            Giới thiệu
+                        <NavLink to={"/tours"} className="nav">
+                            Danh sách Tour
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/tours"} className="nav">
-                            Danh sách Tour
+                        <NavLink to={"/groupTourRequests"} className="nav">
+                            Đặt tour theo Đoàn
                         </NavLink>
                     </li>
                     {user && (

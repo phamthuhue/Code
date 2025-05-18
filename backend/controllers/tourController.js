@@ -68,7 +68,7 @@ export const getSingleTour = async (req, res) => {
     const id = req.params.id;
 
     try {
-        const tour = await Tour.findById(id).populate("reviews");
+        const tour = await Tour.findById(id);
         res.status(200).json({
             success: true,
             message: "Succesfully found",
@@ -85,7 +85,7 @@ export const getSingleTour = async (req, res) => {
 //get all tours
 export const getAllTours = async (req, res) => {
     try {
-        const tours = await Tour.find({}).populate("reviews");
+        const tours = await Tour.find({});
         res.status(200).json({
             success: true,
             message: "Thành công",
@@ -108,7 +108,7 @@ export const getTourBySearch = async (req, res) => {
         const tours = await Tour.find({
             city,
             maxGroupSize: { $gte: maxGroupSize },
-        }).populate("reviews");
+        });
         res.status(200).json({
             success: true,
             message: "Succesfully found",
@@ -117,7 +117,7 @@ export const getTourBySearch = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Not found4",
+            message: "Not found",
         });
     }
 };
@@ -134,7 +134,7 @@ export const getTourCount = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Not found4",
+            message: "Not found",
         });
     }
 };

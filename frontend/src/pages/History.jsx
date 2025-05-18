@@ -1,26 +1,19 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import useFetch from "../hooks/useFetch"; // Giả sử bạn đã có hook useFetch
+import useFetch from "../hooks/useFetch";
 import { BASE_URL } from "../utils/config";
 
-const BookingHistory = () => {
-  // Lấy user từ AuthContext
+export const History = () => {
   const { user } = useContext(AuthContext);
+  const userId = user._id;
+  const { data: bookings, loading, error } = useFetch(`${BASE_URL}/bookings/user/${userId}`);
 
-  // Kiểm tra xem người dùng có đăng nhập không
-  if (!user) {
-    return <p>Vui lòng đăng nhập để xem lịch sử đặt tour.</p>;
-  }
-
-  const userId = user._id; // Lấy _id của người dùng từ user trong AuthContext
-
-  // Dùng useFetch để lấy dữ liệu bookings dựa vào userId
-  const { data: bookings } = useFetch(`${BASE_URL}/bookings/${userId}`);
-
-  const handleReview = (tourName) => {
-    // Chuyển đến trang đánh giá (hoặc mở form/modal)
-    window.location.href = `/review/${encodeURIComponent(tourName)}`;
+  const handleReview = (tourId) => {
+    window.location.href = `/review/${tourId}`;
   };
+
+  if (loading) return <p>Đang tải dữ liệu...</p>;
+  if (error) return <p>Đã xảy ra lỗi khi tải dữ liệu.</p>;
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -35,15 +28,19 @@ const BookingHistory = () => {
               className="border p-4 rounded-xl shadow flex justify-between items-center"
             >
               <div>
-                <h2 className="text-lg font-semibold">{booking.tourName}</h2>
-                <p className="text-sm text-gray-600">Họ tên: {booking.fullName}</p>
-                <p className="text-sm text-gray-600">Số lượng khách: {booking.guestSize}</p>
+                <h2 className="text-lg font-semibold">{booking.tourId?.title || 'Chưa rõ'}</h2>
+                <p className="text-sm text-gray-600">Người đặt: {booking.userId?.username || 'Ẩn danh'}</p>
+                <p className="text-sm text-gray-600">Số lượng khách: {booking.numberOfPeople}</p>
+                <p className="text-sm text-gray-600">Tổng giá: {booking.totalPrice.toLocaleString('vi-VN')}₫</p>
                 <p className="text-sm text-gray-500">
-                  Ngày khởi hành: {new Date(booking.bookedAt).toLocaleDateString("vi-VN")}
+                  Trạng thái: {booking.status}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Ngày đặt: {new Date(booking.createdAt).toLocaleDateString("vi-VN")}
                 </p>
               </div>
               <button
-                onClick={() => handleReview(booking.tourName)}
+                onClick={() => handleReview(booking.tourId?._id)}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
               >
                 Đánh giá
@@ -55,5 +52,3 @@ const BookingHistory = () => {
     </div>
   );
 };
-
-export default BookingHistory;

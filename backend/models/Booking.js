@@ -13,6 +13,7 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Tour',
       required: true, // Tour được đặt
     },
+    startDate: { type: Date, required: true },
     numberOfPeople: {
       type: Number,
       required: true, // Số lượng người
