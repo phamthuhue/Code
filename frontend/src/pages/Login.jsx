@@ -45,7 +45,10 @@ export const Login = () => {
         <h2>Đăng nhập</h2>
         <p>
           Bạn chưa có tài khoản?{" "}
-          <Link to="/register" className="text-white font-bold no-underline">
+          <Link
+            to="/auth/register"
+            className="text-white font-bold no-underline"
+          >
             Đăng ký
           </Link>
         </p>
@@ -92,7 +95,7 @@ export const Login = () => {
           </Form.Item>
           <p>
             <Link
-              to="/forgot-password"
+              to="/auth/forgot-password"
               className="text-white font-bold no-underline hover:underline hover:text-blue-300"
             >
               Quên mật khẩu ?

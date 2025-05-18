@@ -22,7 +22,7 @@ export const ResetPassword = () => {
         "Bạn đã đặt lại mật khẩu thành công. Hãy đăng nhập lại.",
         2
       );
-      navigate("/login");
+      navigate("/auth/login");
     } catch (error) {
       const errorMsg = error.response?.data?.message || "Đã có lỗi xảy ra";
       notify("error", "Lỗi", errorMsg, 2);
@@ -95,7 +95,7 @@ export const ResetPassword = () => {
             </Button>
             <p className="mt-2">
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-white font-bold no-underline hover:underline hover:text-blue-300"
               >
                 Trở lại đăng nhập

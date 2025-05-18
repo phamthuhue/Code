@@ -7,10 +7,16 @@ import { AdminLayout } from "@components/Layout/AdminLayout";
 import { AdminRoutes } from "./AdminRoutes";
 import { NotFound } from "pages/NotFound";
 import { RequireAdmin } from "@utils/RequireAdmin";
+import { AuthRoutes } from "./AuthRoutes";
 
 export const Routers = () => {
   return (
     <Routes>
+      {/* AUTH */}
+      <Route path="/auth" element={<UserLayout />}>
+        {AuthRoutes()}
+      </Route>
+
       {/* USER */}
       <Route path="/" element={<UserLayout />}>
         {UserRoutes()}

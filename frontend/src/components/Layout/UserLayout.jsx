@@ -6,10 +6,10 @@ export const UserLayout = () => {
   const location = useLocation();
 
   const isAuthPage =
-    location.pathname === "/login" ||
-    location.pathname === "/register" ||
-    location.pathname === "/forgot-password" ||
-    location.pathname.startsWith("/reset-password");
+    location.pathname === "/auth/login" ||
+    location.pathname === "/auth/register" ||
+    location.pathname === "/auth/forgot-password" ||
+    location.pathname.startsWith("/auth/reset-password");
 
   return (
     <>

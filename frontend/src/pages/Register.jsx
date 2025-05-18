@@ -33,7 +33,7 @@ export const Register = () => {
         "Chào mừng bạn đến với hệ thống!",
         2
       );
-      navigate("/login");
+      navigate("/auth/login");
     } catch (err) {
       notify(
         "error",
@@ -52,7 +52,10 @@ export const Register = () => {
           <h2>Đăng ký</h2>
           <p>
             Bạn đã có tài khoản?{" "}
-            <Link to="/login" className="text-white font-bold no-underline">
+            <Link
+              to="/auth/login"
+              className="text-white font-bold no-underline"
+            >
               Đăng nhập
             </Link>
           </p>

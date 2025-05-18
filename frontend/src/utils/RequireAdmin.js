@@ -8,7 +8,7 @@ export const RequireAdmin = ({ children }) => {
   console.log("user: ", user);
 
   if (!user || user.role !== "admin") {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth/login" replace />;
   }
 
   return children;

@@ -69,7 +69,7 @@ export const ForgotPassword = () => {
             </Button>
             <p>
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-white font-bold no-underline hover:underline hover:text-blue-300"
               >
                 Trở lại đăng nhập
