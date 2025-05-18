@@ -80,7 +80,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const email = req.body.email;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("role");
 
     if (!user) {
       return res.status(404).json({
@@ -102,6 +102,7 @@ export const login = async (req, res) => {
     }
 
     const { id, password, role, ...rest } = user._doc;
+    console.log("user._doc: ", user._doc);
     //create jwt token
 
     const token = jwt.sign({ id, role }, process.env.JWT_SECRET_KEY, {

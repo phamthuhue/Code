@@ -7,7 +7,7 @@ export const RequireAdmin = ({ children }) => {
   const { user } = useContext(AuthContext);
   console.log("user: ", user);
 
-  if (!user || user.role !== "admin") {
+  if (!user || user.role.name !== "admin") {
     return <Navigate to="/auth/login" replace />;
   }
 

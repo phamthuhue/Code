@@ -24,7 +24,12 @@ export const Login = () => {
         "Chào mừng bạn đã quay lại!",
         2
       );
-      navigate("/");
+      // 👉 Điều hướng theo role
+      if (res.data.role?.name === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "Đã có lỗi đăng nhập xảy ra";
