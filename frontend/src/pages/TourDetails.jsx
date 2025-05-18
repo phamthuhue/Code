@@ -4,12 +4,16 @@ import { useParams } from 'react-router-dom'
 import {BsFillPeopleFill, BsFillStarFill, BsCalendarCheck, BsExclamationCircleFill, BsCheckCircle} from "react-icons/bs"
 import {FaMoneyBillWave, FaCalendarAlt} from 'react-icons/fa';
 import {FaLocationDot} from "react-icons/fa6";
-import {CgProfile} from "react-icons/cg"
+import {CgProfile} from "react-icons/cg";
 
 import { Checkout } from '../components/Cart/Checkout.jsx';
-import { BASE_URL } from '../utils/config'
 import {AuthContext} from "../context/AuthContext.js"
-import useFetch from '../hooks/useFetch'
+import useFetchData from '../hooks/usePaginatedReviews.js';
+
+import useFetch from '../hooks/useFetch';
+import { BASE_URL } from '../utils/config'
+import usePaginatedFetch from '../hooks/usePaginatedReviews.js';
+import Pagination from '../components/Pagination/Pagination.jsx';
 
 export const TourDetails = () => {  
   const params = useParams();
@@ -17,58 +21,25 @@ export const TourDetails = () => {
   const reviewsMsgRef = useRef()
   const { user } = useContext(AuthContext)
   
+  // const { data: tour, loading: tourLoading } = useFetchData(`/tours/${id}`);
+  // const { data: itinerary, loading: itineraryLoading } = useFetchData(`/itineraries?tourId=${id}`);
+  // const { data: guide, loading: guideLoading } = useFetchData(`/guides?tourId=${id}`);
+  // const { data: reviews, loading: reviewsLoading } = useFetchData(`/reviews?tourId=${id}`);
+  // if (tourLoading || itineraryLoading || guideLoading || reviewsLoading) {
+  //   return <p>Đang tải dữ liệu...</p>;
+  // }
+
   const {data:tour} = useFetch(`${BASE_URL}/tours/${id}`)
-  const { data: itinerary } = useFetch(`${BASE_URL}/itineraries?tourId=${id}`);
-  const { data: guide } = useFetch(`${BASE_URL}/guides?tourId=${id}`);
-  const { data: reviews } = useFetch(`${BASE_URL}/reviews?tourId=${id}`);
-
-
-  const { title, photo, desc, price, city, maxGroupSize, date } = tour
-  const options = { day: 'numeric', month: 'long', year: 'numeric' }
-  const [tourRating, setTourRating] = useState(0)
-      
-  const submitHandler = async e => {
-        e.preventDefault();
-        const reviewText = reviewsMsgRef.current.value;
-        if(!user || user === undefined || user===null){
-          alert("Bạn chưa đăng nhập.")
-        }
-        try {
-          const reviewObj = {
-            username: user?.username,
-            reviewText, 
-            rating: tourRating
-          }
-          const res = await fetch(`${BASE_URL}/review/${id}`,{
-            method: "post",
-            headers:{
-              "content-type":"application/json"
-            },
-            credentials:"include",
-            body:JSON.stringify(reviewObj)
-          })
-          const result = await res.json();
-          if(!res.ok){
-            return alert(result.message);
-          } 
-          alert("Đánh giá đã được gửi")
-        } catch (err) {
-          alert(err.message)
-        }
-  }
-  const totalRating = reviews?.reduce((acc,item)=> acc + item.rating, 0)
+  const { data: itinerary } = useFetch(`${BASE_URL}/itineraries/tour/${id}`);
+  const { data: guide } = useFetch(`${BASE_URL}/guides/tour/${id}`);
+  // const { data: reviews } = usePaginatedFetch(`${BASE_URL}/reviews/tour/${id}`);
+  const [page, setPage] = useState(1);
+  const { data: reviews, currentPage, totalPages, loading, error } = useFetch(
+    `${BASE_URL}/reviews/tour/${id}?page=${page}&limit=5`
+  );
   
-  const avgRating = 
-    totalRating === 0
-    ? "" 
-    : totalRating === 1
-    ? totalRating 
-    : totalRating / reviews?.length
-
-   //Review in Stars
-  // const handleRatingClick = (rating) => {
-  //   setTourRating(rating === tourRating ? 0 : rating);
-  // }; 
+  const { title, photo, desc, price, city, maxGroupSize, startDate,endDate, avgRating } = tour
+  const options = { day: 'numeric', month: 'long', year: 'numeric' }
   
   return (
     <section className='max-w-[1640px] mx-auto py-4 bg-gradient-to-b from-lightGreen to-white'>
@@ -101,7 +72,9 @@ export const TourDetails = () => {
                     </div>
                     <div>
                         <FaCalendarAlt className='text-darkGreen mr-1'/>
-                        <span>Ngày khởi hành: {date}</span>
+                        <span>
+                          Ngày khởi hành: {new Date(startDate).toLocaleDateString('vi-VN')}
+                        </span>
                     </div>
                 </div>
                 <div className='mt-3'>
@@ -158,24 +131,33 @@ export const TourDetails = () => {
                 </ul>
               </div>
             </div>
-            {/*TourGuide Section*/}      
-            <div id='description' className='detailContainer'>
-                <h5>Hướng dẫn viên du lịch</h5>
-                <p className=''>{guide.name}</p>
-                <div className='tourDetail mb-2'>
-                    <div>
-                      <BsFillStarFill className='text-yellow mr-1'/>
-                      <span>{guide.rating === 0 ? null : guide.rating} ({guide.countRating} đánh giá)</span>
+
+            {/* TourGuide Section */}
+            <div id="description" className="detailContainer">
+              <h5>Hướng dẫn viên du lịch</h5>
+              <p className=''>{guide.name}</p>
+              {guide ? (
+                <>
+                  <div className="tourDetail mb-2">
+                    <div className="flex items-center">
+                      <BsFillStarFill className="text-yellow mr-1" />
+                      <span>
+                        {guide.rating === 0 ? "Chưa có đánh giá" : `${guide.rating} (${guide.countRating} đánh giá)`}
+                      </span>
                     </div>
-                </div>
-                <div className=''>
+                  </div>
+                  <div className=''>
                     <div>
                         <span>Tuổi: {guide.age}</span>
                     </div>
                     <div>
                         <span>Giới tính: {guide.gender}</span>
                     </div>
-                </div>
+                  </div>
+                </>
+              ) : (
+                <p>Chưa có hướng dẫn viên cho tour này.</p>
+              )}
             </div>
 
           {/*Review Section*/}            
@@ -184,52 +166,36 @@ export const TourDetails = () => {
                   <h5>Đánh giá</h5>
                   <span className='text-sm'>({reviews?.length} đánh giá)</span>
               </div>
-              {/*Review posting*/}
-              {/* <div className='flex gap-3 font-light'>
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <div
-                      key={rating}
-                      className={`flex items-center text-yellow cursor-pointer hover:text-orange-700`}
-                      onClick={() => handleRatingClick(rating)}
-                    >
-                    <span>{rating}</span>
-                    <BsFillStarFill className={`ml-1 ${
-                          rating <= tourRating ? 'text-orange-700' : 'text-yellow'}`}/>
-                    </div>
-                  ))}
-              </div>
-              <div className='w-[85%] border-2 border-gray rounded-full p-1 mx-auto my-3'>
-                  <form onSubmit={submitHandler} className='flex justify-between w-full'>
-                    <input type="text" placeholder='Share your experience' ref={reviewsMsgRef} className='rounded-full text-sm py-2 px-3 w-full text-darkGray font-light'/>
-                    <button className='rounded-full self-end buttonBlue'>Gửi</button>
-                  </form>
-              </div> */}
+              
               {/*Tour reviews*/}
               <div>
-                {reviews && reviews.length > 0 ? (
+                {reviews.length > 0 ? (
                   reviews.map((review, index) => (
                     <div key={index} className="review-item mt-4">
                       <div className="flex justify-between text-sm">
                         <div className="flex">
                           <CgProfile className="w-[40px] h-auto mr-2" />
                           <div className="flex flex-col">
-                            <span className="font-bold">{review.name}</span>
+                            <span className="font-bold">{review.userId.username}</span>
                             <span className="text-gray-400">
                               {new Date(review.createdAt).toLocaleDateString("en-US", options)}
                             </span>
                           </div>
                         </div>
                         <div className="flex items-center text-yellow">
-                          <span>{review.rating}</span>
+                          <span>{review.ratingTour}</span>
                           <BsFillStarFill className="ml-2" />
                         </div>
                       </div>
-                      <p className="mt-2">{review.reviewText}</p>
+                      <p className="mt-2">{review.commentTour}</p>
                     </div>
                   ))
                 ) : (
-                  <p>Chưa có đánh giá nào.</p>
+                  !loading && <p>Chưa có đánh giá nào.</p>
                 )}
+
+                {/* Pagination */}
+                <Pagination page={page} totalPages={totalPages} setPage={setPage} />
               </div>
             </div>
           </div>
