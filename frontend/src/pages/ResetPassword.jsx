@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BiSolidLock, BiSolidMedal } from "react-icons/bi";
 import { Form, Input, Button } from "antd";
 
@@ -8,29 +8,30 @@ import axiosInstance from "@utils/axiosInstance";
 
 export const ResetPassword = () => {
   const navigate = useNavigate();
+  const { token } = useParams();
   const [loading, setLoading] = useState(false);
+  console.log("token: ", token);
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const res = await axiosInstance.post("/auth/reset-password", {
+      await axiosInstance.post(`/auth/reset-password/${token}`, {
         password: values.password,
       });
       notify(
         "success",
         "Thành công",
-        "Mật khẩu của bạn đã được đặt lại thành công.",
+        "Bạn đã đặt lại mật khẩu thành công. Hãy đăng nhập lại.",
         2
       );
       navigate("/login");
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";
-      notify("error", "Thất bại", errorMessage, 2);
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "Đã có lỗi xảy ra";
+      notify("error", "Lỗi", errorMsg, 2);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="w-full custom-height flex items-center justify-center text-white font-light bg-gradient-to-b from-lightGreen to-white">
       <div className="authContainer max-w-[40%]">
@@ -53,8 +54,8 @@ export const ResetPassword = () => {
                 message: "Vui lòng nhập mật khẩu mới!",
               },
               {
-                min: 6,
-                message: "Mật khẩu phải có ít nhất 6 ký tự!",
+                min: 4,
+                message: "Mật khẩu phải có ít nhất 4 ký tự!",
               },
             ]}
             hasFeedback

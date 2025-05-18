@@ -7,21 +7,19 @@ import { notify } from "@utils/notify";
 import axiosInstance from "@utils/axiosInstance";
 
 export const ForgotPassword = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const res = await axiosInstance.post("/auth/forgot-password", values);
-      console.log("res: ", res);
+      await axiosInstance.post("/auth/forgot-password", values);
+      //
       notify(
         "success",
         "Gửi liên kết thành công",
         "Chúng tôi đã gửi liên kết đặt lại mật khẩu đến email của bạn.",
         2
       );
-      navigate("/");
     } catch (err) {
       console.log("err: ", err);
       const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";

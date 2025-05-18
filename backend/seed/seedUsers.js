@@ -31,12 +31,16 @@ export const seedUsers = async () => {
       email: "1234@gmail.com",
       password: hash,
       role: userRole._id,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
     },
     {
       username: "admin_user",
       email: "admin@gmail.com",
       password: hash,
       role: adminRole._id,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
     },
   ];
 
