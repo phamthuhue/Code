@@ -43,3 +43,16 @@ export const getAllBookings = async(req, res) =>{
         res.status(500).json({success:false, message:"internal server error"})   
     }
 }
+
+// BookingController.js
+export const getBookingsByUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const bookings = await Booking.find({ userId })
+      .populate('tourId', 'title') // chỉ lấy 'title' từ Tour
+      .populate('userId', 'username'); // chỉ lấy 'username' từ User
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: 'Lỗi khi lấy lịch sử đặt tour.' });
+  }
+};

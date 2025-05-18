@@ -12,12 +12,10 @@ const tourSchema = new mongoose.Schema(
     photo: { type: String },
     featured: { type: Boolean, default: false },
 
-    // Tham chiếu đến bảng Review
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-
+    guideId: { type: mongoose.Schema.Types.ObjectId, ref: "Guide", required: true },
 
     // Trường lưu trung bình đánh giá (cập nhật mỗi khi có review mới)
-    avgRating: { type: Number, default: 0 },
+    avgRating: { type: Number, default: 5 },
   },
   { timestamps: true }
 );
