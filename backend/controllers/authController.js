@@ -5,6 +5,7 @@ import Role from "../models/Role.js";
 
 import { hassPassword } from "../utils/hassPassword.js";
 import sendEmail from "../utils/emailService.js";
+import { resetPasswordEmail } from "../utils/emailTemplates.js";
 
 //user registration
 export const register = async (req, res) => {
@@ -155,18 +156,13 @@ export const forgotPassword = async (req, res) => {
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
     // Nội dung email
-    const message = `Vui lòng nhấp vào liên kết sau để đặt lại mật khẩu của bạn: ${resetUrl}`;
-    const html = `
-      <h3>Đặt lại mật khẩu</h3>
-      <p>Bấm vào link bên dưới để đặt lại mật khẩu:</p>
-      <a href="${resetUrl}">${resetUrl}</a>
-    `;
+    const { html: emailHtml, text: plainText } = resetPasswordEmail(resetUrl);
     // Gửi mail
     await sendEmail({
       to: process.env.EMAIL_USERNAME,
       subject: "Đặt lại mật khẩu",
-      text: message,
-      html,
+      text: plainText,
+      html: emailHtml,
     });
     return res.status(200).json({
       success: true,

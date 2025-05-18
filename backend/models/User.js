@@ -35,10 +35,10 @@ const userSchema = new mongoose.Schema(
 // ✅ Method: generate token reset password
 userSchema.methods.createPasswordResetToken = function () {
   const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: "1m",
+    expiresIn: "3m",
   });
   this.resetPasswordToken = token;
-  this.resetPasswordExpires = Date.now() + 1 * 60 * 1000;
+  this.resetPasswordExpires = Date.now() + 3 * 60 * 1000;
   return token;
 };
 
