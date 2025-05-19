@@ -33,7 +33,9 @@ function logout(message, redirect = true) {
   notify(redirect ? "error" : "warning", "Phiên đăng nhập hết hạn", message, 2);
   setTimeout(
     () =>
-      redirect ? (window.location.href = "/login") : window.location.reload(),
+      redirect
+        ? (window.location.href = "/auth/login")
+        : window.location.reload(),
     1000
   );
 }
