@@ -1,11 +1,11 @@
 import { createContext, useReducer } from "react";
 
 const initialState = {
-    user: localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user"))
-        : null,
-    loading: false,
-    error: null,
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null,
+  loading: false,
+  error: null,
 };
 
 export const AuthContext = createContext(initialState);
@@ -55,7 +55,7 @@ const AuthReducer = (state, action) => {
 };
 
 export const AuthContextProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(AuthReducer, initialState);
+  const [state, dispatch] = useReducer(AuthReducer, initialState);
 
     return (
         <AuthContext.Provider
@@ -70,3 +70,4 @@ export const AuthContextProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+export const useAuthContext = () => useContext(AuthContext);

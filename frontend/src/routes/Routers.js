@@ -1,37 +1,39 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Home } from "../pages/Home";
-import { Tours } from "../pages/Tours";
-import { TourDetails } from "../pages/TourDetails";
-import { Login } from "../pages/Login";
-import { Register } from "../pages/Register";
-import { SearchResultList } from "../pages/SearchResultList";
-import { AdminTour } from "../pages/AdminTour";
-import { History } from '../pages/History';
-import { GroupTourRequestForm } from '../pages/GroupTourRequestForm';
-import { ForgotPassword } from "pages/ForgotPassword";
-import { ResetPassword } from "pages/ResetPassword";
+import { Routes, Route } from "react-router-dom";
+import { UserLayout } from "@components/Layout/UserLayout";
+import { UserRoutes } from "./UserRoutes";
+import { AdminLayout } from "@components/Layout/AdminLayout";
+import { AdminRoutes } from "./AdminRoutes";
+
 import { NotFound } from "pages/NotFound";
+import { RequireAdmin } from "@utils/RequireAdmin";
+import { AuthRoutes } from "./AuthRoutes";
 
 export const Routers = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/tours" element={<Tours />} />
-      <Route path="/tours/:id" element={<TourDetails />} />
-      <Route path="/tours/search" element={<SearchResultList />} />
-      <Route path="/history" element={<History/>}/>
-      <Route path="/group-tour-request-form" element={<GroupTourRequestForm/>}/>
+      {/* AUTH */}
+      <Route path="/auth" element={<UserLayout />}>
+        {AuthRoutes()}
+      </Route>
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/admin/tours" element={<AdminTour />} />
+      {/* USER */}
+      <Route path="/" element={<UserLayout />}>
+        {UserRoutes()}
+      </Route>
+      {/* ADMIN */}
+      <Route
+        path="/admin"
+        element={
+          <RequireAdmin>
+            <AdminLayout />
+          </RequireAdmin>
+        }
+      >
+        {AdminRoutes()}
+      </Route>
 
-
-      {/* Route not found phải nằm cuối */}
+      {/* NOT FOUND */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

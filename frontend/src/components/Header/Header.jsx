@@ -5,15 +5,15 @@ import { FaRegBell, FaRegPaperPlane, FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import { Modal } from "antd";
 export const Header = () => {
-    const [open, setOpen] = useState(false);
-    const [logo, setLogo] = useState(false);
-    const navigate = useNavigate();
-    const { user, dispatch } = useContext(AuthContext);
+  const [open, setOpen] = useState(false);
+  const [logo, setLogo] = useState(false);
+  const navigate = useNavigate();
+  const { user, dispatch } = useContext(AuthContext);
 
-    const handleOpen = () => {
-        setOpen(!open);
-        setLogo(!logo);
-    };
+  const handleOpen = () => {
+    setOpen(!open);
+    setLogo(!logo);
+  };
 
     const logout = () => {
         Modal.confirm({
@@ -106,6 +106,6 @@ export const Header = () => {
                     )}
                 </div>
             </div>
-        </div>
-    );
+        </div> 
+  );
 };
