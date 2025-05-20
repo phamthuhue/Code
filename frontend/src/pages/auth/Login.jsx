@@ -17,6 +17,7 @@ export const Login = () => {
     dispatch({ type: "LOGIN_START" });
     try {
       const res = await axiosInstance.post("/auth/login", values);
+      console.log("Login response:", res.data);
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
       notify(
         "success",
