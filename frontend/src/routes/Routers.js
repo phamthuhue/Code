@@ -8,7 +8,7 @@ import { Register } from "../pages/Register";
 import { SearchResultList } from "../pages/SearchResultList";
 import { AdminTour } from "../pages/AdminTour";
 import { History } from '../pages/History';
-import { GroupTourRequest } from '../pages/GroupTourRequest';
+import { GroupTourRequestForm } from '../pages/GroupTourRequestForm';
 import { ForgotPassword } from "pages/ForgotPassword";
 import { ResetPassword } from "pages/ResetPassword";
 import { NotFound } from "pages/NotFound";
@@ -22,7 +22,7 @@ export const Routers = () => {
       <Route path="/tours/:id" element={<TourDetails />} />
       <Route path="/tours/search" element={<SearchResultList />} />
       <Route path="/history" element={<History/>}/>
-      <Route path="/groupTourRequests" element={<GroupTourRequest/>}/>
+      <Route path="/group-tour-request-form" element={<GroupTourRequestForm/>}/>
 
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

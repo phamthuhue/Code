@@ -1,26 +1,37 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Img from "./../../src/assets/images/DuLichDoan.jpg"
+import React, { useState, useEffect, useContext } from "react";
+import Img from "./../../src/assets/images/DuLichDoan.jpg";
+import useFetch from '../hooks/useFetch';
+import { BASE_URL } from '../utils/config'
+import { notify } from "@utils/notify";
+// Giả sử bạn đang dùng AuthContext
+import { AuthContext } from "../context/AuthContext"; 
+import axiosInstance from "@utils/axiosInstance";
 
-export const GroupTourRequest = () => {
-  const [tours, setTours] = useState([]);
+export const GroupTourRequestForm = () => {
+  const { user } = useContext(AuthContext); // Lấy user đang đăng nhập
+  // const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+  if (user || user._id) {
+    console.log("User ID:", user._id);
+  } else {
+    console.log("Chưa có user hoặc user._id");
+  }
+}, [user]);
+
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
     phone: "",
     numberOfPeople: "",
-    preferredTourId: "",
+    tourId: "",          // Sửa lại cho đúng với model
     travelDate: "",
     specialRequest: ""
   });
 
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    axios.get("/api/tours")
-      .then(res => setTours(res.data))
-      .catch(err => console.error("Lỗi lấy tour:", err));
-  }, []);
+  const {data:tour} = useFetch(`${BASE_URL}/tours`)
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -29,9 +40,9 @@ export const GroupTourRequest = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const { customerName, email, phone, numberOfPeople, preferredTourId, travelDate } = formData;
+    const { customerName, email, phone, numberOfPeople, tourId, travelDate} = formData;
 
-    if (!customerName || !email || !phone || !numberOfPeople || !preferredTourId || !travelDate) {
+    if (!customerName || !email || !phone || !numberOfPeople || !tourId || !travelDate) {
       setError("Vui lòng điền đầy đủ các trường bắt buộc có dấu *.");
       return;
     }
@@ -39,20 +50,32 @@ export const GroupTourRequest = () => {
     setError("");
 
     try {
-      await axios.post("/api/group-tour-requests", formData);
-      alert("Gửi yêu cầu thành công!");
+      const payload = {
+        ...formData,
+        userId: user?._id // truyền thêm userId cho backend
+      };
+
+      await axiosInstance.post("/groupTourRequests", payload);
+      notify(
+              "success",
+              "Gửi form thành công",
+              "Chúng tôi đã lưu lại đơn đăng ký của bạn.",
+              2
+      );
+
+      // Reset form
       setFormData({
         customerName: "",
         email: "",
         phone: "",
         numberOfPeople: "",
-        preferredTourId: "",
+        tourId: "",
         travelDate: "",
         specialRequest: ""
       });
     } catch (err) {
-      alert("Gửi thất bại!");
-      console.error(err);
+      const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";
+      notify("error", "Gửi form thất bại ", errorMessage, 2);
     }
   };
 
@@ -68,9 +91,6 @@ export const GroupTourRequest = () => {
         <h1 className="text-2xl font-bold mb-2 text-black">Du lịch đoàn</h1>
         <p className="text-gray-700 leading-relaxed">
           Du lịch khách đoàn là một loại hình cung cấp dịch vụ du lịch cho các công ty, xí nghiệp, các tổ chức, đoàn thể,...
-          khách hàng sẽ đưa ra những nhu cầu riêng cho một tour du lịch mà khách hàng mong muốn.
-          Khách hàng sẽ sử dụng chung các dịch vụ ăn uống, nghỉ ngơi và tham quan từ đơn vị lữ hành cung cấp,
-          đơn vị lữ hành sẽ tư vấn và thiết kế một lịch trình sao cho hợp lý nhất và đáp ứng được đầy đủ mong muốn của khách hàng.
         </p>
       </div>
 
@@ -81,31 +101,31 @@ export const GroupTourRequest = () => {
 
         <label className="block">
           Họ và tên <span className="text-red-500">*</span>
-          <input className="w-full border p-2 rounded" type="text" name="customerName" value={formData.customerName} onChange={handleChange} required />
+          <input className="w-full border p-2 rounded font-light" type="text" name="customerName" value={formData.customerName} onChange={handleChange} />
         </label>
 
         <label className="block">
           Email <span className="text-red-500">*</span>
-          <input className="w-full border p-2 rounded" type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <input className="w-full border p-2 rounded font-light" type="email" name="email" value={formData.email} onChange={handleChange} />
         </label>
 
         <label className="block">
           Số điện thoại <span className="text-red-500">*</span>
-          <input className="w-full border p-2 rounded" type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+          <input className="w-full border p-2 rounded font-light" type="tel" name="phone" value={formData.phone} onChange={handleChange} />
         </label>
 
         <label className="block">
           Số người <span className="text-red-500">*</span>
-          <input className="w-full border p-2 rounded" type="number" name="numberOfPeople" value={formData.numberOfPeople} onChange={handleChange} required />
+          <input className="w-full border p-2 rounded font-light" type="number" name="numberOfPeople" value={formData.numberOfPeople} onChange={handleChange} />
         </label>
 
         <label className="block">
           Tour mong muốn <span className="text-red-500">*</span>
-          <select className="w-full border p-2 rounded" name="preferredTourId" value={formData.preferredTourId} onChange={handleChange} required>
+          <select className="w-full border p-2 rounded font-light" name="tourId" value={formData.tourId} onChange={handleChange}>
             <option value="">-- Chọn tour --</option>
-            {tours.map(tour => (
+            {tour.map(tour => (
               <option key={tour._id} value={tour._id}>
-                {tour.name} - {tour.location}
+                {tour.title} - {tour.city}
               </option>
             ))}
           </select>
@@ -113,12 +133,12 @@ export const GroupTourRequest = () => {
 
         <label className="block">
           Ngày khởi hành mong muốn <span className="text-red-500">*</span>
-          <input className="w-full border p-2 rounded" type="date" name="travelDate" value={formData.travelDate} onChange={handleChange} required />
+          <input className="w-full border p-2 rounded font-light" type="date" name="travelDate" value={formData.travelDate} onChange={handleChange} />
         </label>
 
         <label className="block">
           Yêu cầu đặc biệt (không bắt buộc)
-          <textarea className="w-full border p-2 rounded" name="specialRequest" value={formData.specialRequest} onChange={handleChange} rows="3" />
+          <textarea className="w-full border p-2 rounded font-light" name="specialRequest" value={formData.specialRequest} onChange={handleChange} rows="3" />
         </label>
 
         <button className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700" type="submit">Gửi yêu cầu</button>
