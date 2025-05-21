@@ -9,6 +9,7 @@ import reviewRoute from "./routes/reviews.js";
 import guideRoute from "./routes/guides.js";
 import itineraryRoute from "./routes/itineraries.js";
 import groupTourRequestRoute from "./routes/groupTourRequests.js";
+import bookingRoute from "./routes/bookings.js"
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { connectDB } from "./services/config/db.js";
@@ -37,6 +38,7 @@ app.use("/api/v1/reviews", verifyToken, reviewRoute);
 app.use("/api/v1/guides", verifyToken, guideRoute);
 app.use("/api/v1/itineraries", verifyToken, itineraryRoute);
 app.use("/api/v1/groupTourRequests", verifyToken, groupTourRequestRoute);
+app.use("/api/v1/bookings", verifyToken, bookingRoute);
 
 // Start server
 app.listen(port, () => {

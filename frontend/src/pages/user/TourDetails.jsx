@@ -8,6 +8,7 @@ import {
   BsExclamationCircleFill,
   BsCheckCircle,
 } from "react-icons/bs";
+
 import { FaMoneyBillWave, FaCalendarAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
@@ -40,7 +41,7 @@ export const TourDetails = () => {
     loading,
     error,
   } = useFetch(`${BASE_URL}/reviews/tour/${id}?page=${page}&limit=5`);
-
+  console.log(currentPage);
   const {
     title,
     photo,

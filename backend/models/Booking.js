@@ -24,7 +24,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Đang xử lý', 'Xác nhận', 'Hủy'],
+      enum: ['Đang xử lý', 'Xác nhận', 'Đã hủy'],
       default: 'Đang xử lý',
     },
   },
