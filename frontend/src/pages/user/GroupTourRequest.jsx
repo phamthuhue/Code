@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import Img from "./../../src/assets/images/DuLichDoan.jpg";
-import useFetch from '../hooks/useFetch';
-import { BASE_URL } from '../utils/config'
+import Img from "./../../assets/images/DuLichDoan.jpg";
+import useFetch from '../../hooks/useFetch';
+import { BASE_URL } from '@utils/config'
 import { notify } from "@utils/notify";
 // Giả sử bạn đang dùng AuthContext
-import { AuthContext } from "../context/AuthContext"; 
+import { AuthContext } from "../../context/AuthContext"; 
 import axiosInstance from "@utils/axiosInstance";
 
-export const GroupTourRequestForm = () => {
+export const GroupTourRequest = () => {
   const { user } = useContext(AuthContext); // Lấy user đang đăng nhập
   // const [tours, setTours] = useState([]);
 

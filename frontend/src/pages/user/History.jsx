@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import useFetch from "../hooks/useFetch";
-import { BASE_URL } from "../utils/config";
+import { AuthContext } from "../../context/AuthContext";
+import useFetch from "../../hooks/useFetch";
+import { BASE_URL } from "@utils/config";
 
 export const History = () => {
   const { user } = useContext(AuthContext);

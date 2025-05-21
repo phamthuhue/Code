@@ -53,7 +53,7 @@ export const Header = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/group-tour-request-form"} className="nav">
+                        <NavLink to={"/group-tour-request"} className="nav">
                             Đặt tour theo Đoàn
                         </NavLink>
                     </li>
@@ -77,13 +77,13 @@ export const Header = () => {
                     ) : (
                         <div className="flex">
                             <button
-                                onClick={() => navigate("/login")}
+                                onClick={() => navigate("/auth/login")}
                                 className="mr-2 buttonWhite"
                             >
                                 Đăng nhập
                             </button>
                             <button
-                                onClick={() => navigate("/register")}
+                                onClick={() => navigate("/auth/register")}
                                 className="buttonBlue"
                             >
                                 Đăng ký

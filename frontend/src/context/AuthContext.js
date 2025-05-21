@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useContext, useEffect } from "react";
 
 const initialState = {
   user: localStorage.getItem("user")
@@ -56,6 +56,11 @@ const AuthReducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
+
+  useEffect(() => {
+    // Lưu thông tin user và role vào localStorage khi user thay đổi
+    localStorage.setItem("user", JSON.stringify(state.user));
+  }, [state.user]);
 
     return (
         <AuthContext.Provider
