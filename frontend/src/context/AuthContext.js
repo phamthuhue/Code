@@ -1,4 +1,4 @@
-import { createContext, useReducer, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const initialState = {
   user: localStorage.getItem("user")
@@ -11,52 +11,45 @@ const initialState = {
 export const AuthContext = createContext(initialState);
 
 const AuthReducer = (state, action) => {
-    switch (action.type) {
-        case "LOGIN_START":
-            return {
-                user: null,
-                loading: true,
-                error: null,
-            };
-        case "LOGIN_SUCCESS":
-            const { info, role, token } = action.payload;
-            const user = {
-                ...info,
-                role,
-                token,
-            };
-            return {
-                user,         // đã chuẩn hóa: có _id, username, role, token
-                loading: false,
-                error: null,
-            };
-        case "LOGIN_FAILURE":
-            return {
-                user: null,
-                loading: false,
-                error: action.payload,
-            };
-        case "REGISTER_SUCCESS":
-            return {
-                user: null,
-                loading: false,
-                error: null,
-            };
-        case "LOGOUT":
-            localStorage.removeItem("user");
-            return {
-                user: null,
-                loading: false,
-                error: null,
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case "LOGIN_START":
+      return {
+        user: null,
+        loading: true,
+        error: null,
+      };
+    case "LOGIN_SUCCESS":
+      return {
+        user: action.payload, // action.payload chứa thông tin user và role
+        loading: false,
+        error: null,
+      };
+    case "LOGIN_FAILURE":
+      return {
+        user: null,
+        loading: false,
+        error: action.payload,
+      };
+    case "REGISTER_SUCCESS":
+      return {
+        user: null,
+        loading: false,
+        error: null,
+      };
+    case "LOGOUT":
+      localStorage.removeItem("user");
+      return {
+        user: null,
+        loading: false,
+        error: null,
+      };
+    default:
+      return state;
+  }
 };
 
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
-
   useEffect(() => {
     // Lưu thông tin user và role vào localStorage khi user thay đổi
     localStorage.setItem("user", JSON.stringify(state.user));
