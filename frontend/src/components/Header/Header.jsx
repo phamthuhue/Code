@@ -52,7 +52,7 @@ export const Header = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to={"/group-tour-request-form"} className="nav">
+            <NavLink to={"/group-tour-request"} className="nav">
               Đặt tour theo Đoàn
             </NavLink>
           </li>

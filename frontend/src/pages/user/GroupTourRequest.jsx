@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Img from "./../../assets/images/DuLichDoan.jpg";
 import useFetch from '../../hooks/useFetch';
 import { BASE_URL } from '@utils/config'
@@ -9,15 +9,9 @@ import axiosInstance from "@utils/axiosInstance";
 
 export const GroupTourRequest = () => {
   const { user } = useContext(AuthContext); // Lấy user đang đăng nhập
-  // const [tours, setTours] = useState([]);
-
   useEffect(() => {
-  if (user || user._id) {
-    console.log("User ID:", user._id);
-  } else {
-    console.log("Chưa có user hoặc user._id");
-  }
-}, [user]);
+    console.log("User hiện tại trong context:", user);
+  }, [user]);
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -52,7 +46,8 @@ export const GroupTourRequest = () => {
     try {
       const payload = {
         ...formData,
-        userId: user?._id // truyền thêm userId cho backend
+        numberOfPeople: Number(formData.numberOfPeople),
+        userId: user?.info?._id // truyền thêm userId cho backend
       };
 
       await axiosInstance.post("/groupTourRequests", payload);
@@ -74,8 +69,14 @@ export const GroupTourRequest = () => {
         specialRequest: ""
       });
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Đã có lỗi xảy ra";
-      notify("error", "Gửi form thất bại ", errorMessage, 2);
+      console.error("Lỗi gửi form:", err); // Log chi tiết
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message || // Lỗi mạng, không có response
+        "Đã có lỗi xảy ra";
+
+      notify("error", "Gửi form thất bại", errorMessage, 2);
     }
   };
 

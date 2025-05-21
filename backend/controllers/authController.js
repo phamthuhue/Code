@@ -102,11 +102,11 @@ export const login = async (req, res) => {
     }
 
     const { id, password, role, ...rest } = user._doc;
-    console.log("user._doc: ", user._doc);
+    // console.log("user._doc: ", user._doc);
     //create jwt token
 
     const token = jwt.sign({ id, role }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "5m",
+      expiresIn: "1h",
     });
     //set token in the browser cookies and send the response to the client
     res.status(200).json({ token, info: { ...rest }, role });
