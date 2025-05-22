@@ -22,7 +22,7 @@ export const History = () => {
     totalPages,
     loading,
     error,
-  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=5`);
+  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=6`);
 
   const [reviewsbyUser, setReviewsByUser] = useState([]);
   const [reloadReviews, setReloadReviews] = useState(false); // trigger reload
@@ -96,6 +96,9 @@ export const History = () => {
                 <h2 className="text-lg font-semibold">{booking.tourId?.title || 'Chưa rõ'}</h2>
                 <p className="text-sm text-gray-600">Số lượng khách: {booking.numberOfPeople}</p>
                 <p className="text-sm text-gray-600">Tổng giá: {booking.totalPrice?.toLocaleString('vi-VN')}₫</p>
+                <p className="text-sm text-gray-500">
+                  Ngày khởi hành: {new Date(booking.startDate).toLocaleDateString("vi-VN")}
+                </p>
                 <p className="text-sm text-gray-500">Trạng thái: {booking.status}</p>
                 <p className="text-sm text-gray-500">
                   Ngày đặt: {new Date(booking.createdAt).toLocaleDateString("vi-VN")}
