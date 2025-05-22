@@ -1,14 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URL } from "@utils/config";
 import Pagination from "../../components/Pagination/Pagination.jsx";
+import ReviewModal from "@components/Modal/ReviewModal";
+import axiosInstance from "@utils/axiosInstance";
 
 export const History = () => {
   const { user } = useContext(AuthContext);
   const userId = user?.info?._id;
 
   const [page, setPage] = useState(1);
+  const [selectedTour, setSelectedTour] = useState(null);
+  const [selectedGuide, setSelectedGuide] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+
   const {
     data: bookings,
     currentPage,
@@ -17,8 +24,40 @@ export const History = () => {
     error,
   } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=5`);
 
-  const handleReview = (tourId) => {
-    window.location.href = `/review/${tourId}`;
+  const [reviewsbyUser, setReviewsByUser] = useState([]);
+  const [reloadReviews, setReloadReviews] = useState(false); // trigger reload
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axiosInstance(`/reviews/user/${userId}`);
+        if (res.data.success) {
+          // console.log("Reviews by user:", res.data.data); // Xem dữ liệu thật
+          setReviewsByUser(res.data.data);
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải reviews:", err);
+      }
+    };
+
+    if (userId) {
+      fetchReviews();
+    }
+  }, [userId, reloadReviews]);
+
+  const hasReviewedBooking = (bookingId) => {
+    if (!reviewsbyUser) return false;
+    return reviewsbyUser.some(review => review.bookingId?._id === bookingId);
+  };
+
+
+  const handleReview = (tourId, guideId, bookingId) => {
+    console.log("Chọn tour:", tourId);
+    console.log("Chọn guide:", guideId);
+    setSelectedTour(tourId);
+    setSelectedGuide(guideId);
+    setSelectedBooking(bookingId);
+    setShowReviewModal(true);
   };
 
   const handleRebook = (tourId) => {
@@ -67,11 +106,13 @@ export const History = () => {
                   {booking.status === "Xác nhận" ? (
                     <>
                       <button
-                        onClick={() => handleReview(booking.tourId?._id)}
+                        onClick={() => handleReview(booking.tourId?._id, booking.tourId?.guideId || "", booking._id)}
+                        disabled={hasReviewedBooking(booking._id)}
                         className="text-blue-500 bg-blue-10 hover:bg-blue-100 border border-blue-700 px-4 py-2 rounded"
                       >
-                        Đánh giá
+                        {hasReviewedBooking(booking._id) ? "Đã đánh giá" : "Đánh giá"}
                       </button>
+
                       <button
                         onClick={() => handleRebook(booking.tourId?._id)}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
@@ -109,6 +150,16 @@ export const History = () => {
         page={page}
         totalPages={totalPages}
         setPage={setPage}
+      />
+
+      {/* Modal đánh giá */}
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        tourId={selectedTour}
+        guideId={selectedGuide}
+        userId={userId}
+        bookingId={selectedBooking}
       />
     </div>
   );

@@ -74,7 +74,7 @@ export const getBookingsByUser = async (req, res) => {
     const bookings = await Booking.find({ userId })
       .skip(skip)
       .limit(limit)
-      .populate('tourId', 'title photo')
+      .populate('tourId', 'title photo guideId')
       .populate('userId', 'username');
 
     res.status(200).json({

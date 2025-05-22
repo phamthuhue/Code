@@ -1,5 +1,6 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import axiosInstance from '@utils/axiosInstance.js'
 
 import {
   BsFillPeopleFill,
@@ -21,18 +22,24 @@ export const TourDetails = () => {
   const params = useParams();
   const { id } = params;
 
-  // const { data: tour, loading: tourLoading } = useFetchData(`/tours/${id}`);
-  // const { data: itinerary, loading: itineraryLoading } = useFetchData(`/itineraries?tourId=${id}`);
-  // const { data: guide, loading: guideLoading } = useFetchData(`/guides?tourId=${id}`);
-  // const { data: reviews, loading: reviewsLoading } = useFetchData(`/reviews?tourId=${id}`);
-  // if (tourLoading || itineraryLoading || guideLoading || reviewsLoading) {
-  //   return <p>Đang tải dữ liệu...</p>;
-  // }
-
   const { data: tour } = useFetch(`${BASE_URL}/tours/${id}`);
   const { data: itinerary } = useFetch(`${BASE_URL}/itineraries/tour/${id}`);
   const { data: guide } = useFetch(`${BASE_URL}/guides/tour/${id}`);
-  // const { data: reviews } = usePaginatedFetch(`${BASE_URL}/reviews/tour/${id}`);
+  const [guideReviews, setGuideReviews] = useState([]);
+  useEffect(() => {
+    const fetchGuideReviews = async () => {
+      if (guide && guide._id) {
+        try {
+          const res = await axiosInstance.get(`/reviews/guide/${guide._id}`);
+          setGuideReviews(Array.isArray(res.data.data) ? res.data.data : []);
+        } catch (err) {
+          console.error("Lỗi khi fetch guide reviews:", err);
+        }
+      }
+    };
+    fetchGuideReviews();
+  }, [guide]);
+
   const [page, setPage] = useState(1);
   const {
     data: reviews,
@@ -41,7 +48,7 @@ export const TourDetails = () => {
     loading,
     error,
   } = useFetch(`${BASE_URL}/reviews/tour/${id}?page=${page}&limit=5`);
-  console.log(currentPage);
+
   const {
     title,
     photo,
@@ -167,9 +174,9 @@ export const TourDetails = () => {
                   <div className="flex items-center">
                     <BsFillStarFill className="text-yellow mr-1" />
                     <span>
-                      {guide.rating === 0
-                        ? "Chưa có đánh giá"
-                        : `${guide.rating} (${guide.countRating} đánh giá)`}
+                        {guideReviews && guideReviews.length > 0
+                          ? `${guide.avgRating || 0} (${guideReviews.length} đánh giá)`
+                          : "Chưa có đánh giá"}
                     </span>
                   </div>
                 </div>

@@ -5,8 +5,7 @@ const guideSchema = new mongoose.Schema(
     toursId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tour" }],  // Danh sách tour mà hướng dẫn viên dẫn
     name: { type: String, required: true },                            // Tên hướng dẫn viên
     age: { type: Number, required: true },                             // Tuổi
-    rating: { type: Number, default: 5, min: 0, max: 5 },              // Đánh giá trung bình (mặc định 5)
-    countRating: { type: Number, default: 0 },                         // Số lượt đánh giá (mặc định 0)
+    avgRating: { type: Number, default: 5},              // Đánh giá trung bình (mặc định 5)
     gender: { type: String, enum: ["Nam", "Nữ", "Khác"], required: true }, // Giới tính
     dob: { type: Date, required: true },                               // Ngày sinh
     address: { type: String, required: true },                         // Địa chỉ
