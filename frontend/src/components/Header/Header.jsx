@@ -32,6 +32,7 @@ export const Header = () => {
       },
     });
   };
+
   return (
     <div className="relative">
       <div className="flex justify-between items-center h-20 px-4">
@@ -39,6 +40,7 @@ export const Header = () => {
           <FaRegPaperPlane className="text-xl mt-1 mr-1" />
           <h4>VIETNAMTOURS</h4>
         </div>
+
         <ul className="hidden md:flex mt-3 navList">
           <li>
             <NavLink to={"/"} className="nav">
@@ -46,13 +48,13 @@ export const Header = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to={"#"} className="nav">
-              Giới thiệu
+            <NavLink to={"/tours"} className="nav">
+              Danh sách Tour
             </NavLink>
           </li>
           <li>
-            <NavLink to={"/tours"} className="nav">
-              Danh sách Tour
+            <NavLink to={"/group-tour-request-form"} className="nav">
+              Đặt tour theo Đoàn
             </NavLink>
           </li>
           {user && (
