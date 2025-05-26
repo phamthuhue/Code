@@ -2,17 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BsFillStarFill } from 'react-icons/bs';
 
-import { BASE_URL } from '../../utils/config';
 import { AuthContext } from '../../context/AuthContext';
 import axiosInstance from "@utils/axiosInstance";
-
-import PaymentModal from '../Modal/PaymentModal'; // import modal riêng
+import { notify } from "@utils/notify";
 
 export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
 
@@ -30,11 +27,22 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
 
     const fetchTourServices = async () => {
       try {
+        // Lấy thông tin tour
+        const tourRes = await axiosInstance.get(`/tours/${tourId}`);
+        const tour = tourRes.data?.data;
+        console.log("Tour lấy được:", tour);
+
+        if (tour?.startDate) {
+          setBooking((prev) => ({
+            ...prev,
+            startDate: tour.startDate, // auto điền ngày khởi hành
+          }));
+        }
+
+        // Lấy danh sách dịch vụ
         const res = await axiosInstance.get(`/tour-services/tour/${tourId}`);
-        // Kiểm tra res.data là object có thuộc tính services không
         if (res.data && Array.isArray(res.data.services)) {
           setServices(res.data.services);
-          console.log("Dịch vụ tour:", res.data.services);
         } else {
           console.warn("Dữ liệu dịch vụ không phải mảng:", res.data);
         }
@@ -68,46 +76,26 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
 
   const totalPrice = Number(price) * booking.numberOfPeople + totalServicePrice;
 
-  const handleConfirmBooking = async () => {
-    try {
-      const bookingRes = await fetch(`${BASE_URL}/booking`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ ...booking, totalPrice }),
-      });
+  // Khi nhấn đặt tour, chuyển sang trang thanh toán kèm dữ liệu
+  const handleCheckoutClick = () => {
+    const { name, phone, startDate, numberOfPeople } = booking;
 
-      const savedBooking = await bookingRes.json();
-
-      if (!bookingRes.ok) {
-        return alert(savedBooking.message);
-      }
-
-      if (selectedServices.length > 0) {
-        await Promise.all(
-          selectedServices.map((service) =>
-            fetch(`${BASE_URL}/booking-detail`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({
-                bookingId: savedBooking._id,
-                tourServiceId: service._id,
-                itemType: 'Service',
-                description: service.note || 'Dịch vụ thêm',
-                quantity: booking.numberOfPeople,
-                unitPrice: service.servicePrice,
-                totalPrice: service.servicePrice * booking.numberOfPeople,
-              }),
-            })
-          )
-        );
-      }
-
-      navigate('/thank-you');
-    } catch (err) {
-      alert(err.message);
+    // Kiểm tra các trường bắt buộc
+    if (!name.trim() || !phone.trim() || !numberOfPeople) {
+      notify("error", "Lỗi", "Vui lòng điền đầy đủ thông tin đặt tour!");
+      return;
     }
+
+    // Lưu dữ liệu vào localStorage để chuyển sang trang thanh toán
+    localStorage.setItem('paymentData', JSON.stringify({
+      booking,
+      selectedServices,
+      totalPrice,
+      price,
+      tourId,
+    }));
+
+    navigate('/payment');
   };
 
   return (
@@ -124,23 +112,33 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
 
       <div className="mx-2 p-2">
         <h4 className="text-lg mt-4">Phiếu đặt tour</h4>
-        <form className="grid gap-3">
-          <label htmlFor="name">Họ và tên</label>
-          <input id="name" type="text" onChange={handleChange} />
+        <form className="grid gap-3" onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="name">Họ và tên <span className="text-red-500">*</span></label>
+          <input
+            id="name"
+            type="text"
+            value={booking.name}
+            onChange={handleChange}
+            className="text-black"
+          />
 
-          <label htmlFor="phone">Số điện thoại</label>
-          <input id="phone" type="text" onChange={handleChange} />
+          <label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></label>
+          <input
+            id="phone"
+            type="text"
+            value={booking.phone}
+            onChange={handleChange}
+            className="text-black"
+          />
 
-          <label htmlFor="startDate">Ngày khởi hành</label>
-          <input id="startDate" type="date" onChange={handleChange} />
-
-          <label htmlFor="numberOfPeople">Số lượng khách</label>
+          <label htmlFor="numberOfPeople">Số lượng khách <span className="text-red-500">*</span></label>
           <input
             id="numberOfPeople"
             type="number"
             value={booking.numberOfPeople}
             min={1}
             onChange={handleChange}
+            className="text-black"
           />
         </form>
 
@@ -188,7 +186,7 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
           </div>
           <div className="self-center">
             <button
-              onClick={() => setShowPaymentPopup(true)}
+              onClick={handleCheckoutClick}
               className="submitButton rounded-full px-8"
             >
               Đặt ngay
@@ -196,14 +194,6 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
           </div>
         </div>
       </div>
-
-      {showPaymentPopup && (
-        <PaymentModal
-          totalPrice={totalPrice}
-          onCancel={() => setShowPaymentPopup(false)}
-          onConfirm={handleConfirmBooking}
-        />
-      )}
     </div>
   );
 };
