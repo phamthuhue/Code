@@ -111,7 +111,11 @@ export const History = () => {
                       <button
                         onClick={() => handleReview(booking.tourId?._id, booking.tourId?.guideId || "", booking._id)}
                         disabled={hasReviewedBooking(booking._id)}
-                        className="text-blue-500 bg-blue-10 hover:bg-blue-100 border border-blue-700 px-4 py-2 rounded"
+                        className={`px-4 py-2 rounded border ${
+                        hasReviewedBooking(booking._id)
+                          ? "text-blue-500 bg-blue-10 border-gray-400 cursor-not-allowed"
+                          : "text-blue-500 bg-blue-10 hover:bg-blue-100 border-blue-700 cursor-pointer"
+                        }`}
                       >
                         {hasReviewedBooking(booking._id) ? "Đã đánh giá" : "Đánh giá"}
                       </button>

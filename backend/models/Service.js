@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ServiceSchema = new mongoose.Schema({
   name: { type: String, required: true }, // Tên dịch vụ
   description: { type: String }, // Mô tả dịch vụ
   numberOfService: { type: Number, required: true },      
   unitPrice: { type: Number, required: true }, // Đơn giá dịch vụ
-  unit: { type: String } // Đơn vị tính (VD: "người", "lượt", "gói")
+  unit: { type: String }, // Đơn vị tính (VD: "người", "lượt", "gói")
+  partnerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Partner', required: true }
 },
 { timestamps: true });
 
-module.exports = mongoose.model('Service', ServiceSchema);
+export default mongoose.model('Service', ServiceSchema);

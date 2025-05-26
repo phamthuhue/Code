@@ -1,38 +1,59 @@
 [
   {
-    "_id": { "$oid": "681d6e61bad47b0c60feb740" },
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "ratingTour": 5,
-    "commentTour": "Đảo Lý Sơn quá đẹp, biển trong xanh và nhiều món ăn ngon.",
-    "ratingGuide": 5,
-    "commentGuide": "HDV Lê Thị Kim Anh rất chu đáo và luôn giúp đỡ mọi người, cảm ơn anh!",
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd7" },
-    "guideId": { "$oid": "680eed4e17a002b7a98bed2e" },
-    "createdAt": { "$date": "2025-05-13T10:00:00Z" },
-    "updatedAt": { "$date": "2025-05-13T10:00:00Z" }
+    "tourId": "681c137bb7e1685ffb7f9dd2",
+    "services": [
+      {
+        "serviceId": "682efa2fc3da4111179609e3",
+        "numberOfPeopl": 30,
+        "servicePrice": 10500000,
+        "note": "Gói buffet cho đoàn khách quốc tế"
+      },
+      {
+        "serviceId": "682efa2fc3da4111179609e5",
+        "numberOfPeopl": 1,
+        "servicePrice": 1200000,
+        "note": "Thuê xe đi từ Đà Nẵng đến Hội An"
+      },
+      {
+        "serviceId": "682efa2fc3da4111179609e6",
+        "numberOfPeopl": 20,
+        "servicePrice": 9000000,
+        "note": "Bữa trưa ngày đầu tiên"
+      }
+    ]
   },
   {
-    "_id": { "$oid": "681d6e61bad47b0c60feb73e" },
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "ratingTour": 5,
-    "commentTour": "Tour đến Phố cổ Hội An thật tuyệt vời! Mọi thứ đều được tổ chức rất chặt chẽ.",
-    "ratingGuide": 5,
-    "commentGuide": "Hướng dẫn viên Phan Quốc Duy rất nhiệt tình và hiểu biết, cảm giác như đi cùng một người bạn thân.",
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd2" },
-    "guideId": { "$oid": "680eed4e17a002b7a98bed29" },
-    "createdAt": { "$date": "2025-05-12T15:30:00Z" },
-    "updatedAt": { "$date": "2025-05-12T15:30:00Z" }
+    "tourId": "681c137bb7e1685ffb7f9dd7",
+    "services": [
+      {
+        "serviceId": "682efa2fc3da4111179609e4",
+        "numberOfPeopl": 10,
+        "servicePrice": 15000000,
+        "note": "Combo nghỉ dưỡng cao cấp, 5 phòng đôi"
+      },
+      {
+        "serviceId": "682efa2fc3da4111179609e7",
+        "numberOfPeopl": 4,
+        "servicePrice": 10000000,
+        "note": "Phòng suite cho khách VIP"
+      }
+    ]
   },
   {
-    "_id": { "$oid": "681d6e61bad47b0c60feb73f" },
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "ratingTour": 4,
-    "commentTour": "Cảnh sắc ở Sa Pa thật sự ấn tượng, nhưng lịch trình hơi gấp rút.",
-    "ratingGuide": 4,
-    "commentGuide": "Anh Lê Minh Tuấn thân thiện, nhưng đôi khi nói hơi nhanh, khó theo dõi cho người lớn tuổi.",
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd4" },
-    "guideId": { "$oid": "680eed4e17a002b7a98bed27" },
-    "createdAt": { "$date": "2025-05-10T08:45:00Z" },
-    "updatedAt": { "$date": "2025-05-10T08:45:00Z" }
+    "tourId": "681c137bb7e1685ffb7f9dd4",
+    "services": [
+      {
+        "serviceId": "682efa2fc3da4111179609e5",
+        "numberOfPeopl": 2,
+        "servicePrice": 2400000,
+        "note": "Thuê xe cho 2 ngày tại Huế"
+      },
+      {
+        "serviceId": "682efa2fc3da4111179609e3",
+        "numberOfPeopl": 15,
+        "servicePrice": 5250000,
+        "note": "Buffet trưa cho đoàn học sinh"
+      }
+    ]
   }
 ]

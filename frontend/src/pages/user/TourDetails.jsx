@@ -247,6 +247,7 @@ export const TourDetails = () => {
           price={price}
           reviews={reviews}
           avgRating={avgRating}
+          tourId={id}
         />
       </div>
     </section>
