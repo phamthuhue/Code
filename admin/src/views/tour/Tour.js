@@ -17,8 +17,45 @@ import CIcon from '@coreui/icons-react'
 import { cilPlus, cilMap, cifVn } from '@coreui/icons'
 
 import mockTours from './mockData'
+import TourForm from './TourForm'
+import { useState } from 'react'
+import DeleteConfirmModal from './components/DeleteConfirmModal'
+import TourFormModal from './TourForm'
 
 const Tour = () => {
+  // Thêm mới và cập nhật tour
+  const [formModalVisible, setFormModalVisible] = useState(false)
+  const [editingTour, setEditingTour] = useState(null)
+  const handleAddNew = () => {
+    setEditingTour(null)
+    setFormModalVisible(true)
+  }
+  const handleEdit = (tour) => {
+    setEditingTour(tour)
+    setFormModalVisible(true)
+  }
+  const handleFormSubmit = (formData) => {
+    if (editingTour) {
+      // update
+      setTours(tours.map((t) => (t.id === editingTour.id ? { ...t, ...formData } : t)))
+    } else {
+      // add
+      setTours([...tours, { id: Date.now(), ...formData }])
+    }
+  }
+  // Xử lý xóa
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+  const [tourToDelete, setTourToDelete] = useState(null)
+  const handleDeleteClick = (tour) => {
+    setTourToDelete(tour)
+    setDeleteModalVisible(true)
+  }
+
+  const confirmDelete = () => {
+    setTours(tours.filter((t) => t.id !== tourToDelete.id))
+    setDeleteModalVisible(false)
+  }
+
   return (
     <>
       <CRow>
@@ -32,7 +69,7 @@ const Tour = () => {
                   </h4>
                 </CCol>
                 <CCol sm={7} className="d-none d-md-block">
-                  <CButton color="primary" className="float-end">
+                  <CButton color="primary" className="float-end" onClick={handleAddNew}>
                     <div className="small d-flex align-items-center">
                       <CIcon icon={cilPlus} />
                       <span className="ms-1">Thêm mới</span>
@@ -101,7 +138,7 @@ const Tour = () => {
                             color="danger"
                             size="sm"
                             variant="outline"
-                            onClick={() => handleDelete(tour.id)}
+                            onClick={() => handleDeleteClick(tour)}
                           >
                             Xoá
                           </CButton>
@@ -113,6 +150,17 @@ const Tour = () => {
               </CTable>
             </CCardBody>
           </CCard>
+          <TourFormModal
+            visible={formModalVisible}
+            onClose={() => setFormModalVisible(false)}
+            onSubmit={handleFormSubmit}
+            initialData={editingTour}
+          />
+          <DeleteConfirmModal
+            visible={deleteModalVisible}
+            onClose={() => setDeleteModalVisible(false)}
+            onConfirm={confirmDelete}
+          />
         </CCol>
       </CRow>
     </>
