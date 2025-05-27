@@ -8,7 +8,7 @@ const mockTours = [
     price: 4500000,
     maxGroupSize: 20,
     desc: 'Tour khám phá thiên nhiên, thác nước, và ẩm thực Đà Lạt',
-    photo: 'https://cdn.pixabay.com/photo/2021/12/07/04/07/da-lat-6851193_1280.jpg',
+    photo: 'http://localhost:3002/tour-images/tour-img01.jpg',
     featured: true,
     guideId: {
       _id: 'guide1',
@@ -25,7 +25,7 @@ const mockTours = [
     price: 3500000,
     maxGroupSize: 25,
     desc: 'Trải nghiệm chợ nổi, vườn trái cây, và cuộc sống miền Tây',
-    photo: 'https://cdn.pixabay.com/photo/2020/01/23/10/21/floating-market-4787014_1280.jpg',
+    photo: 'http://localhost:3002/tour-images/tour-img02.jpg',
     featured: false,
     guideId: {
       _id: 'guide2',
@@ -42,7 +42,7 @@ const mockTours = [
     price: 5500000,
     maxGroupSize: 15,
     desc: 'Leo Fansipan, thăm bản làng, và thưởng thức đặc sản vùng cao',
-    photo: 'https://cdn.pixabay.com/photo/2020/03/14/10/27/sapa-4930241_1280.jpg',
+    photo: 'http://localhost:3002/tour-images/tour-img03.jpg',
     featured: true,
     guideId: {
       _id: 'guide3',

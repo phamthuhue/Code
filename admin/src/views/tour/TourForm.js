@@ -7,6 +7,7 @@ import {
   CFormInput,
   CFormTextarea,
   CButton,
+  CFormLabel,
 } from '@coreui/react'
 import { useState, useEffect } from 'react'
 
@@ -19,6 +20,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     endDate: '',
     maxGroupSize: '',
     desc: '',
+    photo: '',
   })
 
   useEffect(() => {
@@ -37,6 +39,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         endDate: '',
         maxGroupSize: '',
         desc: '',
+        photo: '',
       })
     }
   }, [initialData, visible])
@@ -44,6 +47,17 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, photo: reader.result }))
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   const handleSubmit = () => {
@@ -104,7 +118,26 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             onChange={handleChange}
             className="mb-2"
           />
-          <CFormTextarea label="Mô tả" name="desc" value={formData.desc} onChange={handleChange} />
+          <CFormTextarea
+            label="Mô tả"
+            name="desc"
+            value={formData.desc}
+            onChange={handleChange}
+            className="mb-2"
+          />
+
+          <div className="mb-3">
+            <CFormLabel>Ảnh đại diện</CFormLabel>
+            <CFormInput type="file" accept="image/*" onChange={handleImageChange} />
+            {formData.photo && (
+              <img
+                src={formData.photo}
+                alt="Tour"
+                className="mt-2"
+                style={{ maxHeight: '150px', borderRadius: '8px' }}
+              />
+            )}
+          </div>
         </CForm>
       </CModalBody>
       <CModalFooter>

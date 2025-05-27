@@ -102,7 +102,7 @@ const Tour = () => {
                   {mockTours.map((tour, index) => (
                     <CTableRow v-for="item in tableItems" key={index}>
                       <CTableDataCell className="text-center">
-                        <CImage rounded thumbnail src={tour.photo} width={200} height={200} />
+                        <CImage rounded src={tour.photo} width={200} height={200} />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div className=" text-body-secondary text-nowrap">{tour.title}</div>
