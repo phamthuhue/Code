@@ -1,0 +1,55 @@
+const mockTours = [
+  {
+    _id: 'tour1',
+    title: 'Khám phá Đà Lạt mộng mơ',
+    city: 'Đà Lạt',
+    startDate: '2025-07-01',
+    endDate: '2025-07-05',
+    price: 4500000,
+    maxGroupSize: 20,
+    desc: 'Tour khám phá thiên nhiên, thác nước, và ẩm thực Đà Lạt',
+    photo: 'https://cdn.pixabay.com/photo/2021/12/07/04/07/da-lat-6851193_1280.jpg',
+    featured: true,
+    guideId: {
+      _id: 'guide1',
+      name: 'Nguyễn Văn A',
+    },
+    avgRating: 4.8,
+  },
+  {
+    _id: 'tour2',
+    title: 'Hành trình miền Tây sông nước',
+    city: 'Cần Thơ',
+    startDate: '2025-06-10',
+    endDate: '2025-06-13',
+    price: 3500000,
+    maxGroupSize: 25,
+    desc: 'Trải nghiệm chợ nổi, vườn trái cây, và cuộc sống miền Tây',
+    photo: 'https://cdn.pixabay.com/photo/2020/01/23/10/21/floating-market-4787014_1280.jpg',
+    featured: false,
+    guideId: {
+      _id: 'guide2',
+      name: 'Trần Thị B',
+    },
+    avgRating: 4.5,
+  },
+  {
+    _id: 'tour3',
+    title: 'Thám hiểm Sa Pa',
+    city: 'Lào Cai',
+    startDate: '2025-09-15',
+    endDate: '2025-09-20',
+    price: 5500000,
+    maxGroupSize: 15,
+    desc: 'Leo Fansipan, thăm bản làng, và thưởng thức đặc sản vùng cao',
+    photo: 'https://cdn.pixabay.com/photo/2020/03/14/10/27/sapa-4930241_1280.jpg',
+    featured: true,
+    guideId: {
+      _id: 'guide3',
+      name: 'Phạm Văn C',
+    },
+    avgRating: 4.9,
+  },
+]
+
+export default mockTours

@@ -1,0 +1,122 @@
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CImage,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilPlus, cilMap, cifVn } from '@coreui/icons'
+
+import mockTours from './mockData'
+
+const Tour = () => {
+  return (
+    <>
+      <CRow>
+        <CCol xs>
+          <CCard className="mb-4">
+            <CCardHeader>
+              <CRow>
+                <CCol sm={5}>
+                  <h4 id="traffic" className="card-title mb-0">
+                    Danh sách tour
+                  </h4>
+                </CCol>
+                <CCol sm={7} className="d-none d-md-block">
+                  <CButton color="primary" className="float-end">
+                    <div className="small d-flex align-items-center">
+                      <CIcon icon={cilPlus} />
+                      <span className="ms-1">Thêm mới</span>
+                    </div>
+                  </CButton>
+                </CCol>
+              </CRow>
+            </CCardHeader>
+            <CCardBody>
+              <CTable align="middle" className="mb-0 border" hover responsive>
+                <CTableHead className="text-nowrap">
+                  <CTableRow>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      <CIcon icon={cilMap} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Tên tour</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Thành phố
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Giờ khởi hành</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Giờ kết thúc</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary w-25 ">Giá</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Nổi bật
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Hành động</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {mockTours.map((tour, index) => (
+                    <CTableRow v-for="item in tableItems" key={index}>
+                      <CTableDataCell className="text-center">
+                        <CImage rounded thumbnail src={tour.photo} width={200} height={200} />
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        <div className=" text-body-secondary text-nowrap">{tour.title}</div>
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                          <CIcon size="xl" icon={cifVn} title={`Việt Nam`} />
+                          <span className="ms-2">{tour.city}</span>
+                        </div>
+                      </CTableDataCell>
+
+                      <CTableDataCell className="text-center">{tour.startDate}</CTableDataCell>
+                      <CTableDataCell className="text-center">{tour.endDate}</CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <div className="fw-semibold">{tour.price.toLocaleString()} VND</div>
+                      </CTableDataCell>
+
+                      <CTableDataCell>
+                        <div className="small text-body-secondary text-nowrap">{tour.desc}</div>
+                      </CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                          <CButton
+                            color="warning"
+                            size="sm"
+                            variant="outline"
+                            className="me-2"
+                            onClick={() => handleEdit(tour)}
+                          >
+                            Sửa
+                          </CButton>
+                          <CButton
+                            color="danger"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDelete(tour.id)}
+                          >
+                            Xoá
+                          </CButton>
+                        </div>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+    </>
+  )
+}
+
+export default Tour
