@@ -1,8 +1,8 @@
 [
   {
-    "_id": { "$oid": "6821abc123456789abcdef01" },
     "userId": { "$oid": "681f2b41f493b782bfcc771f" },
     "tourId": { "$oid": "681c137bb7e1685ffb7f9dd2" },
+    "startDate": "2025-06-15",
     "numberOfPeople": 2,
     "tourPrice": 2500000,
     "totalPrice": 5000000,
@@ -11,9 +11,9 @@
     "updatedAt": { "$date": "2025-05-14T08:00:00Z" }
   },
   {
-    "_id": { "$oid": "6821abc123456789abcdef02" },
     "userId": { "$oid": "681f2b41f493b782bfcc771f" },
     "tourId": { "$oid": "681c137bb7e1685ffb7f9dd3" },
+    "startDate": "2025-07-01",
     "numberOfPeople": 2,
     "tourPrice": 2000000,
     "totalPrice": 4000000,
@@ -22,13 +22,13 @@
     "updatedAt": { "$date": "2025-05-14T08:10:00Z" }
   },
   {
-    "_id": { "$oid": "6821abc123456789abcdef03" },
     "userId": { "$oid": "681f2b41f493b782bfcc771f" },
     "tourId": { "$oid": "681c137bb7e1685ffb7f9dd4" },
+    "startDate": "2025-07-10",
     "numberOfPeople": 2,
     "tourPrice": 2200000,
     "totalPrice": 4400000,
-    "status": "Xác nhận",
+    "status": "Hủy",
     "createdAt": { "$date": "2025-05-14T08:20:00Z" },
     "updatedAt": { "$date": "2025-05-14T08:20:00Z" }
   }

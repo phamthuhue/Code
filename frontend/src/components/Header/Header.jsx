@@ -40,7 +40,6 @@ export const Header = () => {
           <FaRegPaperPlane className="text-xl mt-1 mr-1" />
           <h4>VIETNAMTOURS</h4>
         </div>
-
         <ul className="hidden md:flex mt-3 navList">
           <li>
             <NavLink to={"/"} className="nav">
@@ -53,7 +52,7 @@ export const Header = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to={"/group-tour-request-form"} className="nav">
+            <NavLink to={"/group-tour-request"} className="nav">
               Đặt tour theo Đoàn
             </NavLink>
           </li>

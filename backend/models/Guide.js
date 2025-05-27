@@ -12,6 +12,7 @@ const guideSchema = new mongoose.Schema(
         phone: { type: String, required: true }, // Số điện thoại
     },
     { timestamps: true } // Tự động thêm createdAt và updatedAt
+
 );
 
 const Guide = mongoose.model("Guide", guideSchema);
