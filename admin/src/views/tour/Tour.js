@@ -82,20 +82,51 @@ const Tour = () => {
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">
                   <CTableRow>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '160px' }}
+                    >
                       <CIcon icon={cilMap} />
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Tên tour</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                    <CTableHeaderCell className="bg-body-tertiary" style={{ width: '200px' }}>
+                      Tên tour
+                    </CTableHeaderCell>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '150px' }}
+                    >
                       Thành phố
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Giờ khởi hành</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Giờ kết thúc</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary w-25 ">Giá</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                      Nổi bật
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '140px' }}
+                    >
+                      Giờ khởi hành
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Hành động</CTableHeaderCell>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '140px' }}
+                    >
+                      Giờ kết thúc
+                    </CTableHeaderCell>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '130px' }}
+                    >
+                      Giá
+                    </CTableHeaderCell>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '250px' }}
+                    >
+                      Mô tả
+                    </CTableHeaderCell>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '160px' }}
+                    >
+                      Hành động
+                    </CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
