@@ -8,19 +8,21 @@ import {
   CFormTextarea,
   CButton,
   CFormLabel,
+  CRow,
+  CCol,
 } from '@coreui/react'
 import { useState, useEffect } from 'react'
 
 const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    city: '',
-    price: '',
-    startDate: '',
-    endDate: '',
-    maxGroupSize: '',
-    desc: '',
-    photo: '',
+    title: null,
+    city: null,
+    price: null,
+    startDate: null,
+    endDate: null,
+    maxGroupSize: null,
+    desc: null,
+    photo: null,
   })
 
   useEffect(() => {
@@ -32,14 +34,14 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       })
     } else {
       setFormData({
-        title: '',
-        city: '',
-        price: '',
-        startDate: '',
-        endDate: '',
-        maxGroupSize: '',
-        desc: '',
-        photo: '',
+        title: null,
+        city: null,
+        price: null,
+        startDate: null,
+        endDate: null,
+        maxGroupSize: null,
+        desc: null,
+        photo: null,
       })
     }
   }, [initialData, visible])
@@ -102,22 +104,26 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             onChange={handleChange}
             className="mb-2"
           />
-          <CFormInput
-            type="date"
-            label="Ngày bắt đầu"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-            className="mb-2"
-          />
-          <CFormInput
-            type="date"
-            label="Ngày kết thúc"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            className="mb-2"
-          />
+          <CRow className="mb-2">
+            <CCol md={6}>
+              <CFormInput
+                type="date"
+                label="Ngày bắt đầu"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange}
+              />
+            </CCol>
+            <CCol md={6}>
+              <CFormInput
+                type="date"
+                label="Ngày kết thúc"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+              />
+            </CCol>
+          </CRow>
           <CFormTextarea
             label="Mô tả"
             name="desc"

@@ -7,7 +7,7 @@ const mockTours = [
     endDate: '2025-07-05',
     price: 4500000,
     maxGroupSize: 20,
-    desc: 'Tour khám phá thiên nhiên, thác nước, và ẩm thực Đà Lạt',
+    desc: 'Tour khám phá thiên nhiên, thác nước, và ẩm thực Đà Lạt ',
     photo: 'http://localhost:3002/tour-images/tour-img01.jpg',
     featured: true,
     guideId: {
@@ -35,6 +35,23 @@ const mockTours = [
   },
   {
     _id: 'tour3',
+    title: 'Thám hiểm Sa Pa',
+    city: 'Lào Cai',
+    startDate: '2025-09-15',
+    endDate: '2025-09-20',
+    price: 5500000,
+    maxGroupSize: 15,
+    desc: 'Leo Fansipan, thăm bản làng, và thưởng thức đặc sản vùng cao',
+    photo: 'http://localhost:3002/tour-images/tour-img03.jpg',
+    featured: true,
+    guideId: {
+      _id: 'guide3',
+      name: 'Phạm Văn C',
+    },
+    avgRating: 4.9,
+  },
+  {
+    _id: 'tour4',
     title: 'Thám hiểm Sa Pa',
     city: 'Lào Cai',
     startDate: '2025-09-15',

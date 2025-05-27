@@ -5,6 +5,8 @@ import {
   CCardHeader,
   CCol,
   CImage,
+  CPagination,
+  CPaginationItem,
   CRow,
   CTable,
   CTableBody,
@@ -18,7 +20,7 @@ import { cilPlus, cilMap, cifVn } from '@coreui/icons'
 
 import mockTours from './mockData'
 import TourForm from './TourForm'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import TourFormModal from './TourForm'
 
@@ -35,6 +37,7 @@ const Tour = () => {
     setFormModalVisible(true)
   }
   const handleFormSubmit = (formData) => {
+    console.log('formData: ', formData)
     if (editingTour) {
       // update
       setTours(tours.map((t) => (t.id === editingTour.id ? { ...t, ...formData } : t)))
@@ -42,6 +45,10 @@ const Tour = () => {
       // add
       setTours([...tours, { id: Date.now(), ...formData }])
     }
+  }
+  const handleClose = () => {
+    setFormModalVisible(false)
+    setEditingTour(null)
   }
   // Xử lý xóa
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
@@ -56,6 +63,15 @@ const Tour = () => {
     setDeleteModalVisible(false)
   }
 
+  // Cài đặt phân trang
+  const itemsPerPage = 3
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.ceil(mockTours.length / itemsPerPage)
+  console.log('totalPages: ', totalPages)
+  const currentTours = mockTours.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [currentPage])
   return (
     <>
       <CRow>
@@ -88,7 +104,10 @@ const Tour = () => {
                     >
                       <CIcon icon={cilMap} />
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary" style={{ width: '200px' }}>
+                    <CTableHeaderCell
+                      className="bg-body-tertiary text-center"
+                      style={{ width: '200px' }}
+                    >
                       Tên tour
                     </CTableHeaderCell>
                     <CTableHeaderCell
@@ -117,7 +136,7 @@ const Tour = () => {
                     </CTableHeaderCell>
                     <CTableHeaderCell
                       className="bg-body-tertiary text-center"
-                      style={{ width: '250px' }}
+                      style={{ width: '250px', minWidth: '250px' }}
                     >
                       Mô tả
                     </CTableHeaderCell>
@@ -130,60 +149,97 @@ const Tour = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {mockTours.map((tour, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
-                      <CTableDataCell className="text-center">
-                        <CImage rounded src={tour.photo} width={200} height={200} />
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <div className=" text-body-secondary text-nowrap">{tour.title}</div>
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <div className="d-flex align-items-center justify-content-center">
-                          <CIcon size="xl" icon={cifVn} title={`Việt Nam`} />
-                          <span className="ms-2">{tour.city}</span>
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell className="text-center">{tour.startDate}</CTableDataCell>
-                      <CTableDataCell className="text-center">{tour.endDate}</CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <div className="fw-semibold">{tour.price.toLocaleString()} VND</div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div className="small text-body-secondary text-nowrap">{tour.desc}</div>
-                      </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <div className="d-flex align-items-center justify-content-center">
-                          <CButton
-                            color="warning"
-                            size="sm"
-                            variant="outline"
-                            className="me-2"
-                            onClick={() => handleEdit(tour)}
-                          >
-                            Sửa
-                          </CButton>
-                          <CButton
-                            color="danger"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDeleteClick(tour)}
-                          >
-                            Xoá
-                          </CButton>
-                        </div>
+                  {currentTours.length === 0 ? (
+                    <CTableRow>
+                      <CTableDataCell colSpan="8" className="text-center text-muted py-4">
+                        Không có dữ liệu tour để hiển thị.
                       </CTableDataCell>
                     </CTableRow>
-                  ))}
+                  ) : (
+                    <>
+                      {currentTours.map((tour, index) => (
+                        <CTableRow key={index}>
+                          <CTableDataCell className="text-center" style={{ maxHeight: '120px' }}>
+                            <CImage rounded src={tour.photo} width={200} height={200} />
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            <div className="text-body-secondary text-nowrap">{tour.title}</div>
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            <div className="d-flex align-items-center justify-content-center">
+                              <CIcon size="xl" icon={cifVn} title="Việt Nam" />
+                              <span className="ms-2">{tour.city}</span>
+                            </div>
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">{tour.startDate}</CTableDataCell>
+                          <CTableDataCell className="text-center">{tour.endDate}</CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            <div className="fw-semibold">{tour.price.toLocaleString()} VND</div>
+                          </CTableDataCell>
+                          <CTableDataCell>
+                            <div className="small text-body-secondary text-wrap">{tour.desc}</div>
+                          </CTableDataCell>
+                          <CTableDataCell className="text-center">
+                            <div className="d-flex align-items-center justify-content-center">
+                              <CButton
+                                color="warning"
+                                size="sm"
+                                variant="outline"
+                                className="me-2"
+                                onClick={() => handleEdit(tour)}
+                              >
+                                Sửa
+                              </CButton>
+                              <CButton
+                                color="danger"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDeleteClick(tour)}
+                              >
+                                Xoá
+                              </CButton>
+                            </div>
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))}
+                    </>
+                  )}
                 </CTableBody>
               </CTable>
+              {totalPages > 0 && (
+                <div className="d-flex justify-content-center mt-3">
+                  <CPagination align="center">
+                    <CPaginationItem
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                      &laquo;
+                    </CPaginationItem>
+
+                    {[...Array(totalPages)].map((_, i) => (
+                      <CPaginationItem
+                        key={i + 1}
+                        active={i + 1 === currentPage}
+                        onClick={() => setCurrentPage(i + 1)}
+                      >
+                        {i + 1}
+                      </CPaginationItem>
+                    ))}
+
+                    <CPaginationItem
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      &raquo;
+                    </CPaginationItem>
+                  </CPagination>
+                </div>
+              )}
             </CCardBody>
           </CCard>
           <TourFormModal
             visible={formModalVisible}
-            onClose={() => setFormModalVisible(false)}
+            onClose={handleClose}
             onSubmit={handleFormSubmit}
             initialData={editingTour}
           />
