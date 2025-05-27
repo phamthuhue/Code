@@ -1,39 +1,24 @@
-// src/utils/axiosInstance.js
+// src/utils/axiosConfig.js
 import axios from 'axios'
-import { BASE_URL } from './config'
-import { notify } from './notify'
-import { jwtDecode } from 'jwt-decode'
+
 const excludedUrls = ['/auth/login', '/auth/forgot-password', '/auth/reset-password']
+const BASE_URL = 'http://localhost:8001/api/v1'
 
-const BASE_URL_ENTRY = process.env.REACT_APP_BASE_URL_API || BASE_URL
+const BASE_URL_ENTRY = import.meta.env.API_BACKEND_URL || BASE_URL
 
-const axiosInstance = axios.create({
+const axiosConfig = axios.create({
   baseURL: BASE_URL_ENTRY, // tuỳ cách bạn config .env
-
-  withCredentials: true, // nếu bạn dùng cookie để xác thực
 })
-function isTokenExpired(token) {
-  if (!token) return true
-
-  try {
-    const { exp } = jwtDecode(token)
-    const now = Date.now() / 1000 // tính bằng giây
-    return exp < now
-  } catch (e) {
-    return true // nếu token lỗi thì coi như hết hạn
-  }
-}
-
 function logout(message, redirect = true) {
   localStorage.removeItem('user')
-  notify(redirect ? 'error' : 'warning', 'Phiên đăng nhập hết hạn', message, 2)
+
   setTimeout(
     () => (redirect ? (window.location.href = '/auth/login') : window.location.reload()),
     1000,
   )
 }
 // Gắn token + kiểm tra hạn
-axiosInstance.interceptors.request.use(
+axiosConfig.interceptors.request.use(
   (config) => {
     if (excludedUrls.includes(config.url)) {
       return config
@@ -53,7 +38,7 @@ axiosInstance.interceptors.request.use(
 )
 
 // Bạn có thể thêm interceptors ở đây nếu cần
-axiosInstance.interceptors.response.use(
+axiosConfig.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && [401, 403].includes(error.response.status)) {
@@ -66,4 +51,4 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-export default axiosInstance
+export default axiosConfig

@@ -23,8 +23,23 @@ import TourForm from './TourForm'
 import { useEffect, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import TourFormModal from './TourForm'
+import axiosConfig from '../../services/axiosConfig'
 
 const Tour = () => {
+  // Danh sách tour
+  const [tours, setTours] = useState([])
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await axiosConfig.get('/tours') // Thay đổi endpoint nếu cần
+        setTours(response.data)
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách tour:', error)
+      }
+    }
+
+    fetchTours()
+  }, [])
   // Thêm mới và cập nhật tour
   const [formModalVisible, setFormModalVisible] = useState(false)
   const [editingTour, setEditingTour] = useState(null)
