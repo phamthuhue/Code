@@ -22,6 +22,7 @@ const Tour = () => {
   }
   // Thêm mới và cập nhật tour
   const openForm = (tour = null) => {
+    console.log('tour: ', tour)
     setEditingTour(tour)
     setFormModalVisible(true)
   }
@@ -35,9 +36,7 @@ const Tour = () => {
   const [editingTour, setEditingTour] = useState(null)
 
   const submitForm = (formData) => {
-    const updated = editingTour
-      ? updateTour(tours, editingTour.id, formData)
-      : createTour(tours, formData)
+    const updated = editingTour ? updateTour(editingTour._id, formData) : createTour(formData)
     setTours(updated)
     closeForm()
   }
@@ -77,7 +76,7 @@ const Tour = () => {
                   </h4>
                 </CCol>
                 <CCol sm={7} className="d-none d-md-block">
-                  <CButton color="primary" className="float-end" onClick={openForm}>
+                  <CButton color="primary" className="float-end" onClick={() => openForm()}>
                     <div className="small d-flex align-items-center">
                       <CIcon icon={cilPlus} />
                       <span className="ms-1">Thêm mới</span>

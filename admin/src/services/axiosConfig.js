@@ -8,6 +8,7 @@ const BASE_URL_ENTRY = import.meta.env.API_BACKEND_URL || BASE_URL
 
 const axiosConfig = axios.create({
   baseURL: BASE_URL_ENTRY, // tuỳ cách bạn config .env
+  withCredentials: true, // nếu bạn dùng cookie để xác thực
 })
 function logout(message, redirect = true) {
   localStorage.removeItem('user')
