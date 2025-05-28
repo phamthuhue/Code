@@ -19,14 +19,14 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   console.log('visible: ', visible)
   const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
-    title: null,
-    city: null,
-    price: null,
-    startDate: null,
-    endDate: null,
-    maxGroupSize: null,
-    desc: null,
-    photo: null,
+    title: undefined,
+    city: undefined,
+    price: undefined,
+    startDate: undefined,
+    endDate: undefined,
+    maxGroupSize: undefined,
+    desc: undefined,
+    photo: undefined,
   })
 
   useEffect(() => {
@@ -38,14 +38,14 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       })
     } else {
       setFormData({
-        title: null,
-        city: null,
-        price: null,
-        startDate: null,
-        endDate: null,
-        maxGroupSize: null,
-        desc: null,
-        photo: null,
+        title: undefined,
+        city: undefined,
+        price: undefined,
+        startDate: undefined,
+        endDate: undefined,
+        maxGroupSize: undefined,
+        desc: undefined,
+        photo: undefined,
       })
     }
     if (!visible) {
