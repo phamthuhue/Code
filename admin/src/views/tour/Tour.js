@@ -8,6 +8,7 @@ import TourFormModal from './TourForm'
 
 import { createTour, getTours, updateTour } from '../../services/Api/tourService'
 import TourTable from './components/TourTable'
+import TourFilter from './components/TourFilter'
 
 const Tour = () => {
   // Danh sách tour
@@ -19,6 +20,16 @@ const Tour = () => {
   const fetchTours = async () => {
     const res = await getTours()
     setTours(res.data)
+  }
+  // Xử lý bộ lọc
+  const [filters, setFilters] = useState({
+    destination: '',
+    departureDate: '',
+    maxPrice: '',
+  })
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters)
   }
   // Thêm mới và cập nhật tour
   const openForm = (tour = null) => {
@@ -67,6 +78,8 @@ const Tour = () => {
     <>
       <CRow>
         <CCol xs>
+          <TourFilter filters={filters} onFilterChange={handleFilterChange} />
+
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
