@@ -1,7 +1,12 @@
 import express from "express";
-import { 
-  createTour, getAllTours, getSingleTour, updateTour, 
-  deleteTour, getTourBySearch, getTourCount 
+import {
+  createTour,
+  getAllTours,
+  getSingleTour,
+  updateTour,
+  deleteTour,
+  getTourBySearch,
+  getTourCount,
 } from "../controllers/tourController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 
@@ -16,8 +21,8 @@ router.get("/", getAllTours);
 router.get("/:id", getSingleTour);
 
 // Route cần quyền admin
-router.post("/", verifyAdmin, createTour);
-router.put("/:id", verifyAdmin, updateTour);
-router.delete("/:id", verifyAdmin, deleteTour);
+router.post("/", createTour);
+router.put("/:id", updateTour);
+router.delete("/:id", deleteTour);
 
 export default router;

@@ -22,16 +22,28 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8000;
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:3002",
+];
 
 const corsOptions = {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true,
+  origin: (origin, callback) => {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 };
 
 // Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api/v1/auth", authRoute); // login và đăng ký không cần token
 app.use("/api/v1/tours", tourRoute);
@@ -49,6 +61,6 @@ app.use("/api/v1/invoices", verifyToken, invoiceRoute);
 app.use("/api/v1/invoice-details", verifyToken, invoiceDetailRoute);
 // Start server
 app.listen(port, () => {
-    connectDB(); // 👉 gọi kết nối ở đây
-    console.log(`🚀 Server running on port ${port}`);
+  connectDB(); // 👉 gọi kết nối ở đây
+  console.log(`🚀 Server running on port ${port}`);
 });

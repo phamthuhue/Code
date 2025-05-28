@@ -11,23 +11,23 @@ import { seedUsers } from "./seedUsers.js";
 dotenv.config();
 
 const runAllSeeders = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("🚀 Connected to MongoDB");
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("🚀 Connected to MongoDB");
 
-    await seedRoles(); // Nếu có
-    await seedUsers(); // Nếu có
-    const tour = await seedTours();
-    const guide = await seedGuides(tour._id);
-    await seedItineraries(tour._id);
-    await seedReviews(tour._id, guide._id);
+        await seedRoles(); // Nếu có
+        await seedUsers(); // Nếu có
+        const guide = await seedGuides();
+        const tour = await seedTours(guide._id);
+        await seedItineraries(tour._id);
+        await seedReviews(tour._id, guide._id);
 
-    console.log("✅ All seeders completed");
-  } catch (err) {
-    console.error("❌ Seeder failed:", err);
-  } finally {
-    await mongoose.disconnect();
-  }
+        console.log("✅ All seeders completed");
+    } catch (err) {
+        console.error("❌ Seeder failed:", err);
+    } finally {
+        await mongoose.disconnect();
+    }
 };
 
 runAllSeeders();
