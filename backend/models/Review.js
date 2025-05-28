@@ -10,6 +10,7 @@ const reviewSchema = new mongoose.Schema(
 
     tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
     guideId: { type: mongoose.Schema.Types.ObjectId, ref: 'Guide', required: true },
+    bookingId: { type: mongoose.Schema.ObjectId, ref: 'Booking' , required: true },
   },
   { timestamps: true }
 );

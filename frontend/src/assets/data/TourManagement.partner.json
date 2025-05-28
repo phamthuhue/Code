@@ -1,0 +1,55 @@
+[{
+  "_id": {
+    "$oid": "682ef87cc3da4111179609da"
+  },
+  "name": "Nhà hàng Hải Sản Biển Đông",
+  "address": "123 Đường Biển, TP. Nha Trang",
+  "phone": "0987654321",
+  "partnerTypeId": {
+    "$oid": "682ef75fc3da4111179609d4"
+  }
+},
+{
+  "_id": {
+    "$oid": "682ef87cc3da4111179609db"
+  },
+  "name": "Khách sạn Sài Gòn Pearl",
+  "address": "456 Nguyễn Huệ, Quận 1, TP.HCM",
+  "phone": "0912345678",
+  "partnerTypeId": {
+    "$oid": "682ef75fc3da4111179609d5"
+  }
+},
+{
+  "_id": {
+    "$oid": "682ef87cc3da4111179609dc"
+  },
+  "name": "Công ty Xe Du Lịch Hưng Thịnh",
+  "address": "789 Lê Duẩn, Đà Nẵng",
+  "phone": "0909123456",
+  "partnerTypeId": {
+    "$oid": "682ef75fc3da4111179609d6"
+  }
+},
+{
+  "_id": {
+    "$oid": "682ef87cc3da4111179609dd"
+  },
+  "name": "Nhà hàng Cơm Việt",
+  "address": "234 Phan Xích Long, Quận Phú Nhuận, TP.HCM",
+  "phone": "0933221100",
+  "partnerTypeId": {
+    "$oid": "682ef75fc3da4111179609d4"
+  }
+},
+{
+  "_id": {
+    "$oid": "682ef87cc3da4111179609de"
+  },
+  "name": "Khách sạn Mường Thanh Luxury",
+  "address": "01 Trần Phú, TP. Nha Trang",
+  "phone": "0977886655",
+  "partnerTypeId": {
+    "$oid": "682ef75fc3da4111179609d5"
+  }
+}]

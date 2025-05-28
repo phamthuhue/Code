@@ -9,6 +9,11 @@ import reviewRoute from "./routes/reviews.js";
 import guideRoute from "./routes/guides.js";
 import itineraryRoute from "./routes/itineraries.js";
 import groupTourRequestRoute from "./routes/groupTourRequests.js";
+import bookingRoute from "./routes/bookings.js"
+import bookingDetailRoute from "./routes/bookingDetails.js"
+import tourServiceRoute from "./routes/tourServices.js"
+import invoiceRoute from "./routes/invoices.js";
+import invoiceDetailRoute from "./routes/invoiceDetails.js";
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { connectDB } from "./services/config/db.js";
@@ -49,7 +54,11 @@ app.use("/api/v1/reviews", verifyToken, reviewRoute);
 app.use("/api/v1/guides", verifyToken, guideRoute);
 app.use("/api/v1/itineraries", verifyToken, itineraryRoute);
 app.use("/api/v1/groupTourRequests", verifyToken, groupTourRequestRoute);
-
+app.use("/api/v1/bookings", verifyToken, bookingRoute);
+app.use("/api/v1/booking-details", verifyToken, bookingDetailRoute);
+app.use("/api/v1/tour-services", verifyToken, tourServiceRoute);
+app.use("/api/v1/invoices", verifyToken, invoiceRoute);
+app.use("/api/v1/invoice-details", verifyToken, invoiceDetailRoute);
 // Start server
 app.listen(port, () => {
   connectDB(); // 👉 gọi kết nối ở đây

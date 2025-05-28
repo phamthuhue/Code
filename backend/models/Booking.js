@@ -13,6 +13,8 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Tour',
       required: true, // Tour được đặt
     },
+    name: { type: String, required: true },
+    phone: { type: String, required: true },   
     startDate: { type: Date, required: true },
     numberOfPeople: {
       type: Number,
@@ -24,7 +26,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Đang xử lý', 'Xác nhận', 'Hủy'],
+      enum: ['Đang xử lý', 'Xác nhận', 'Đã hủy'],
       default: 'Đang xử lý',
     },
   },
