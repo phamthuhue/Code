@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { notify } from "@utils/notify";
+import axiosInstance from "@utils/axiosInstance";
 
 export const Payment = () => {
   const navigate = useNavigate();
@@ -31,21 +33,75 @@ export const Payment = () => {
 
   const { booking, selectedServices, totalPrice, price } = paymentData;
 
-  return (
-    <div>
-      <h1>Trang Thanh Toán</h1>
-      <p>Tên khách: {booking.name}</p>
-      <p>SĐT: {booking.phone}</p>
-      <p>Ngày khởi hành: {booking.startDate ? new Date(booking.startDate).toLocaleDateString('vi-VN') : ''}</p>
-      <p>Số lượng: {booking.numberOfPeople}</p>
-      <p>Tổng tiền: {totalPrice.toLocaleString()} VNĐ</p>
+    const handlePayment = async () => {
+    try {
+      let url = '';
+      if (paymentMethod === 'vnpay') {
+        const res = await axiosInstance.post('/payment/vnpay', {
+          amount: totalPrice,
+          bookingInfo: booking,
+        });
+        url = res.data.paymentUrl;
+      } else if (paymentMethod === 'momo') {
+        const res = await axiosInstance.post('/payment/momo', {
+          amount: totalPrice,
+          bookingInfo: booking,
+        });
+        url = res.data.paymentUrl;
+      } else {
+        alert('Vui lòng chọn phương thức thanh toán!');
+        return;
+      }
 
-      <h2>Dịch vụ đã chọn:</h2>
-      <ul>
-        {selectedServices.map((s) => (
-          <li key={s._id}>{s.note} - {s.servicePrice.toLocaleString()} VNĐ/người</li>
-        ))}
-      </ul>
+      window.location.href = url; // Redirect to payment gateway
+    } catch (err) {
+      console.error(err);
+      alert('Không thể tạo liên kết thanh toán');
+    }
+  };
+
+  return (
+    <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Thông tin đặt tour */}
+      <div className="bg-white rounded shadow p-4">
+        <h1 className="text-2xl font-bold mb-4">Thông tin đặt tour</h1>
+        <p><strong>Tên khách:</strong> {booking.name}</p>
+        <p><strong>SĐT:</strong> {booking.phone}</p>
+        <p><strong>Ngày khởi hành:</strong> {new Date(booking.startDate).toLocaleDateString('vi-VN')}</p>
+        <p><strong>Số lượng:</strong> {booking.numberOfPeople}</p>
+        <p><strong>Tổng tiền:</strong> {totalPrice.toLocaleString()} VNĐ</p>
+
+        <h2 className="mt-4 font-semibold">Dịch vụ đã chọn:</h2>
+        <ul className="list-disc pl-5">
+          {selectedServices.map((s) => (
+            <li key={s._id}>{s.note} - {s.servicePrice.toLocaleString()} VNĐ/người</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Chọn phương thức thanh toán */}
+      <div className="bg-white rounded shadow p-4">
+        <h1 className="text-2xl font-bold mb-4">Phương thức thanh toán</h1>
+
+        <div className="flex flex-col gap-3">
+          <label className="flex items-center gap-2">
+            <input type="radio" value="vnpay" checked={paymentMethod === 'vnpay'} onChange={(e) => setPaymentMethod(e.target.value)} />
+            <span>Thanh toán qua VNPay</span>
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input type="radio" value="momo" checked={paymentMethod === 'momo'} onChange={(e) => setPaymentMethod(e.target.value)} />
+            <span>Thanh toán qua MoMo</span>
+          </label>
+
+          <button
+            onClick={handlePayment}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
+          >
+            Tiến hành thanh toán
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
