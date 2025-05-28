@@ -12,7 +12,6 @@ export const createTour = async (req, res) => {
       data: savedTour,
     });
   } catch (error) {
-    console.log("error: ", error);
     res.status(500).json({
       success: false,
       message: "Failed to create. Try again",

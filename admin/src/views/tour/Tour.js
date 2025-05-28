@@ -19,7 +19,7 @@ const Tour = () => {
 
   const fetchTours = async () => {
     const res = await getTours()
-    setTours(res.data)
+    setTours(res.data.data)
   }
   // Xử lý bộ lọc
   const [filters, setFilters] = useState({
@@ -68,9 +68,9 @@ const Tour = () => {
   // Cài đặt phân trang
   const itemsPerPage = 3
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(mockTours.length / itemsPerPage)
+  const totalPages = Math.ceil(tours?.length / itemsPerPage)
   console.log('totalPages: ', totalPages)
-  const currentTours = mockTours.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const currentTours = tours?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [currentPage])
