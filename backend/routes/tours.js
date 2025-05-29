@@ -9,6 +9,7 @@ import {
   getTourCount,
 } from "../controllers/tourController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
+import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.get("/", getAllTours);
 router.get("/:id", getSingleTour);
 
 // Route cần quyền admin
-router.post("/", createTour);
+router.post("/", upload.single("photo"), createTour);
 router.put("/:id", updateTour);
 router.delete("/:id", deleteTour);
 

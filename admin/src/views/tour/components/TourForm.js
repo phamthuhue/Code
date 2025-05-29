@@ -16,7 +16,6 @@ import {
 import { useState, useEffect, useRef } from 'react'
 
 const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
-  console.log('visible: ', visible)
   const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
     title: undefined,
@@ -25,6 +24,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     startDate: undefined,
     endDate: undefined,
     maxGroupSize: undefined,
+    avgRating: undefined, // ✅ Bổ sung nếu chưa có
     desc: undefined,
     photo: undefined,
   })
@@ -45,7 +45,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         price: 4500000,
         maxGroupSize: 25,
         desc: 'Tour khám phá Quảng Ninh và Hội An tuyệt vời',
-        photo: 'danang.jpg',
+        photo: null,
         featured: true,
         guideId: '6835925cedc05facf0fa6c6a',
         avgRating: 4.8,
@@ -71,6 +71,9 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       newErrors.maxGroupSize = 'Số lượng phải lớn hơn 0'
     if (!formData.startDate) newErrors.startDate = 'Vui lòng chọn ngày bắt đầu'
     if (!formData.endDate) newErrors.endDate = 'Vui lòng chọn ngày kết thúc'
+    if (formData.avgRating !== undefined && (formData.avgRating < 0 || formData.avgRating > 5)) {
+      newErrors.avgRating = 'Đánh giá trung bình phải từ 0 đến 5'
+    }
     if (formData.startDate && formData.endDate && formData.startDate > formData.endDate) {
       newErrors.endDate = 'Ngày kết thúc phải sau ngày bắt đầu'
     }
@@ -105,17 +108,20 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
 
       setImageError(null) // Clear lỗi nếu hợp lệ
 
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, photo: reader.result }))
-      }
-      reader.readAsDataURL(file)
+      setFormData((prev) => ({ ...prev, photo: file }))
     }
   }
 
   const handleSubmit = () => {
     if (!validate()) return
-    onSubmit(formData)
+    const data = new FormData()
+    console.log('formData: ', formData)
+    for (const key in formData) {
+      if (formData[key] !== undefined && formData[key] !== null) {
+        data.append(key, formData[key])
+      }
+    }
+    onSubmit(data)
     onClose()
   }
 
@@ -173,7 +179,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             </CCol>
           </CRow>
           <CRow className="mb-1">
-            <CCol md={12}>
+            <CCol md={6}>
               <CFormLabel htmlFor="maxGroupSize">
                 Số lượng tối đa <span style={{ color: 'red' }}>*</span>
               </CFormLabel>
@@ -186,6 +192,22 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
                 className="mb-1"
               />
               {errors.maxGroupSize && <small className="text-danger">{errors.maxGroupSize}</small>}
+            </CCol>
+
+            <CCol md={6}>
+              <CFormLabel htmlFor="avgRating">Đánh giá trung bình (0 - 5)</CFormLabel>
+              <CFormInput
+                id="avgRating"
+                type="number"
+                name="avgRating"
+                step="0.1"
+                min="0"
+                max="5"
+                value={formData.avgRating}
+                onChange={handleChange}
+                className="mb-1"
+              />
+              {errors.avgRating && <small className="text-danger">{errors.avgRating}</small>}
             </CCol>
           </CRow>
           <CRow className="mb-1">
@@ -245,7 +267,11 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
               {formData.photo && !imageError && (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <img
-                    src={formData.photo}
+                    src={
+                      typeof formData.photo === 'string'
+                        ? formData.photo
+                        : URL.createObjectURL(formData.photo)
+                    }
                     alt="Tour"
                     onError={(e) => {
                       e.target.onerror = null

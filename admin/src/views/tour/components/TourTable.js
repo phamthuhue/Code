@@ -23,6 +23,8 @@ const TourTable = ({
   handleEdit,
   handleDeleteClick,
 }) => {
+  const backendUrl = import.meta.env.VITE_END_POINT_BACKEND_URL
+
   return (
     <>
       <CTable align="middle" className="mb-0 border" hover responsive>
@@ -68,7 +70,7 @@ const TourTable = ({
             currentTours.map((tour, index) => (
               <CTableRow key={index}>
                 <CTableDataCell className="text-center" style={{ maxHeight: '120px' }}>
-                  <CImage rounded src={tour.photo} width={150} height={150} />
+                  <CImage rounded src={`${backendUrl}/${tour.photo}`} width={150} height={150} />
                 </CTableDataCell>
                 <CTableDataCell>
                   <div className="text-body-secondary text-nowrap">{tour.title}</div>
