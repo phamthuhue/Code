@@ -1,15 +1,52 @@
-import { CButton, CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CRow,
+  CToast,
+  CToastBody,
+  CToaster,
+  CToastHeader,
+} from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import mockTours from './mockData'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import TourFormModal from './TourForm'
 
-import { createTour, getTours, updateTour } from '../../services/Api/tourService'
+import { createTour, deleteTour, getTours, updateTour } from '../../services/Api/tourService'
 import TourTable from './components/TourTable'
+import TourFilter from './components/TourFilter'
 
 const Tour = () => {
+  // Hiển thị thông báo
+  const [toast, addToast] = useState()
+  const toaster = useRef(null)
+  const exampleToast = (message) => {
+    return (
+      <CToast>
+        <CToastHeader closeButton>
+          <svg
+            className="rounded me-2"
+            width="20"
+            height="20"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+            focusable="false"
+            role="img"
+          >
+            <rect width="100%" height="100%" fill="#007aff"></rect>
+          </svg>
+          <div className="fw-bold me-auto"> </div>
+          <small> </small>
+        </CToastHeader>
+        <CToastBody>{message}</CToastBody>
+      </CToast>
+    )
+  }
   // Danh sách tour
   const [tours, setTours] = useState([])
   useEffect(() => {
@@ -18,11 +55,20 @@ const Tour = () => {
 
   const fetchTours = async () => {
     const res = await getTours()
-    setTours(res.data)
+    setTours(res.data.data)
+  }
+  // Xử lý bộ lọc
+  const [filters, setFilters] = useState({
+    destination: '',
+    departureDate: '',
+    maxPrice: '',
+  })
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters)
   }
   // Thêm mới và cập nhật tour
   const openForm = (tour = null) => {
-    console.log('tour: ', tour)
     setEditingTour(tour)
     setFormModalVisible(true)
   }
@@ -35,10 +81,25 @@ const Tour = () => {
   const [formModalVisible, setFormModalVisible] = useState(false)
   const [editingTour, setEditingTour] = useState(null)
 
-  const submitForm = (formData) => {
-    const updated = editingTour ? updateTour(editingTour._id, formData) : createTour(formData)
-    setTours(updated)
-    closeForm()
+  const submitForm = async (formData) => {
+    try {
+      if (editingTour) {
+        console.log('editingTour: ', editingTour)
+        // Cập nhật tour
+        const updatedTour = await updateTour(editingTour._id, formData)
+        setTours(tours.map((t) => (t._id === editingTour._id ? updatedTour.data : t)))
+        addToast(exampleToast('Cập nhật tour thành công'))
+      } else {
+        // Thêm mới tour
+        const newTour = await createTour(formData)
+        setTours([...tours, newTour.data])
+        addToast(exampleToast('Thêm mới tour thành công'))
+      }
+      closeForm()
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      addToast(exampleToast('Có lỗi xảy ra. Vui lòng thử lại.'))
+    }
   }
 
   // Xử lý xóa
@@ -49,17 +110,26 @@ const Tour = () => {
     setDeleteModalVisible(true)
   }
 
-  const confirmDelete = () => {
-    setTours(tours.filter((t) => t.id !== tourToDelete.id))
-    setDeleteModalVisible(false)
+  const confirmDelete = async () => {
+    try {
+      await deleteTour(tourToDelete._id) // Gọi API xóa tour theo ID
+      setTours(tours.filter((t) => t._id !== tourToDelete._id)) // Cập nhật danh sách
+      addToast(exampleToast('Xóa tour thành công'))
+    } catch (error) {
+      console.error('Lỗi khi xóa tour:', error)
+      addToast(exampleToast('Xóa tour thất bại'))
+    } finally {
+      setDeleteModalVisible(false)
+      setTourToDelete(null)
+    }
   }
 
   // Cài đặt phân trang
   const itemsPerPage = 3
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(mockTours.length / itemsPerPage)
+  const totalPages = Math.ceil(tours?.length / itemsPerPage)
   console.log('totalPages: ', totalPages)
-  const currentTours = mockTours.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const currentTours = tours?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [currentPage])
@@ -67,6 +137,8 @@ const Tour = () => {
     <>
       <CRow>
         <CCol xs>
+          <TourFilter filters={filters} onFilterChange={handleFilterChange} />
+
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
@@ -107,6 +179,7 @@ const Tour = () => {
             onClose={() => setDeleteModalVisible(false)}
             onConfirm={confirmDelete}
           />
+          <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
         </CCol>
       </CRow>
     </>

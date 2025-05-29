@@ -14,6 +14,7 @@ import {
 import { cilMap } from '@coreui/icons'
 import { cifVn } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import { formatDate } from '../../../utilis/formatDate'
 const TourTable = ({
   currentTours = [],
   currentPage,
@@ -78,8 +79,10 @@ const TourTable = ({
                     <span className="ms-2">{tour.city}</span>
                   </div>
                 </CTableDataCell>
-                <CTableDataCell className="text-center">{tour.startDate}</CTableDataCell>
-                <CTableDataCell className="text-center">{tour.endDate}</CTableDataCell>
+                <CTableDataCell className="text-center">
+                  {formatDate(tour.startDate)}
+                </CTableDataCell>
+                <CTableDataCell className="text-center">{formatDate(tour.endDate)}</CTableDataCell>
                 <CTableDataCell className="text-center">
                   <div className="fw-semibold">{tour.price.toLocaleString()} VND</div>
                 </CTableDataCell>
