@@ -14,7 +14,7 @@ import {
   CCol,
 } from '@coreui/react'
 import { useState, useEffect, useRef } from 'react'
-
+const backendUrl = import.meta.env.VITE_END_POINT_BACKEND_URL
 const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
@@ -115,12 +115,17 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const handleSubmit = () => {
     if (!validate()) return
     const data = new FormData()
-    console.log('formData: ', formData)
+
     for (const key in formData) {
       if (formData[key] !== undefined && formData[key] !== null) {
         data.append(key, formData[key])
       }
     }
+    // Nếu photo === null nghĩa là user đã xóa ảnh cũ, cần gửi flag cho backend
+    if (formData.photo === null) {
+      data.append('removePhoto', 'true')
+    }
+    console.log('formData: ', formData)
     onSubmit(data)
     onClose()
   }
@@ -269,7 +274,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
                   <img
                     src={
                       typeof formData.photo === 'string'
-                        ? formData.photo
+                        ? `${backendUrl}/${formData.photo}`
                         : URL.createObjectURL(formData.photo)
                     }
                     alt="Tour"

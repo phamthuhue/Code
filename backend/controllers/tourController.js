@@ -27,14 +27,49 @@ export const createTour = async (req, res) => {
 // [PUT] /api/tours/:id
 export const updateTour = async (req, res) => {
   try {
-    const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedTour)
+    const tourId = req.params.id;
+    const tour = await Tour.findById(tourId);
+    if (!tour)
       return res
         .status(404)
         .json({ message: "Không tìm thấy tour để cập nhật" });
+    // Xử lý xóa ảnh nếu có yêu cầu
+    if (req.body.removePhoto === "true") {
+      if (tour.photo) {
+        const oldPhotoPath = path.join(process.cwd(), tour.photo);
+        if (fs.existsSync(oldPhotoPath)) {
+          fs.unlinkSync(oldPhotoPath);
+        }
+      }
+      req.body.photo = null; // hoặc null tùy bạn thiết kế DB
+    }
+    // Xử lý ảnh mới
+    if (req.file) {
+      if (tour.photo) {
+        const oldPhotoPath = path.join(process.cwd(), tour.photo);
+        if (fs.existsSync(oldPhotoPath)) fs.unlinkSync(oldPhotoPath);
+      }
+      req.body.photo = req.file.path;
+    }
+    // Parse dữ liệu kiểu đúng
+    const updateData = {
+      ...req.body,
+      price: req.body.price ? Number(req.body.price) : tour.price,
+      maxGroupSize: req.body.maxGroupSize
+        ? Number(req.body.maxGroupSize)
+        : tour.maxGroupSize,
+      featured: req.body.featured === "true",
+      startDate: req.body.startDate
+        ? new Date(req.body.startDate)
+        : tour.startDate,
+      endDate: req.body.endDate ? new Date(req.body.endDate) : tour.endDate,
+    };
+
+    const updatedTour = await Tour.findByIdAndUpdate(tourId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
     res.status(200).json(updatedTour);
   } catch (error) {
     res

@@ -23,7 +23,8 @@ router.get("/:id", getSingleTour);
 
 // Route cần quyền admin
 router.post("/", upload.single("photo"), createTour);
-router.put("/:id", updateTour);
+router.put("/:id", upload.single("photo"), updateTour);
+
 router.delete("/:id", deleteTour);
 
 export default router;
