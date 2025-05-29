@@ -38,7 +38,6 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       })
     } else {
       const mockTour = {
-        _id: '9935925cedc05facf0fa6c6d',
         title: 'Tour Quảng Ninh 4N3Đ',
         city: 'Quảng Ninh',
         startDate: '2025-07-10T00:00:00.000Z',
