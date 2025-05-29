@@ -37,16 +37,24 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         endDate: initialData.endDate?.slice(0, 10),
       })
     } else {
-      setFormData({
-        title: undefined,
-        city: undefined,
-        price: undefined,
-        startDate: undefined,
-        endDate: undefined,
-        maxGroupSize: undefined,
-        desc: undefined,
-        photo: undefined,
-      })
+      const mockTour = {
+        _id: '9935925cedc05facf0fa6c6d',
+        title: 'Tour Quảng Ninh 4N3Đ',
+        city: 'Quảng Ninh',
+        startDate: '2025-07-10T00:00:00.000Z',
+        endDate: '2025-07-13T00:00:00.000Z',
+        price: 4500000,
+        maxGroupSize: 25,
+        desc: 'Tour khám phá Quảng Ninh và Hội An tuyệt vời',
+        photo: 'danang.jpg',
+        featured: true,
+        guideId: '6835925cedc05facf0fa6c6a',
+        avgRating: 4.8,
+        createdAt: '2025-05-27T10:22:20.271Z',
+        updatedAt: '2025-05-27T10:22:20.271Z',
+        __v: 0,
+      }
+      setFormData(mockTour)
     }
     if (!visible) {
       // Reset errors when the modal is opened

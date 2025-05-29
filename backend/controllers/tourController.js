@@ -1,65 +1,51 @@
 import Tour from "../models/Tour.js";
 
 //create new tour
+// [POST] /api/tours
 export const createTour = async (req, res) => {
-  const newTour = new Tour(req.body);
-
   try {
+    const newTour = new Tour(req.body);
     const savedTour = await newTour.save();
-    res.status(200).json({
-      success: true,
-      message: "Succesfully created",
-      data: savedTour,
-    });
+    res.status(201).json(savedTour);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to create. Try again",
-    });
+    res
+      .status(500)
+      .json({ message: "Tạo tour thất bại", error: error.message });
   }
 };
 
 //update tour
+// [PUT] /api/tours/:id
 export const updateTour = async (req, res) => {
-  const id = req.params.id;
-
   try {
-    const updatedTour = await Tour.findByIdAndUpdate(
-      id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-
-    res.status(200).json({
-      success: true,
-      message: "Succesfully updated",
-      data: updatedTour,
+    const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
     });
+    if (!updatedTour)
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy tour để cập nhật" });
+    res.status(200).json(updatedTour);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to update. Try again",
-    });
+    res
+      .status(500)
+      .json({ message: "Cập nhật tour thất bại", error: error.message });
   }
 };
 
 //delete tour
+// [DELETE] /api/tours/:id
 export const deleteTour = async (req, res) => {
-  const id = req.params.id;
-
   try {
-    await Tour.findByIdAndDelete(id);
-    res.status(200).json({
-      success: true,
-      message: "Succesfully deleted",
-    });
+    const deletedTour = await Tour.findByIdAndDelete(req.params.id);
+    if (!deletedTour)
+      return res.status(404).json({ message: "Không tìm thấy tour để xóa" });
+    res.status(200).json({ message: "Xóa tour thành công" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to delete. Try again",
-    });
+    res
+      .status(500)
+      .json({ message: "Xóa tour thất bại", error: error.message });
   }
 };
 
