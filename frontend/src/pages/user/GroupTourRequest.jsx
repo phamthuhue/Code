@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import Img from "./../../assets/images/DuLichDoan.jpg";
+// import Img from "./../../assets/images/DuLichDoan.jpg";
+import Img from "./../../assets/images/groupTravel.jpeg";
 import useFetch from '../../hooks/useFetch';
 import { BASE_URL } from '@utils/config'
 import { notify } from "@utils/notify";
