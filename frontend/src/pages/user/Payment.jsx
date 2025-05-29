@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { notify } from "@utils/notify";
 import axiosInstance from "@utils/axiosInstance";
@@ -6,6 +7,7 @@ import axiosInstance from "@utils/axiosInstance";
 export const Payment = () => {
   const navigate = useNavigate();
   const [paymentData, setPaymentData] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   useEffect(() => {
     const data = localStorage.getItem('paymentData');
@@ -33,30 +35,61 @@ export const Payment = () => {
 
   const { booking, selectedServices, totalPrice, price } = paymentData;
 
-    const handlePayment = async () => {
-    try {
-      let url = '';
-      if (paymentMethod === 'vnpay') {
-        const res = await axiosInstance.post('/payment/vnpay', {
-          amount: totalPrice,
-          bookingInfo: booking,
-        });
-        url = res.data.paymentUrl;
-      } else if (paymentMethod === 'momo') {
-        const res = await axiosInstance.post('/payment/momo', {
-          amount: totalPrice,
-          bookingInfo: booking,
-        });
-        url = res.data.paymentUrl;
+const handlePayment = async () => {
+  if (!paymentMethod) {
+    alert('Vui lòng chọn phương thức thanh toán!');
+    return;
+  }
+
+  try {
+    if (paymentMethod === 'vnpay') {
+      const res = await axiosInstance.post('/payment/vnpay', {
+        amount: totalPrice,
+        bookingInfo: booking,
+      });
+
+      if (res.data && res.data.paymentUrl) {
+        window.location.href = res.data.paymentUrl;
       } else {
-        alert('Vui lòng chọn phương thức thanh toán!');
-        return;
+        alert("Không nhận được URL thanh toán từ VNPay.");
       }
 
-      window.location.href = url; // Redirect to payment gateway
-    } catch (err) {
-      console.error(err);
-      alert('Không thể tạo liên kết thanh toán');
+    } else if (paymentMethod === 'momo') {
+      const res = await axios.post("http://localhost:8000/api/v1/momo/create", {
+        amount: totalPrice,
+        redirectUrl: "http://localhost:3000/payment-success",
+      });
+
+      if (res.data && res.data.payUrl) {
+        window.location.href = res.data.payUrl;
+      } else {
+        alert("Không nhận được URL thanh toán từ MoMo.");
+      }
+    }
+
+  } catch (err) {
+    console.error("Lỗi khi gọi thanh toán:", err);
+    alert('Không thể tạo liên kết thanh toán');
+  }
+};
+
+
+  const handleMomoPayment = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/momo/create", {
+        amount: totalPrice,
+        bookingInfo: booking,
+        redirectUrl: "http://localhost:3000/payment-success", // hoặc payment-notify nếu cần
+      });
+
+      if (res.data && res.data.payUrl) {
+        window.location.href = res.data.payUrl; // chuyển hướng đến cổng thanh toán MoMo
+      } else {
+        alert("Không nhận được URL thanh toán từ MoMo.");
+      }
+    } catch (error) {
+      console.error("Lỗi gọi API MoMo:", error);
+      alert("Đã có lỗi xảy ra khi tạo thanh toán.");
     }
   };
 

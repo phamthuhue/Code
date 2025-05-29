@@ -5,7 +5,7 @@ const BookingCancellationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Booking',
         required: true,
-        unique: true, // Một booking chỉ được hủy 1 lần
+        unique: true,
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,16 +18,40 @@ const BookingCancellationSchema = new mongoose.Schema({
     },
     invoiceId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Invoice', // Tham chiếu đến hóa đơn hoàn tiền
-        required: false, // Có thể chưa tạo hóa đơn ngay
+        ref: 'Invoice',
+        required: false,
     },
     status: {
         type: String,
-        enum: ['Đang xử lý', 'Xác nhận', 'Hủy'],
+        enum: ['Đang xử lý', 'Đã hoàn', 'Hủy'],
         default: 'Đang xử lý',
-        },
     },
-    { timestamps: true }
-);
+    refundMethod: {
+        type: String,
+        enum: ['Chuyển khoản', 'Ví điện tử'],
+        required: true,
+    },
+
+    // Dành cho chuyển khoản
+    refundAccountName: {
+        type: String,
+    },
+    refundAccountNumber: {
+        type: String,
+    },
+    refundBankName: {
+        type: String,
+    },
+
+    // Dành cho ví điện tử
+    refundWalletProvider: {
+        type: String, // VD: MoMo, ZaloPay, ViettelPay
+    },
+    refundWalletPhone: {
+        type: String, // SĐT đăng ký ví
+    }
+}, {
+    timestamps: true
+});
 
 export default mongoose.model('BookingCancellation', BookingCancellationSchema);
