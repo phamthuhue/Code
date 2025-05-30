@@ -22,8 +22,9 @@ router.get("/", getAllTours);
 router.get("/:id", getSingleTour);
 
 // Route cần quyền admin
-router.post("/", upload.single("photo"), createTour);
-router.put("/:id", upload.single("photo"), updateTour);
+const maxCount = 5; // Giới hạn số lượng ảnh tải lên
+router.post("/", upload.array("photos", maxCount), createTour);
+router.put("/:id", upload.array("photos", maxCount), updateTour);
 
 router.delete("/:id", deleteTour);
 

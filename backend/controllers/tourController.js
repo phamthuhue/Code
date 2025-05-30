@@ -5,12 +5,13 @@ import path from "path";
 // [POST] /api/tours
 export const createTour = async (req, res) => {
   try {
-    if (req.file) {
-      // Lấy đường dẫn file ảnh, ví dụ: uploads/2025/05/29/1685312345-123.png
-      req.body.photo = req.file.path.replace(/\\/g, "/"); // thay dấu \ thành / (Windows)
+    if (req.files && req.files.length > 0) {
+      // req.files là mảng các file đã upload
+      // Lấy đường dẫn tất cả file ảnh, chuyển dấu \ thành /
+      req.body.photos = req.files.map((file) => file.path.replace(/\\/g, "/"));
 
-      // Nếu bạn muốn lưu đường dẫn đầy đủ (URL), ví dụ:
-      // req.body.photo = `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
+      // Nếu muốn lưu kèm domain URL
+      // req.body.photo = req.files.map(file => `${process.env.BASE_URL}/${file.path.replace(/\\/g, "/")}`);
     }
     console.log("req.body: ", req.body);
     const newTour = new Tour(req.body);
@@ -33,27 +34,27 @@ export const updateTour = async (req, res) => {
       return res
         .status(404)
         .json({ message: "Không tìm thấy tour để cập nhật" });
-    // Xử lý xóa ảnh nếu có yêu cầu
-    if (req.body.removePhoto === "true") {
-      if (tour.photo) {
-        const oldPhotoPath = path.join(process.cwd(), tour.photo);
-        if (fs.existsSync(oldPhotoPath)) {
-          fs.unlinkSync(oldPhotoPath);
-        }
+    // 1. Xử lý ảnh bị xóa
+    const removedPhotos = Array.isArray(req.body.removedPhotos)
+      ? req.body.removedPhotos
+      : [req.body.removedPhotos];
+
+    removedPhotos.forEach((relativePath) => {
+      const fullPath = path.join(process.cwd(), path.normalize(relativePath));
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
       }
-      req.body.photo = null; // hoặc null tùy bạn thiết kế DB
-    }
-    // Xử lý ảnh mới
-    if (req.file) {
-      if (tour.photo) {
-        const oldPhotoPath = path.join(process.cwd(), tour.photo);
-        if (fs.existsSync(oldPhotoPath)) fs.unlinkSync(oldPhotoPath);
-      }
-      req.body.photo = req.file.path;
-    }
-    // Parse dữ liệu kiểu đúng
+    });
+    // Lọc danh sách ảnh còn giữ lại = ảnh cũ - ảnh bị xóa
+    const remainingPhotos = tour.photos.filter(
+      (photo) => !removedPhotos.includes(photo)
+    );
+    // 2. Xử lý ảnh mới được upload
+    const newPhotos = req.files.map((file) => file.path); // array of uploaded file paths
+    // 3. Cập nhật các field khác
     const updateData = {
       ...req.body,
+      photos: [...remainingPhotos, ...newPhotos],
       price: req.body.price ? Number(req.body.price) : tour.price,
       maxGroupSize: req.body.maxGroupSize
         ? Number(req.body.maxGroupSize)
@@ -88,17 +89,18 @@ export const deleteTour = async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy tour để xóa" });
 
     // Nếu có ảnh, xóa file ảnh trên server
-    if (tour.photo) {
-      // Tạo đường dẫn tuyệt đối tới file ảnh
-      const filePath = path.join(process.cwd(), tour.photo); // process.cwd() là root folder của project
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        console.log(`Đã xóa file ảnh: ${filePath}`);
-      } else {
-        console.log(`File ảnh không tồn tại: ${filePath}`);
-      }
+    // Nếu có nhiều ảnh, xóa từng file ảnh trên server
+    if (tour.photos && Array.isArray(tour.photos)) {
+      tour.photos.forEach((photoPath) => {
+        const filePath = path.join(process.cwd(), photoPath);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log(`Đã xóa file ảnh: ${filePath}`);
+        } else {
+          console.log(`File ảnh không tồn tại: ${filePath}`);
+        }
+      });
     }
-
     // Xóa tour trong database
     await Tour.findByIdAndDelete(req.params.id);
 
