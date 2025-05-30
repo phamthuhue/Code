@@ -9,12 +9,16 @@ import reviewRoute from "./routes/reviews.js";
 import guideRoute from "./routes/guides.js";
 import itineraryRoute from "./routes/itineraries.js";
 import groupTourRequestRoute from "./routes/groupTourRequests.js";
-import bookingRoute from "./routes/bookings.js"
-import bookingDetailRoute from "./routes/bookingDetails.js"
-import tourServiceRoute from "./routes/tourServices.js"
+import bookingRoute from "./routes/bookings.js";
+import bookingDetailRoute from "./routes/bookingDetails.js";
+import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
 import invoiceDetailRoute from "./routes/invoiceDetails.js";
+
+import path from "path";
+
 import momoRoute from "./routes/momo.js"
+
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { connectDB } from "./services/config/db.js";
@@ -44,7 +48,9 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use("/uploads", express.static("uploads"));
+
+// Phục vụ thư mục uploads dưới đường dẫn /uploads
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/v1/auth", authRoute); // login và đăng ký không cần token
 app.use("/api/v1/tours", tourRoute);

@@ -9,10 +9,14 @@ const tourSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     maxGroupSize: { type: Number, required: true },
     desc: { type: String, required: true },
-    photo: { type: String },
+    photos: [{ type: String }], // đổi từ String thành mảng String
     featured: { type: Boolean, default: false },
 
-    guideId: { type: mongoose.Schema.Types.ObjectId, ref: "Guide", required: true },
+    guideId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Guide",
+      required: true,
+    },
 
     // Trường lưu trung bình đánh giá (cập nhật mỗi khi có review mới)
     avgRating: { type: Number, default: 5 },

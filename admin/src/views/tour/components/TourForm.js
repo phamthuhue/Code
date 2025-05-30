@@ -13,10 +13,10 @@ import {
   CRow,
   CCol,
 } from '@coreui/react'
+import './tour.scss'
 import { useState, useEffect, useRef } from 'react'
-
+const backendUrl = import.meta.env.VITE_END_POINT_BACKEND_URL
 const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
-  console.log('visible: ', visible)
   const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
     title: undefined,
@@ -25,10 +25,23 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     startDate: undefined,
     endDate: undefined,
     maxGroupSize: undefined,
+    avgRating: undefined, // ✅ Bổ sung nếu chưa có
     desc: undefined,
-    photo: undefined,
+    photos: [],
   })
-
+  // Xử lý ảnh xóa
+  const [removedPhotos, setRemovedPhotos] = useState([])
+  const handleRemovePhoto = (index) => {
+    setFormData((prev) => {
+      const newPhotos = [...prev.photos]
+      const removed = newPhotos.splice(index, 1)[0]
+      if (typeof removed === 'string') {
+        // Ảnh cũ bị xóa -> lưu lại để gửi lên backend xóa file
+        setRemovedPhotos((prevRemoved) => [...prevRemoved, removed])
+      }
+      return { ...prev, photos: newPhotos }
+    })
+  }
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -36,9 +49,9 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         startDate: initialData.startDate?.slice(0, 10),
         endDate: initialData.endDate?.slice(0, 10),
       })
+      setRemovedPhotos([]) // reset ảnh đã xóa khi mở modal
     } else {
       const mockTour = {
-        _id: '9935925cedc05facf0fa6c6d',
         title: 'Tour Quảng Ninh 4N3Đ',
         city: 'Quảng Ninh',
         startDate: '2025-07-10T00:00:00.000Z',
@@ -46,7 +59,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         price: 4500000,
         maxGroupSize: 25,
         desc: 'Tour khám phá Quảng Ninh và Hội An tuyệt vời',
-        photo: 'danang.jpg',
+        photos: [],
         featured: true,
         guideId: '6835925cedc05facf0fa6c6a',
         avgRating: 4.8,
@@ -61,6 +74,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       setErrors({})
     }
   }, [initialData, visible])
+
   // Xử lý lỗi
   const [errors, setErrors] = useState({})
   const validate = () => {
@@ -72,6 +86,9 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       newErrors.maxGroupSize = 'Số lượng phải lớn hơn 0'
     if (!formData.startDate) newErrors.startDate = 'Vui lòng chọn ngày bắt đầu'
     if (!formData.endDate) newErrors.endDate = 'Vui lòng chọn ngày kết thúc'
+    if (formData.avgRating !== undefined && (formData.avgRating < 0 || formData.avgRating > 5)) {
+      newErrors.avgRating = 'Đánh giá trung bình phải từ 0 đến 5'
+    }
     if (formData.startDate && formData.endDate && formData.startDate > formData.endDate) {
       newErrors.endDate = 'Ngày kết thúc phải sau ngày bắt đầu'
     }
@@ -89,34 +106,59 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
-      const maxSize = 3 * 1024 * 1024 // 3MB
+    const files = Array.from(e.target.files)
+    console.log('files: ', files)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    const maxSize = 3 * 1024 * 1024 // 3MB
+    const newErrors = []
+    const validFiles = []
 
+    for (const file of files) {
       if (!allowedTypes.includes(file.type)) {
-        setImageError('Chỉ chấp nhận định dạng JPG, JPEG hoặc PNG.')
-        return
+        newErrors.push(`${file.name}: Định dạng không hợp lệ`)
+        continue
       }
-
       if (file.size > maxSize) {
-        setImageError('Kích thước ảnh không được vượt quá 3MB.')
-        return
+        newErrors.push(`${file.name}: Kích thước vượt quá 3MB`)
+        continue
       }
-
-      setImageError(null) // Clear lỗi nếu hợp lệ
-
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, photo: reader.result }))
-      }
-      reader.readAsDataURL(file)
+      validFiles.push(file)
     }
+    if (validFiles.length + formData.photos.length > 5) {
+      setImageError('Tối đa chỉ được chọn 5 ảnh.')
+      return
+    }
+    setImageError(newErrors.join(', ') || null)
+    setFormData((prev) => ({
+      ...prev,
+      photos: [...prev.photos, ...validFiles],
+    }))
   }
 
   const handleSubmit = () => {
     if (!validate()) return
-    onSubmit(formData)
+    const data = new FormData()
+
+    for (const key in formData) {
+      if (key === 'photos') {
+        // Gửi ảnh mới (File object)
+        formData.photos.forEach((file) => {
+          if (file instanceof File) data.append('photos', file)
+        })
+      } else if (formData[key] !== undefined && formData[key] !== null) {
+        data.append(key, formData[key])
+      }
+    }
+
+    // Gửi danh sách ảnh cũ đã xóa (dạng JSON string)
+    console.log('removedPhotos: ', removedPhotos)
+    if (removedPhotos.length > 0) {
+      removedPhotos.forEach((photo) => {
+        data.append('removedPhotos', photo.replace(/\\/g, '/')) // Normalize luôn
+      })
+    }
+    console.log('formData: ', formData)
+    onSubmit(data)
     onClose()
   }
 
@@ -174,7 +216,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             </CCol>
           </CRow>
           <CRow className="mb-1">
-            <CCol md={12}>
+            <CCol md={6}>
               <CFormLabel htmlFor="maxGroupSize">
                 Số lượng tối đa <span style={{ color: 'red' }}>*</span>
               </CFormLabel>
@@ -187,6 +229,22 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
                 className="mb-1"
               />
               {errors.maxGroupSize && <small className="text-danger">{errors.maxGroupSize}</small>}
+            </CCol>
+
+            <CCol md={6}>
+              <CFormLabel htmlFor="avgRating">Đánh giá trung bình (0 - 5)</CFormLabel>
+              <CFormInput
+                id="avgRating"
+                type="number"
+                name="avgRating"
+                step="0.1"
+                min="0"
+                max="5"
+                value={formData.avgRating}
+                onChange={handleChange}
+                className="mb-1"
+              />
+              {errors.avgRating && <small className="text-danger">{errors.avgRating}</small>}
             </CCol>
           </CRow>
           <CRow className="mb-1">
@@ -231,52 +289,83 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
               />
               {errors.desc && <small className="text-danger">{errors.desc}</small>}
             </CCol>
-          </CRow>{' '}
+          </CRow>
+          {/*  Xử lý ảnh đại diện */}
           <CRow className="mb-1">
             <CCol md={6}>
-              <CFormLabel htmlFor="photo">Ảnh đại diện</CFormLabel>
+              <CFormLabel htmlFor="photo">
+                Danh sách ảnh{' '}
+                <span className="text-muted ms-2" style={{ fontSize: '0.85rem' }}>
+                  (Tối đa 5 ảnh)
+                </span>{' '}
+              </CFormLabel>
               <CFormInput
                 ref={fileInputRef}
-                id="photo"
+                id="photos"
                 type="file"
                 accept="image/*"
+                multiple
+                disabled={formData.photos.length >= 5}
+                title="Chỉ chọn tối đa 5 ảnh"
                 onChange={handleImageChange}
               />
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md={12}>
+              {formData.photos.length > 0 && (
+                <span
+                  className={`mt-1 ${formData.photos.length >= 5 ? 'text-warning' : 'text-muted'}`}
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Đã chọn {formData.photos.length}/5 ảnh.
+                </span>
+              )}
               {imageError && <small className="text-danger">{imageError}</small>}
-              {formData.photo && !imageError && (
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <img
-                    src={formData.photo}
-                    alt="Tour"
-                    onError={(e) => {
-                      e.target.onerror = null
-                      e.target.src = 'https://placehold.co/150x100?text=No+Image&font=roboto'
-                    }}
-                    style={{
-                      maxHeight: '150px',
-                      borderRadius: '8px',
-                      display: 'block',
-                      marginTop: '10px',
-                    }}
-                  />
-                  <CButton
-                    color="danger"
-                    size="sm"
-                    variant="ghost"
-                    style={{
-                      position: 'absolute',
-                      top: '5px',
-                      right: '-30px',
-                      padding: '2px 6px',
-                      borderRadius: '50%',
-                    }}
-                    onClick={() => {
-                      setFormData((prev) => ({ ...prev, photo: null }))
-                      fileInputRef.current.value = null // ✅ Reset input file
-                    }}
-                  >
-                    <CIcon icon={cilTrash} />
-                  </CButton>
+              {formData.photos && !imageError && (
+                <div className="d-flex flex-wrap gap-2 mt-2">
+                  {formData.photos.map((file, index) => (
+                    <div
+                      key={index}
+                      className="image-wrapper"
+                      style={{
+                        position: 'relative',
+                        display: 'inline-block',
+                        margin: '4px',
+                      }}
+                    >
+                      <img
+                        src={
+                          typeof file === 'string'
+                            ? `${backendUrl}/${file}`
+                            : URL.createObjectURL(file)
+                        }
+                        alt={`Tour ${index}`}
+                        className="preview-image"
+                        onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = 'https://placehold.co/100x100?text=No+Image'
+                        }}
+                        style={{
+                          height: '100px',
+                          borderRadius: '6px',
+                          transition: 'opacity 0.3s ease',
+                          width: '100px',
+                          objectFit: 'cover',
+                        }}
+                      />
+
+                      <CButton
+                        color="danger"
+                        size="sm"
+                        variant="ghost"
+                        className="delete-button"
+                        onClick={() => handleRemovePhoto(index)}
+                      >
+                        <CIcon icon={cilTrash} />
+                      </CButton>
+                    </div>
+                  ))}
                 </div>
               )}
             </CCol>

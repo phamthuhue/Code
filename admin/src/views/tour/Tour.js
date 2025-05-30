@@ -15,7 +15,7 @@ import { cilPlus } from '@coreui/icons'
 import mockTours from './mockData'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
-import TourFormModal from './TourForm'
+import TourFormModal from './components/TourForm'
 
 import { createTour, deleteTour, getTours, updateTour } from '../../services/Api/tourService'
 import TourTable from './components/TourTable'

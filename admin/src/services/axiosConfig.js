@@ -4,7 +4,7 @@ import axios from 'axios'
 const excludedUrls = ['/auth/login', '/auth/forgot-password', '/auth/reset-password']
 const BASE_URL = 'http://localhost:8001/api/v1'
 
-const BASE_URL_ENTRY = import.meta.env.API_BACKEND_URL || BASE_URL
+const BASE_URL_ENTRY = import.meta.env.VITE_API_BACKEND_URL || BASE_URL
 
 const axiosConfig = axios.create({
   baseURL: BASE_URL_ENTRY, // tuỳ cách bạn config .env
