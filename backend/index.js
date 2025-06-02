@@ -14,11 +14,10 @@ import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
 import invoiceDetailRoute from "./routes/invoiceDetails.js";
-
+import paymentRoute from "./routes/payment.js";
 import path from "path";
 
-import momoRoute from "./routes/momo.js"
-
+import momoRoute from "./routes/momo.js";
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { connectDB } from "./services/config/db.js";
@@ -55,6 +54,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/v1/auth", authRoute); // login và đăng ký không cần token
 app.use("/api/v1/tours", tourRoute);
 app.use("/api/v1/momo", momoRoute);
+
 // Route cần token - áp dụng middleware từ đây trở đi
 
 app.use("/api/v1/users", verifyToken, userRoute);
@@ -67,6 +67,7 @@ app.use("/api/v1/booking-details", verifyToken, bookingDetailRoute);
 app.use("/api/v1/tour-services", verifyToken, tourServiceRoute);
 app.use("/api/v1/invoices", verifyToken, invoiceRoute);
 app.use("/api/v1/invoice-details", verifyToken, invoiceDetailRoute);
+app.use("/api/v1/payment", verifyToken, paymentRoute);
 
 // Start server
 app.listen(port, () => {
