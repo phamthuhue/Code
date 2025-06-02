@@ -8,7 +8,7 @@ export const Footer = () => {
   const handlePayment = async () => {
     try {
       const response = await axiosInstance.post("payment/create-payment", {
-        amount: 25000, // Số tiền thanh toán, có thể thay đổi tùy theo tour
+        amount: 52000, // Số tiền thanh toán, có thể thay đổi tùy theo tour
         orderInfo: "Thanh toán tour du lịch",
         bookingId: "123456", //
       });

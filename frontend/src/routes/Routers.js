@@ -8,6 +8,8 @@ import { AdminRoutes } from "./AdminRoutes";
 import { NotFound } from "pages/NotFound";
 import { RequireAdmin } from "@utils/RequireAdmin";
 import { AuthRoutes } from "./AuthRoutes";
+import { PaymentLayout } from "@components/Layout/PaymentLayout";
+import { PaymentRoutes } from "./PaymentRoutes";
 
 export const Routers = () => {
   return (
@@ -20,6 +22,10 @@ export const Routers = () => {
       {/* USER */}
       <Route path="/" element={<UserLayout />}>
         {UserRoutes()}
+      </Route>
+      {/* PAYMENT CUSTOM  */}
+      <Route path="/" element={<PaymentLayout />}>
+        {PaymentRoutes()}
       </Route>
       {/* ADMIN */}
       <Route
