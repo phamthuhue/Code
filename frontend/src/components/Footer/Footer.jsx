@@ -1,9 +1,29 @@
+import axiosInstance from "@utils/axiosInstance";
 import React from "react";
 
 import { BsFacebook, BsInstagram } from "react-icons/bs";
 import { FaRegPaperPlane } from "react-icons/fa";
 
 export const Footer = () => {
+  const handlePayment = async () => {
+    try {
+      const response = await axiosInstance.post("payment/create-payment", {
+        amount: 25000, // Số tiền thanh toán, có thể thay đổi tùy theo tour
+        orderInfo: "Thanh toán tour du lịch",
+        bookingId: "123456", //
+      });
+
+      const { paymentUrl } = response.data;
+      console.log("paymentUrl: ", paymentUrl);
+      if (paymentUrl) {
+        // 🔁 Redirect sang VNPAY
+        // ✅ Mở tab mới thay vì redirect hiện tại
+        window.open(paymentUrl, "_blank");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo payment:", error);
+    }
+  };
   return (
     <footer className="bottom-0 pt-10 pb-2 px-5 bg-darkGreen text-white text-sm font-light">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:gap-3 lg:place-items-center">
@@ -37,7 +57,7 @@ export const Footer = () => {
           <div>VietNamTours@email.com</div>
           <div>Hà Nội, Việt Nam</div>
           <button
-            onClick={() => window.scrollTo(0, 0)}
+            onClick={handlePayment}
             className="submitButton rounded-full px-8"
           >
             Đặt ngay

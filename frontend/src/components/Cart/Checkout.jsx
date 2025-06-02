@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BsFillStarFill } from 'react-icons/bs';
+import React, { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { BsFillStarFill } from "react-icons/bs";
 
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "@utils/axiosInstance";
 import { notify } from "@utils/notify";
 
@@ -16,9 +16,9 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
   const [booking, setBooking] = useState({
     userId: user && user._id,
     tourId: tourId,
-    name: '',
-    phone: '',
-    startDate: '',
+    name: "",
+    phone: "",
+    startDate: "",
     numberOfPeople: 1,
   });
 
@@ -47,7 +47,10 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
           console.warn("Dữ liệu dịch vụ không phải mảng:", res.data);
         }
       } catch (err) {
-        console.error("Lỗi lấy dịch vụ:", err.response?.data?.message || err.message);
+        console.error(
+          "Lỗi lấy dịch vụ:",
+          err.response?.data?.message || err.message
+        );
       }
     };
 
@@ -87,15 +90,18 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
     }
 
     // Lưu dữ liệu vào localStorage để chuyển sang trang thanh toán
-    localStorage.setItem('paymentData', JSON.stringify({
-      booking,
-      selectedServices,
-      totalPrice,
-      price,
-      tourId,
-    }));
+    localStorage.setItem(
+      "paymentData",
+      JSON.stringify({
+        booking,
+        selectedServices,
+        totalPrice,
+        price,
+        tourId,
+      })
+    );
 
-    navigate('/payment');
+    navigate("/payment");
   };
 
   return (
@@ -113,7 +119,9 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
       <div className="mx-2 p-2">
         <h4 className="text-lg mt-4">Phiếu đặt tour</h4>
         <form className="grid gap-3" onSubmit={(e) => e.preventDefault()}>
-          <label htmlFor="name">Họ và tên <span className="text-red-500">*</span></label>
+          <label htmlFor="name">
+            Họ và tên <span className="text-red-500">*</span>
+          </label>
           <input
             id="name"
             type="text"
@@ -122,7 +130,9 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
             className="text-black"
           />
 
-          <label htmlFor="phone">Số điện thoại <span className="text-red-500">*</span></label>
+          <label htmlFor="phone">
+            Số điện thoại <span className="text-red-500">*</span>
+          </label>
           <input
             id="phone"
             type="text"
@@ -131,7 +141,9 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
             className="text-black"
           />
 
-          <label htmlFor="numberOfPeople">Số lượng khách <span className="text-red-500">*</span></label>
+          <label htmlFor="numberOfPeople">
+            Số lượng khách <span className="text-red-500">*</span>
+          </label>
           <input
             id="numberOfPeople"
             type="number"
@@ -154,11 +166,13 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={selectedServices.some((s) => s._id === service._id)}
+                      checked={selectedServices.some(
+                        (s) => s._id === service._id
+                      )}
                       onChange={() => toggleService(service)}
                       className="accent-green-600"
                     />
-                    <span>{service.note || 'Dịch vụ thêm'}</span>
+                    <span>{service.note || "Dịch vụ thêm"}</span>
                   </label>
                   <span className="font-medium text-right">
                     {service.servicePrice?.toLocaleString()} VNĐ/người
