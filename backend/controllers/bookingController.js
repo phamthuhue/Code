@@ -92,3 +92,23 @@ export const getBookingsByUser = async (req, res) => {
     });
   }
 };
+
+export const getBookingWithDetails = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    const booking = await Booking.findById(bookingId)
+      .populate('bookingDetails') // populate virtual bookingDetails
+      .populate('tourId')         // nếu muốn lấy thêm thông tin tour
+      .populate('userId', 'name email'); // lấy thông tin user (chỉ name & email)
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking không tồn tại' });
+    }
+
+    return res.status(200).json(booking);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Lỗi server' });
+  }
+};

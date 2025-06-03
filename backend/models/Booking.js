@@ -14,7 +14,7 @@ const bookingSchema = new mongoose.Schema(
       required: true, // Tour được đặt
     },
     name: { type: String, required: true },
-    phone: { type: String, required: true },   
+    phone: { type: String, required: true },
     startDate: { type: Date, required: true },
     numberOfPeople: {
       type: Number,
@@ -26,12 +26,23 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Đang xử lý', 'Xác nhận', 'Đã hủy'],
-      default: 'Đang xử lý',
+      enum: ['Mới tạo','Đang xử lý', 'Xác nhận', 'Đã hủy'],
+      default: 'Mới tạo',
     },
   },
-  { timestamps: true }
+  { 
+    timestamps: true, 
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+// Tạo virtual để populate danh sách BookingDetail của booking này
+bookingSchema.virtual('bookingDetails', {
+  ref: 'BookingDetail',    // Tên model BookingDetail
+  localField: '_id',       // Trường trong Booking
+  foreignField: 'bookingId' // Trường trong BookingDetail liên kết
+});
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

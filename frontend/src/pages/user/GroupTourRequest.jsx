@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 // import Img from "./../../assets/images/DuLichDoan.jpg";
-import Img from "./../../assets/images/groupTravel.jpeg";
+import Img from "./../../assets/images/groupTravel_cut.jpeg";
 import useFetch from '../../hooks/useFetch';
 import { BASE_URL } from '@utils/config'
 import { notify } from "@utils/notify";
@@ -92,7 +92,7 @@ export const GroupTourRequest = () => {
 
         <h1 className="text-2xl font-bold mb-2 text-black">Du lịch đoàn</h1>
         <p className="text-gray-700 leading-relaxed">
-          Du lịch khách đoàn là một loại hình cung cấp dịch vụ du lịch cho các công ty, xí nghiệp, các tổ chức, đoàn thể,...
+          Du lịch khách đoàn là một loại hình cung cấp dịch vụ du lịch cho các công ty, xí nghiệp, các tổ chức, đoàn thể,... khách hàng sẽ đưa ra những nhu cầu riêng cho một tour du lịch mà khách hàng mong muốn. Khách hàng sẽ sử dụng chung các dịch vụ ăn uống, nghỉ ngơi và tham quan từ đơn vị lữ hành cung cấp, đơn vị lữ hành sẽ tư vấn và thiết kế một lịch trình sao cho hợp lý nhất và đáp ứng được đầy đủ mong muốn của khách hàng.
         </p>
       </div>
 

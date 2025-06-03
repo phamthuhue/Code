@@ -30,7 +30,7 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
         // Lấy thông tin tour
         const tourRes = await axiosInstance.get(`/tours/${tourId}`);
         const tour = tourRes.data?.data;
-        console.log("Tour lấy được:", tour);
+        // console.log("Tour lấy được:", tour);
 
         if (tour?.startDate) {
           setBooking((prev) => ({
