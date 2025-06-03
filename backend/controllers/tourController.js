@@ -112,29 +112,35 @@ export const deleteTour = async (req, res) => {
   }
 };
 
-//get single tour
+// Lấy 1 tour cụ thể, có kèm thông tin guide
 export const getSingleTour = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const tour = await Tour.findById(id);
+    const tour = await Tour.findById(id).populate("guideId"); // populate hướng dẫn viên
+    if (!tour) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy tour",
+      });
+    }
     res.status(200).json({
       success: true,
-      message: "Succesfully found",
+      message: "Tìm thấy tour thành công",
       data: tour,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Tour not found",
+      message: "Lỗi server",
     });
   }
 };
 
-//get all tours
+// Lấy tất cả tour, có kèm thông tin guide
 export const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find({});
+    const tours = await Tour.find({}).populate("guideId");
     res.status(200).json({
       success: true,
       message: "Thành công",
@@ -148,7 +154,7 @@ export const getAllTours = async (req, res) => {
   }
 };
 
-//get tour by search
+// Tìm kiếm tour theo city và maxGroupSize, có kèm guide
 export const getTourBySearch = async (req, res) => {
   const city = new RegExp(req.query.city, "i");
   const maxGroupSize = parseInt(req.query.maxGroupSize);
@@ -157,33 +163,33 @@ export const getTourBySearch = async (req, res) => {
     const tours = await Tour.find({
       city,
       maxGroupSize: { $gte: maxGroupSize },
-    });
+    }).populate("guideId");
     res.status(200).json({
       success: true,
-      message: "Succesfully found",
+      message: "Tìm kiếm thành công",
       data: tours,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Not found",
+      message: "Không tìm thấy tour",
     });
   }
 };
 
-//get tour counts
+// Lấy tổng số tour
 export const getTourCount = async (req, res) => {
   try {
     const tourCount = await Tour.estimatedDocumentCount();
     res.status(200).json({
       success: true,
-      message: "Succesfully found",
+      message: "Thành công",
       data: tourCount,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Not found",
+      message: "Không thể đếm số lượng tour",
     });
   }
 };
