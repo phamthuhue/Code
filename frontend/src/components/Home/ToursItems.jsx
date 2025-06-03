@@ -1,15 +1,14 @@
 import React from "react";
-
 import { PiMountainsBold } from "react-icons/pi";
-
 import { Items } from "./Items";
 import useFetch from "../../hooks/useFetch";
+import { BASE_URL } from "../../utils/config";
 
 export const ToursItems = () => {
-  const { data: tours, loading, error } = useFetch(`tours`);
+  const { data: tours, loading, error } = useFetch(`${BASE_URL}/tours`);
 
   return (
-    <section className="max-w-[1640] px-4 py-12 mx-8 mb-10 text-sm">
+    <section className="max-w-[1640px] px-4 py-12 mx-8 mb-10 text-sm">
       <div className="sectionTitle">
         <PiMountainsBold size={20} className="text-darkGreen" />
         <div>Tour du lịch của chúng tôi</div>
@@ -24,7 +23,7 @@ export const ToursItems = () => {
           {tours?.map((tour) => (
             <Items
               key={tour._id}
-              photo={tour.photo}
+              photo={tour.photos[0]}
               title={tour.title}
               city={tour.city}
               price={tour.price}

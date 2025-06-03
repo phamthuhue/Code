@@ -35,7 +35,7 @@ export const Tours = () => {
           {tours?.map((item, index) => (
             <Items
               key={index}
-              photo={item.photo}
+              photo={item.photos[0]}
               title={item.title}
               city={item.city}
               price={item.price}

@@ -21,16 +21,18 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 export const TourDetails = () => {
   const params = useParams();
   const { id } = params;
+  
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0); //State quản lý ảnh hiện tại
 
   const { data: tour } = useFetch(`${BASE_URL}/tours/${id}`);
   const { data: itinerary } = useFetch(`${BASE_URL}/itineraries/tour/${id}`);
-  const { data: guide } = useFetch(`${BASE_URL}/guides/tour/${id}`);
+  
   const [guideReviews, setGuideReviews] = useState([]);
   useEffect(() => {
     const fetchGuideReviews = async () => {
-      if (guide && guide._id) {
+      if (tour?.guide?._id) {
         try {
-          const res = await axiosInstance.get(`/reviews/guide/${guide._id}`);
+          const res = await axiosInstance.get(`/reviews/guide/${tour.guide._id}`);
           setGuideReviews(Array.isArray(res.data.data) ? res.data.data : []);
         } catch (err) {
           console.error("Lỗi khi fetch guide reviews:", err);
@@ -38,7 +40,7 @@ export const TourDetails = () => {
       }
     };
     fetchGuideReviews();
-  }, [guide]);
+  }, [tour]);
 
   const [page, setPage] = useState(1);
   const {
@@ -51,7 +53,7 @@ export const TourDetails = () => {
 
   const {
     title,
-    photo,
+    photos,
     desc,
     price,
     city,
@@ -59,8 +61,19 @@ export const TourDetails = () => {
     startDate,
     endDate,
     avgRating,
+    guideId,
   } = tour;
   const options = { day: "numeric", month: "long", year: "numeric" };
+
+  console.log(photos);
+
+  //Hàm next/prev
+  const nextPhoto = () => {
+    setCurrentPhotoIndex((prev) => (prev + 1) % photos.length);
+  };
+  const prevPhoto = () => {
+    setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  };
 
   return (
     <section className="max-w-[1640px] mx-auto py-4 bg-gradient-to-b from-lightGreen to-white">
@@ -68,7 +81,33 @@ export const TourDetails = () => {
         {/*Tour Details*/}
         <div id="product" className="grid grid-cols w-full">
           {/*Image*/}
-          <img src={photo} alt="tour landscape" className="rounded" />
+          <div className="relative">
+            {photos && photos.length > 0 && (
+              <img
+                src={photos[currentPhotoIndex]}
+                alt="tour landscape"
+                className="rounded w-full h-auto"
+              />
+            )}
+            {photos && photos.length > 1 && (
+              <div className="absolute top-1/2 left-0 right-0 flex justify-between px-2">
+                <button
+                  onClick={prevPhoto}
+                  className="bg-gray bg-opacity-70 p-2 rounded-full shadow hover:bg-opacity-100 transition"
+                >
+                  {/* Mũi tên bên trái */}
+                  <span className="text-xl font-bold select-none">◀</span>
+                </button>
+                <button
+                  onClick={nextPhoto}
+                  className="bg-gray bg-opacity-70 p-2 rounded-full shadow hover:bg-opacity-100 transition"
+                >
+                  {/* Mũi tên bên phải */}
+                  <span className="text-xl font-bold select-none">▶</span>
+                </button>
+              </div>
+            )}
+          </div>
           {/*Description*/}
           <div id="description" className="detailContainer">
             <h4>{title}</h4>
@@ -167,26 +206,24 @@ export const TourDetails = () => {
           {/* TourGuide Section */}
           <div id="description" className="detailContainer">
             <h5>Hướng dẫn viên du lịch</h5>
-            <p className="">{guide.name}</p>
-            {guide ? (
+            {tour?.guideId ? (
               <>
+                <p className="">{tour.guideId.name}</p>
                 <div className="tourDetail mb-2">
                   <div className="flex items-center">
                     <BsFillStarFill className="text-yellow mr-1" />
                     <span>
-                        {guideReviews && guideReviews.length > 0
-                          ? `${guide.avgRating || 0} (${guideReviews.length} đánh giá)`
-                          : "Chưa có đánh giá"}
+                      {guideReviews.length > 0
+                        ? `${tour.guideId.avgRating || 0} (${guideReviews.length} đánh giá)`
+                        : "Chưa có đánh giá"}
                     </span>
                   </div>
                 </div>
-                <div className="">
-                  <div>
-                    <span>Tuổi: {guide.age}</span>
-                  </div>
-                  <div>
-                    <span>Giới tính: {guide.gender}</span>
-                  </div>
+                <div>
+                  <span>Tuổi: {tour.guideId.age}</span>
+                </div>
+                <div>
+                  <span>Giới tính: {tour.guideId.gender}</span>
                 </div>
               </>
             ) : (
