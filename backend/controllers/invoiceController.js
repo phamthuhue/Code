@@ -53,3 +53,31 @@ export const deleteInvoice = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const getInvoiceWithDetails = async (req, res) => {
+  try {
+    const { id } = req.params; // id của hóa đơn (Invoice)
+    
+    const invoice = await Invoice.findById(id)
+      .populate('bookingDetails') // lấy toàn bộ bookingDetails liên quan
+      .populate('userId', 'name email') // lấy thêm thông tin người dùng
+      .populate('promotionId', 'code discount') // lấy thêm thông tin khuyến mãi (nếu có)
+      .populate({
+        path: 'bookingId',
+        select: 'tourId startDate numberOfPeople status',
+        populate: {
+          path: 'tourId',
+          select: 'name price',
+        },
+      });
+
+    if (!invoice) {
+      return res.status(404).json({ message: 'Hóa đơn không tồn tại' });
+    }
+
+    res.status(200).json(invoice);
+  } catch (error) {
+    console.error('Lỗi khi lấy hóa đơn:', error);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+};
