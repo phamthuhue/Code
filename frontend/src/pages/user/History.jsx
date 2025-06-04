@@ -22,7 +22,7 @@ export const History = () => {
     totalPages,
     loading,
     error,
-  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=6`);
+  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=4`);
 
   const [reviewsbyUser, setReviewsByUser] = useState([]);
   const [reloadReviews, setReloadReviews] = useState(false); // trigger reload
@@ -85,10 +85,10 @@ export const History = () => {
               {/* Phần ảnh (bên trái) */}
               <div className="w-1/2 flex justify-center">
                 <img
-                  src={booking.tourId?.photo}
-                  alt="Tour avatar"
-                  className="w-full rounded-lg object-cover border"
-                />
+                    src={booking.tourId?.photos?.[0] || "https://via.placeholder.com/150"} // Ảnh mặc định
+                    alt="Tour avatar"
+                    className="w-full rounded-lg object-cover border"
+                  />
               </div>
 
               {/* Phần thông tin (bên phải) */}
@@ -134,12 +134,19 @@ export const History = () => {
                     >
                       Đặt lại
                     </button>
-                  ) : (
+                  ) : booking.status === "Mới tạo" ?(
                     <button
                       onClick={() => handleCancel(booking._id)} // nhớ định nghĩa hàm này
                       className="border border-red-500 text-red-400 bg-red-10 hover:bg-red-100 px-4 py-2 rounded"
                     >
                       Hủy đặt
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="px-4 py-2 border border-yellow bg-white text-yellow rounded cursor-not-allowed"
+                    >
+                      Đang xử lý
                     </button>
                   )}
                 </div>
