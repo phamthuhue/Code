@@ -4,6 +4,7 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URL } from "@utils/config";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ReviewModal from "@components/Modal/ReviewModal";
+import CancelModal from "@components/Modal/CancelModal";
 import axiosInstance from "@utils/axiosInstance";
 
 export const History = () => {
@@ -11,10 +12,13 @@ export const History = () => {
   const userId = user?.info?._id;
 
   const [page, setPage] = useState(1);
+  const [reloadTrigger, setReloadTrigger] = useState(false);
   const [selectedTour, setSelectedTour] = useState(null);
   const [selectedGuide, setSelectedGuide] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState(null);
 
   const {
     data: bookings,
@@ -22,7 +26,18 @@ export const History = () => {
     totalPages,
     loading,
     error,
-  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=4`);
+  } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=4&reload=${reloadTrigger}`);
+
+  // Hàm reload
+  const reloadBookings = () => {
+    // Toggle để ép URL đổi => hook useFetch chạy lại
+    setReloadTrigger((prev) => !prev);
+  };
+
+  const handleReload = () => {
+    console.log("Reload danh sách...");
+    reloadBookings();
+  };
 
   const [reviewsbyUser, setReviewsByUser] = useState([]);
   const [reloadReviews, setReloadReviews] = useState(false); // trigger reload
@@ -64,8 +79,9 @@ export const History = () => {
     window.location.href = `/tours/${tourId}`;
   };
 
-  const handleCancel = (booingId) => {
-    window.location.href = `/`;
+  const handleCancel = (bookingId) => {
+    setSelectedBooking(bookingId);
+    setShowCancelModal(true);
   };
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
@@ -170,10 +186,20 @@ export const History = () => {
       <ReviewModal
         isOpen={showReviewModal}
         onClose={() => setShowReviewModal(false)}
+        onReload={handleReload}
         tourId={selectedTour}
         guideId={selectedGuide}
         userId={userId}
         bookingId={selectedBooking}
+      />
+
+      {/* Modal hủy tour */}
+      <CancelModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        userId={userId}
+        bookingId={selectedBooking}
+        onReload={handleReload}
       />
     </div>
   );

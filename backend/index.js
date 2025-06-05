@@ -13,6 +13,7 @@ import bookingRoute from "./routes/bookings.js";
 import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
+import bookingCancellationRoute from "./routes/bookingCancellations.js";
 
 import path from "path";
 
@@ -65,6 +66,7 @@ app.use("/api/v1/bookings", verifyToken, bookingRoute);
 app.use("/api/v1/booking-details", verifyToken, bookingDetailRoute);
 app.use("/api/v1/tour-services", verifyToken, tourServiceRoute);
 app.use("/api/v1/invoices", verifyToken, invoiceRoute);
+app.use("/api/v1/booking-cancellations", verifyToken, bookingCancellationRoute);
 
 // Start server
 app.listen(port, () => {

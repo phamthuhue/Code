@@ -3,7 +3,7 @@ import { useState } from "react";
 import axiosInstance from "@utils/axiosInstance";
 import { notify } from "@utils/notify";
 
-const ReviewModal = ({ isOpen, onClose, tourId, guideId, userId, bookingId }) => {
+const ReviewModal = ({ isOpen, onClose, tourId, guideId, userId, bookingId, onReload }) => {
   const [ratingTour, setRatingTour] = useState(5);
   const [commentTour, setCommentTour] = useState("");
   const [ratingGuide, setRatingGuide] = useState(5);
@@ -41,6 +41,7 @@ const ReviewModal = ({ isOpen, onClose, tourId, guideId, userId, bookingId }) =>
                     2
             );
       onClose(); // Đóng modal sau khi gửi thành công
+      onReload();
     } catch (err) {
       setError("Gửi đánh giá thất bại.");
     } finally {
