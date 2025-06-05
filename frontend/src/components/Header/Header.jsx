@@ -4,7 +4,6 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { FaRegPaperPlane, FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import { Modal } from "antd";
-import ChangePassword from "pages/auth/ChangePassword";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -14,7 +13,6 @@ export const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  console.log(user);
   const handleOpen = () => {
     setOpen(!open);
     setLogo(!logo);
@@ -36,11 +34,6 @@ export const Header = () => {
         navigate("/");
       },
     });
-  };
-
-  const handleChangePassword = () => {
-    // Ví dụ: chuyển hướng đến trang đổi mật khẩu
-    navigate("/auth/change-password");
   };
 
   const handleToggleDropdown = () => {
@@ -105,7 +98,7 @@ export const Header = () => {
               {isDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 bg-white border rounded shadow p-2 w-40 z-50">
                   <button
-                    onClick={handleChangePassword}
+                    onClick={() => navigate("/auth/change-password")}
                     className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
                   >
                     Đổi mật khẩu
