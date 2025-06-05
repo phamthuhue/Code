@@ -1,15 +1,20 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { FaRegBell, FaRegPaperPlane, FaUserCircle } from "react-icons/fa";
+import { FaRegPaperPlane, FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import { Modal } from "antd";
+import ChangePassword from "pages/auth/ChangePassword";
+
 export const Header = () => {
   const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState(false);
   const navigate = useNavigate();
   const { user, dispatch } = useContext(AuthContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
+  console.log(user);
   const handleOpen = () => {
     setOpen(!open);
     setLogo(!logo);
@@ -32,6 +37,30 @@ export const Header = () => {
       },
     });
   };
+
+  const handleChangePassword = () => {
+    // Ví dụ: chuyển hướng đến trang đổi mật khẩu
+    navigate("/auth/change-password");
+  };
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative">
@@ -66,12 +95,29 @@ export const Header = () => {
         </ul>
         <div className="hidden md:flex">
           {user ? (
-            <div className="flex items-center">
-              <FaRegBell size={25} className="mr-2" />
-              <FaUserCircle size={30} className="mr-2" />
-              <button className="buttonWhite" onClick={logout}>
-                Đăng xuất
-              </button>
+            <div className="flex items-center relative" ref={dropdownRef}>
+              <div className="flex justify-between items-center mr-2 cursor-pointer" onClick={handleToggleDropdown}>
+                <FaUserCircle size={30}/>
+                <span className="font-semibold text-gray-600">{user.info.username}</span>
+              </div>
+
+              {/* Dropdown menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 bg-white border rounded shadow p-2 w-40 z-50">
+                  <button
+                    onClick={handleChangePassword}
+                    className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+                  >
+                    Đổi mật khẩu
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex">
