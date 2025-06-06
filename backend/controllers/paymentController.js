@@ -46,6 +46,52 @@ export const createPaymentUrl = (req, res) => {
 
   const paymentUrl = `${vnpUrl}?${querystring}`;
 
-  console.log("✅ Redirect to VNPay:", paymentUrl);
   return res.json({ paymentUrl });
+};
+
+export const vnpayIpnHandler = async (req, res) => {
+  console.log("aaaaaaaaaaaaaaaaaaa ");
+  // let vnp_Params = req.query;
+
+  // // Lưu ý: Xóa trường hash trước khi xác thực
+  // const secureHash = vnp_Params["vnp_SecureHash"];
+  // delete vnp_Params["vnp_SecureHash"];
+  // delete vnp_Params["vnp_SecureHashType"];
+
+  // // Sắp xếp params alphabetically
+  // vnp_Params = Object.keys(vnp_Params)
+  //   .sort()
+  //   .reduce((result, key) => {
+  //     result[key] = vnp_Params[key];
+  //     return result;
+  //   }, {});
+
+  // // Tạo hash xác thực
+  // const secretKey = process.env.VNP_HASH_SECRET;
+  // const signData = Object.entries(vnp_Params)
+  //   .map(([key, value]) => `${key}=${value}`)
+  //   .join("&");
+  // const checkHash = crypto
+  //   .createHmac("sha512", secretKey)
+  //   .update(signData)
+  //   .digest("hex");
+
+  // if (secureHash === checkHash) {
+  //   // Đã xác thực IPN từ VNPay là hợp lệ!
+  //   const txnRef = vnp_Params["vnp_TxnRef"];
+  //   const responseCode = vnp_Params["vnp_ResponseCode"];
+
+  //   // Ví dụ cập nhật trạng thái booking
+  //   if (responseCode === "00") {
+  //     // Thanh toán thành công
+  //     await updateBookingStatus(txnRef, "paid");
+  //   } else {
+  //     // Thanh toán thất bại
+  //     await updateBookingStatus(txnRef, "failed");
+  //   }
+  //   // Trả về đúng response cho VNPay
+  //   res.status(200).json({ RspCode: "00", Message: "Success" });
+  // } else {
+  //   res.status(200).json({ RspCode: "97", Message: "Checksum failed" });
+  // }
 };

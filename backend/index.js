@@ -14,6 +14,7 @@ import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
 import paymentRoute from "./routes/payment.js";
+import vnpayIpn from "./routes/vnpayIpn.js";
 
 import path from "path";
 
@@ -67,6 +68,8 @@ app.use("/api/v1/booking-details", verifyToken, bookingDetailRoute);
 app.use("/api/v1/tour-services", verifyToken, tourServiceRoute);
 app.use("/api/v1/invoices", verifyToken, invoiceRoute);
 app.use("/api/v1/payment", verifyToken, paymentRoute);
+// Route IPN (phải đặt riêng, không verifyToken!)
+app.use("/api/v1/payment-without-token", vnpayIpn);
 
 // Start server
 app.listen(port, () => {
