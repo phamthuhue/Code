@@ -24,7 +24,6 @@ export const ChangePassword = () => {
 
     try {
       setLoading(true);
-      // Giả sử API đổi mật khẩu của bạn là /api/users/change-password
       await axiosInstance.post("/auth/change-password", {
         userId: user.info._id,
         currentPassword,
@@ -32,14 +31,18 @@ export const ChangePassword = () => {
       });
       notify(
         "success",
-        "Gửi liên kết thành công",
-        "Chúng tôi đã gửi liên kết đặt lại mật khẩu đến email của bạn.",
+        "Đổi mật khẩu thành công",
         2
       );
-      navigate("/"); // Điều hướng về trang chủ hoặc trang nào bạn muốn
+      navigate("/"); // Điều hướng về trang chủ
     } catch (err) {
+      console.error("Chi tiết lỗi:", {
+    message: err.message,
+    responseData: err.response?.data,
+    stack: err.stack,
+  });
       const errorMessage = err.response?.data?.message ;
-      notify("error", "Gửi liên kết thất bại ", errorMessage, 2);
+      notify("error", "Đổi mật khẩu thất bại ", errorMessage, 2);
     } finally {
       setLoading(false);
     }
