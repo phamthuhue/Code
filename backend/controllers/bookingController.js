@@ -18,6 +18,60 @@ export const createBooking = async (req, res) => {
   }
 };
 
+// Controller: updateBooking
+export const updateBooking = async (req, res) => {
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,         // Lấy ID từ URL (req.params)
+      { $set: req.body },    // Cập nhật toàn bộ nội dung (hoặc chọn lọc)
+      { new: true }          // Trả về dữ liệu mới sau khi update
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy booking để cập nhật.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật booking thành công.",
+      data: updatedBooking,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi hệ thống khi cập nhật booking.",
+    });
+  }
+};
+
+// Controller: deleteBooking
+export const deleteBooking = async (req, res) => {
+  try {
+    const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
+
+    if (!deletedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy booking để xóa.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Xóa booking thành công.",
+      data: deletedBooking,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi hệ thống khi xóa booking.",
+    });
+  }
+};
+
 // Get single booking by ID
 export const getBooking = async (req, res) => {
   const id = req.params.id;
@@ -45,7 +99,7 @@ export const getBooking = async (req, res) => {
 // Get all bookings
 export const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find().populate('tourId', 'title');
     res.status(200).json({
       success: true,
       message: "Lấy danh sách đặt tour thành công.",
@@ -98,9 +152,12 @@ export const getBookingWithDetails = async (req, res) => {
     const { bookingId } = req.params;
 
     const booking = await Booking.findById(bookingId)
-      .populate('bookingDetails') // populate virtual bookingDetails
-      .populate('tourId')         // nếu muốn lấy thêm thông tin tour
-      .populate('userId', 'name email'); // lấy thông tin user (chỉ name & email)
+      .populate({
+        path: 'bookingDetails',
+        populate: { path: 'serviceId'} // nếu BookingDetail có serviceId
+      })
+      .populate('tourId')          // Lấy thông tin tour
+      .populate('userId', 'name email'); // Lấy name và email của user
 
     if (!booking) {
       return res.status(404).json({ message: 'Booking không tồn tại' });
@@ -108,7 +165,7 @@ export const getBookingWithDetails = async (req, res) => {
 
     return res.status(200).json(booking);
   } catch (error) {
-    console.error(error);
+    console.error('Lỗi khi lấy booking chi tiết:', error);
     return res.status(500).json({ message: 'Lỗi server' });
   }
 };

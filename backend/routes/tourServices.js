@@ -2,7 +2,7 @@ import express from 'express';
 import {
   getAllTourServices,
   getTourServiceById,
-  createTourServiceIfTourId,
+  createTourServiceForTour,
   updateTourService,
   deleteTourService,
   getTourServicesByTourId
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/', getAllTourServices);
 router.get('/:id', getTourServiceById);
-router.post('/', createTourServiceIfTourId);
+router.post('/', createTourServiceForTour);
 router.put('/:id', updateTourService);
 router.delete('/:id', deleteTourService);
 router.get('/tour/:tourId', getTourServicesByTourId);

@@ -16,12 +16,28 @@ export const getAllBookingDetails = async (req, res) => {
 export const getBookingDetailById = async (req, res) => {
   try {
     const detail = await BookingDetail.findById(req.params.id)
-      .populate('bookingId')
-      .populate('tourServiceId');
     if (!detail) return res.status(404).json({ message: 'Không tìm thấy chi tiết đặt tour' });
     res.status(200).json(detail);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const getBookingDetailsByBookingId = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // Lấy tất cả BookingDetail có bookingId này
+    const bookingDetails = await BookingDetail.find({ bookingId})
+
+    if (!bookingDetails || bookingDetails.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy chi tiết đặt tour1' });
+    }
+
+    return res.status(200).json(bookingDetails);
+  } catch (error) {
+    console.error('Lỗi khi lấy BookingDetails:', error);
+    return res.status(500).json({ message: 'Lỗi server' });
   }
 };
 

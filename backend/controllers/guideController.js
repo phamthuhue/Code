@@ -22,7 +22,6 @@ export const createGuide = async (req, res) => {
       address,
       phone,
       rating: 5,        // mặc định
-      countRating: 0    // mặc định
     });
 
     await newGuide.save();

@@ -41,7 +41,7 @@ export const getTourServicesByTourId = async (req, res) => {
 };
 
 // Tạo mới dịch vụ
-export const createTourServiceIfTourId = async (req, res) => {
+export const createTourServiceForTour = async (req, res) => {
   try {
     const { tourId, services } = req.body;
 
