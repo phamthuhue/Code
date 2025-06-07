@@ -1,12 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdLocationPin } from "react-icons/md";
 
 export const Items = ({ photo, title, city, price, id }) => {
     // const imageUrl = `${process.env.REACT_APP_BASE_URL_API_END_POINT}/uploads/tour-img03.jpg`; // dùng dấu /, KHÔNG dùng \
 
+    const navigate = useNavigate();
+
     return (
-        <div className="shadow-lg rounded-lg hover:scale-105 duration-300 bg-white">
+        <div
+            onClick={() => navigate(`/tours/${id}`)}
+            className="shadow-lg rounded-lg hover:scale-105 duration-300 bg-white"
+        >
             <img
                 src={photo}
                 alt={title}
