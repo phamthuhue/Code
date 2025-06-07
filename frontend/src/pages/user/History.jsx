@@ -26,7 +26,20 @@ export const History = () => {
         totalPages,
         loading,
         error,
-    } = useFetch(`${BASE_URL}/bookings/user/${userId}?page=${page}&limit=6`);
+    } = useFetch(
+        `${BASE_URL}/bookings/user/${userId}?page=${page}&limit=4&reload=${reloadTrigger}`
+    );
+
+    // Hàm reload
+    const reloadBookings = () => {
+        // Toggle để ép URL đổi => hook useFetch chạy lại
+        setReloadTrigger((prev) => !prev);
+    };
+
+    const handleReload = () => {
+        console.log("Reload danh sách...");
+        reloadBookings();
+    };
 
     const [reviewsbyUser, setReviewsByUser] = useState([]);
     const [reloadReviews, setReloadReviews] = useState(false); // trigger reload
@@ -185,7 +198,7 @@ export const History = () => {
                                         >
                                             Đặt lại
                                         </button>
-                                    ) : (
+                                    ) : booking.status === "Mới tạo" ? (
                                         <button
                                             onClick={() =>
                                                 handleCancel(booking._id)
@@ -193,6 +206,13 @@ export const History = () => {
                                             className="border border-red-500 text-red-400 bg-red-10 hover:bg-red-100 px-4 py-2 rounded"
                                         >
                                             Hủy đặt
+                                        </button>
+                                    ) : (
+                                        <button
+                                            disabled
+                                            className="px-4 py-2 border border-yellow bg-white text-yellow rounded cursor-not-allowed"
+                                        >
+                                            Đang xử lý
                                         </button>
                                     )}
                                 </div>
@@ -212,10 +232,20 @@ export const History = () => {
             <ReviewModal
                 isOpen={showReviewModal}
                 onClose={() => setShowReviewModal(false)}
+                onReload={handleReload}
                 tourId={selectedTour}
                 guideId={selectedGuide}
                 userId={userId}
                 bookingId={selectedBooking}
+            />
+
+            {/* Modal hủy tour */}
+            <CancelModal
+                isOpen={showCancelModal}
+                onClose={() => setShowCancelModal(false)}
+                userId={userId}
+                bookingId={selectedBooking}
+                onReload={handleReload}
             />
         </div>
     );
