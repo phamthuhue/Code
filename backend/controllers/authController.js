@@ -104,7 +104,7 @@ export const login = async (req, res) => {
         const { id, password, role, ...rest } = user._doc;
         //create jwt token
         const token = jwt.sign({ id, role }, process.env.JWT_SECRET_KEY, {
-            expiresIn: "10h",
+            expiresIn: "1h",
         });
         //set token in the browser cookies and send the response to the client
         res.status(200).json({ token, info: { ...rest }, role });
@@ -233,54 +233,55 @@ export const resetPassword = async (req, res) => {
 
 // user change password
 export const changePassword = async (req, res) => {
-  const { userId, currentPassword, newPassword } = req.body;
+    const { userId, currentPassword, newPassword } = req.body;
 
-  if (!userId || !currentPassword || !newPassword) {
-    return res.status(400).json({
-      success: false,
-      message: "Vui lòng cung cấp đầy đủ userId, mật khẩu hiện tại và mật khẩu mới.",
-    });
-  }
-
-  try {
-    // Tìm user theo id
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy người dùng.",
-      });
+    if (!userId || !currentPassword || !newPassword) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Vui lòng cung cấp đầy đủ userId, mật khẩu hiện tại và mật khẩu mới.",
+        });
     }
 
-    // So sánh mật khẩu hiện tại
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Mật khẩu hiện tại không đúng.",
-      });
+    try {
+        // Tìm user theo id
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy người dùng.",
+            });
+        }
+
+        // So sánh mật khẩu hiện tại
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Mật khẩu hiện tại không đúng.",
+            });
+        }
+
+        // Hash mật khẩu mới và lưu
+        const hashedPassword = hassPassword(newPassword);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Đổi mật khẩu thành công.",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Máy chủ có lỗi xảy ra. Vui lòng thử lại sau.",
+            ...(process.env.NODE_ENV === "development" && {
+                debug: {
+                    message: err.message,
+                    stack: err.stack,
+                },
+            }),
+        });
     }
-
-    // Hash mật khẩu mới và lưu
-    const hashedPassword = hassPassword(newPassword);
-    user.password = hashedPassword;
-
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Đổi mật khẩu thành công.",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: "Máy chủ có lỗi xảy ra. Vui lòng thử lại sau.",
-      ...(process.env.NODE_ENV === "development" && {
-        debug: {
-          message: err.message,
-          stack: err.stack,
-        },
-      }),
-    });
-  }
 };

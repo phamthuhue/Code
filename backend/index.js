@@ -14,11 +14,12 @@ import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
 import bookingCancellationRoute from "./routes/bookingCancellations.js";
+import paymentRoute from "./routes/payment.js";
+import vnpayIpn from "./routes/vnpayIpn.js";
 
 import path from "path";
 
-import momoRoute from "./routes/momo.js"
-
+import momoRoute from "./routes/momo.js";
 
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { connectDB } from "./services/config/db.js";
@@ -28,20 +29,20 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "http://localhost:3002",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
 ];
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
 };
 
 // Middleware
@@ -55,9 +56,9 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/v1/auth", authRoute); // login và đăng ký không cần token
 app.use("/api/v1/tours", tourRoute);
 app.use("/api/v1/momo", momoRoute);
+
 // Route cần token - áp dụng middleware từ đây trở đi
 
-// app.use("/api/v1/users", verifyToken, userRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/reviews", reviewRoute);
 app.use("/api/v1/guides", guideRoute);
@@ -67,10 +68,13 @@ app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/booking-details", bookingDetailRoute);
 app.use("/api/v1/tour-services", tourServiceRoute);
 app.use("/api/v1/invoices", invoiceRoute);
+app.use("/api/v1/payment", paymentRoute);
+// Route IPN (phải đặt riêng, không verifyToken!)
+app.use("/api/v1/payment-without-token", vnpayIpn);
 app.use("/api/v1/booking-cancellations", bookingCancellationRoute);
 
 // Start server
 app.listen(port, () => {
-  connectDB(); // 👉 gọi kết nối ở đây
-  console.log(`🚀 Server running on port ${port}`);
+    connectDB(); // 👉 gọi kết nối ở đây
+    console.log(`🚀 Server running on port ${port}`);
 });

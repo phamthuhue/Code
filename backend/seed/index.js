@@ -1,33 +1,68 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { seedTours } from "./seedTours.js";
-import { seedGuides } from "./seedGuides.js";
-import { seedItineraries } from "./seedItineraries.js";
-import { seedReviews } from "./seedReviews.js";
-import { seedRoles } from "./roleSeeder.js";
-import { seedUsers } from "./seedUsers.js";
-// import { seedRoles } from "./roleSeeder.js"; // Nếu có
 
+// Import model schema (giả sử bạn đã export default các schema trong từng file)
+import Guide from "../models/Guide.js";
+import Invoice from "../models/Invoice.js";
+import Itinerary from "../models/Itinerary.js";
+import Partner from "../models/Partner.js";
+import PartnerType from "../models/PartnerType.js";
+import Promotion from "../models/Promotion.js";
+import Review from "../models/Review.js";
+import Role from "../models/Role.js";
+import Service from "../models/Service.js";
+import Staff from "../models/Staff.js";
+import Tour from "../models/Tour.js";
+import TourService from "../models/TourService.js";
+import User from "../models/User.js";
+import Booking from "../models/Booking.js";
+import BookingCancellation from "../models/BookingCancellation.js";
+import BookingDetail from "../models/BookingDetail.js";
+import GroupTourRequest from "../models/GroupTourRequest.js";
+import mockData from "./mockData.js";
 dotenv.config();
-
-const runAllSeeders = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("🚀 Connected to MongoDB");
-
-        await seedRoles(); // Nếu có
-        await seedUsers(); // Nếu có
-        const guide = await seedGuides();
-        const tour = await seedTours(guide._id);
-        await seedItineraries(tour._id);
-        await seedReviews(tour._id, guide._id);
-
-        console.log("✅ All seeders completed");
-    } catch (err) {
-        console.error("❌ Seeder failed:", err);
-    } finally {
-        await mongoose.disconnect();
-    }
+// Map mockData key với model
+const modelMap = {
+    Guide,
+    Invoice,
+    Itinerary,
+    Partner,
+    PartnerType,
+    Promotion,
+    Review,
+    Role,
+    Service,
+    Staff,
+    Tour,
+    TourService,
+    User,
+    Booking,
+    BookingCancellation,
+    BookingDetail,
+    GroupTourRequest,
 };
 
-runAllSeeders();
+async function seed() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("✅ Đã kết nối MongoDB!");
+
+        // Duyệt tất cả các model có dữ liệu
+        for (const [key, Model] of Object.entries(modelMap)) {
+            const data = mockData[key];
+            if (data) {
+                await Model.deleteMany({});
+                await Model.create(data);
+                console.log(`✅ Đã seed ${key}`);
+            }
+        }
+
+        console.log("🎉 Seed dữ liệu thành công!");
+        process.exit(0);
+    } catch (err) {
+        console.error("❌ Lỗi seed:", err);
+        process.exit(1);
+    }
+}
+
+seed();

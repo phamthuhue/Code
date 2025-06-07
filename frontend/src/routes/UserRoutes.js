@@ -6,9 +6,8 @@ import { SearchResultList } from "pages/user/SearchResultList";
 import { Home } from "pages/Home";
 import { Tours } from "pages/user/Tours";
 import { History } from "pages/user/History";
-import { GroupTourRequest} from "pages/user/GroupTourRequest";
-import { Payment } from "pages/user/Payment"
-
+import { GroupTourRequest } from "pages/user/GroupTourRequest";
+import { Payment } from "pages/user/payment/Payment";
 export const UserRoutes = () => (
   <>
     <Route index element={<Home />} />
