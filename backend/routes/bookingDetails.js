@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getAllBookingDetails,
-  getBookingDetailById,
+  getBookingDetailsByBookingId,
   createBookingDetail,
   updateBookingDetail,
   deleteBookingDetail
@@ -13,7 +13,7 @@ const router = express.Router();
 router.get('/', getAllBookingDetails);
 
 // Lấy chi tiết theo ID
-router.get('/:id', getBookingDetailById);
+router.get('/:bookingId', getBookingDetailsByBookingId);
 
 // Tạo mới booking detail
 router.post('/', createBookingDetail);

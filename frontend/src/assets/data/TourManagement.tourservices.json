@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "682efc0ac3da4111179609eb"
+  },
+  "tourId": {
+    "$oid": "681c137bb7e1685ffb7f9dd7"
+  },
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "682efa2fc3da4111179609e3"
+      },
+      "numberOfPeopl": 2,
+      "servicePrice": 350000,
+      "note": "Buffet hải sản cao cấp"
+    },
+    {
+      "serviceId": {
+        "$oid": "682efa2fc3da4111179609e4"
+      },
+      "numberOfPeopl": 2,
+      "servicePrice": 1500000,
+      "note": "Combo nghỉ dưỡng khách sạn"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "682efc0ac3da4111179609ec"
+  },
+  "tourId": {
+    "$oid": "681c137bb7e1685ffb7f9dd4"
+  },
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "682efa2fc3da4111179609e7"
+      },
+      "numberOfPeopl": 1,
+      "servicePrice": 2000000,
+      "note": "Phòng Suite hướng biển"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "682efc0ac3da4111179609ea"
+  },
+  "tourId": {
+    "$oid": "681c137bb7e1685ffb7f9dd2"
+  },
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "682efa2fc3da4111179609e3"
+      },
+      "numberOfPeopl": 2,
+      "servicePrice": 350000,
+      "note": "Buffet hải sản cao cấp"
+    },
+    {
+      "serviceId": {
+        "$oid": "682efa2fc3da4111179609e7"
+      },
+      "numberOfPeopl": 1,
+      "servicePrice": 2000000,
+      "note": "Phòng Suite hướng biển"
+    }
+  ]
+}]

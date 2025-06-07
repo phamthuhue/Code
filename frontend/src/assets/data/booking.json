@@ -1,35 +1,47 @@
 [
   {
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd2" },
-    "startDate": "2025-06-15",
-    "numberOfPeople": 2,
-    "tourPrice": 2500000,
-    "totalPrice": 5000000,
-    "status": "Xác nhận",
-    "createdAt": { "$date": "2025-05-14T08:00:00Z" },
-    "updatedAt": { "$date": "2025-05-14T08:00:00Z" }
+    "_id": { "$oid": "685f30340dcbf834dab0a00a" },
+    "bookingId": { "$oid": "682d466d7d70c272e3bf9ee1" },
+    "itemType": "Tour",
+    "description": "Cố Đô Huế",
+    "quantity": 2,
+    "unitPrice": 3500000,
+    "totalPrice": 7000000
   },
   {
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd3" },
-    "startDate": "2025-07-01",
-    "numberOfPeople": 2,
-    "tourPrice": 2000000,
-    "totalPrice": 4000000,
-    "status": "Đang xử lý",
-    "createdAt": { "$date": "2025-05-14T08:10:00Z" },
-    "updatedAt": { "$date": "2025-05-14T08:10:00Z" }
+    "bookingId": "682d466d7d70c272e3bf9ee1",
+    "tourServiceId": "682efa2fc3da4111179609e3",
+    "itemType": "Service",
+    "description": "Buffet hải sản cao cấp",
+    "quantity": 2,
+    "unitPrice": 350000,
+    "totalPrice": 700000
   },
   {
-    "userId": { "$oid": "681f2b41f493b782bfcc771f" },
-    "tourId": { "$oid": "681c137bb7e1685ffb7f9dd4" },
-    "startDate": "2025-07-10",
-    "numberOfPeople": 2,
-    "tourPrice": 2200000,
-    "totalPrice": 4400000,
-    "status": "Hủy",
-    "createdAt": { "$date": "2025-05-14T08:20:00Z" },
-    "updatedAt": { "$date": "2025-05-14T08:20:00Z" }
+    "bookingId": "682d466d7d70c272e3bf9ee1",
+    "tourServiceId": "682efa2fc3da4111179609e4",
+    "itemType": "Service",
+    "description": "Combo nghỉ dưỡng khách sạn",
+    "quantity": 2,
+    "unitPrice": 1500000,
+    "totalPrice": 3000000
+  },
+  {
+    "bookingId": "682d466d7d70c272e3bf9e9f",
+    "tourServiceId": null,
+    "itemType": "Tour",
+    "description": "Phố cổ Hội An",
+    "quantity": 2,
+    "unitPrice": 2500000,
+    "totalPrice": 5000000
+  },
+  {
+    "bookingId": "682d466d7d70c272e3bf9e9f",
+    "tourServiceId": "682efa2fc3da4111179609e7",
+    "itemType": "Service",
+    "description": "Phòng Suite hướng biển",
+    "quantity": 1,
+    "unitPrice": 2000000,
+    "totalPrice": 2000000
   }
 ]

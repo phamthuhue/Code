@@ -13,8 +13,7 @@ import bookingRoute from "./routes/bookings.js";
 import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
-import paymentRoute from "./routes/payment.js";
-import vnpayIpn from "./routes/vnpayIpn.js";
+import bookingCancellationRoute from "./routes/bookingCancellations.js";
 
 import path from "path";
 
@@ -28,20 +27,20 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "http://localhost:3002",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
 ];
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
 };
 
 // Middleware
@@ -70,9 +69,10 @@ app.use("/api/v1/invoices", verifyToken, invoiceRoute);
 app.use("/api/v1/payment", verifyToken, paymentRoute);
 // Route IPN (phải đặt riêng, không verifyToken!)
 app.use("/api/v1/payment-without-token", vnpayIpn);
+app.use("/api/v1/booking-cancellations", bookingCancellationRoute);
 
 // Start server
 app.listen(port, () => {
-  connectDB(); // 👉 gọi kết nối ở đây
-  console.log(`🚀 Server running on port ${port}`);
+    connectDB(); // 👉 gọi kết nối ở đây
+    console.log(`🚀 Server running on port ${port}`);
 });

@@ -1,10 +1,12 @@
 // controllers/bookingCancellationController.js
 import BookingCancellation from '../models/BookingCancellation.js';
+import Booking from '../models/Booking.js';
 
 export const createBookingCancellation = async (req, res) => {
     try {
         const {
             bookingId,
+            userId,
             cancelReason,
             refundMethod,
             refundAccountName,
@@ -29,7 +31,7 @@ export const createBookingCancellation = async (req, res) => {
 
         const cancellation = new BookingCancellation({
             bookingId,
-            userId: req.user._id, // lấy từ middleware xác thực đăng nhập
+            userId,
             cancelReason,
             refundMethod,
             refundAccountName,
@@ -41,9 +43,15 @@ export const createBookingCancellation = async (req, res) => {
 
         await cancellation.save();
 
+        // Cập nhật trạng thái booking
+        await Booking.updateOne(
+            { _id: bookingId },
+            { status: "Đang xử lý" }
+        );
+
         res.status(201).json({ message: 'Yêu cầu hủy tour đã được gửi.', cancellation });
     } catch (error) {
         console.error('Lỗi khi tạo yêu cầu hủy:', error);
-        res.status(500).json({ error: 'Đã xảy ra lỗi khi xử lý yêu cầu.' });
+        res.status(500).json({ error: error.message });  // Trả về message cụ thể hơn để dễ debug
     }
 };

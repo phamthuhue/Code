@@ -25,7 +25,6 @@ export const TourDetails = () => {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0); //State quản lý ảnh hiện tại
 
     const { data: tour } = useFetch(`${BASE_URL}/tours/${id}`);
-    console.log("data: ", tour);
     const { data: itinerary } = useFetch(`${BASE_URL}/itineraries/tour/${id}`);
 
     const [guideReviews, setGuideReviews] = useState([]);
@@ -36,6 +35,7 @@ export const TourDetails = () => {
                     const res = await axiosInstance.get(
                         `/reviews/guide/${tour.guide._id}`
                     );
+                    console.log("Dữ liệu guide reviews:", res.data.data); // Log dữ liệu ra đây
                     setGuideReviews(
                         Array.isArray(res.data.data) ? res.data.data : []
                     );
@@ -69,8 +69,6 @@ export const TourDetails = () => {
         guideId,
     } = tour;
     const options = { day: "numeric", month: "long", year: "numeric" };
-
-    console.log(photos);
 
     //Hàm next/prev
     const nextPhoto = () => {
@@ -227,14 +225,10 @@ export const TourDetails = () => {
                                     <div className="flex items-center">
                                         <BsFillStarFill className="text-yellow mr-1" />
                                         <span>
-                                            {guideReviews.length > 0
-                                                ? `${
-                                                      tour.guideId.avgRating ||
-                                                      0
-                                                  } (${
-                                                      guideReviews.length
-                                                  } đánh giá)`
-                                                : "Chưa có đánh giá"}
+                                            {/* {guideReviews.length > 0
+                        ? `${tour.guideId.avgRating || 0} (${guideReviews.length} đánh giá)`
+                        : "Chưa có đánh giá"} */}
+                                            {tour.guideId.avgRating}
                                         </span>
                                     </div>
                                 </div>

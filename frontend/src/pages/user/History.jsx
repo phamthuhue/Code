@@ -4,6 +4,7 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URL } from "@utils/config";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import ReviewModal from "@components/Modal/ReviewModal";
+import CancelModal from "@components/Modal/CancelModal";
 import axiosInstance from "@utils/axiosInstance";
 
 export const History = () => {
@@ -11,10 +12,13 @@ export const History = () => {
     const userId = user?.info?._id;
 
     const [page, setPage] = useState(1);
+    const [reloadTrigger, setReloadTrigger] = useState(false);
     const [selectedTour, setSelectedTour] = useState(null);
     const [selectedGuide, setSelectedGuide] = useState(null);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [bookingToCancel, setBookingToCancel] = useState(null);
 
     const {
         data: bookings,
@@ -65,8 +69,9 @@ export const History = () => {
         window.location.href = `/tours/${tourId}`;
     };
 
-    const handleCancel = (booingId) => {
-        window.location.href = `/`;
+    const handleCancel = (bookingId) => {
+        setSelectedBooking(bookingId);
+        setShowCancelModal(true);
     };
 
     if (loading) return <p>Đang tải dữ liệu...</p>;
@@ -89,7 +94,10 @@ export const History = () => {
                             {/* Phần ảnh (bên trái) */}
                             <div className="w-1/2 flex justify-center">
                                 <img
-                                    src={booking.tourId?.photo}
+                                    src={
+                                        booking.tourId?.photos?.[0] ||
+                                        "https://via.placeholder.com/150"
+                                    } // Ảnh mặc định
                                     alt="Tour avatar"
                                     className="w-full rounded-lg object-cover border"
                                 />
