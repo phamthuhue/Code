@@ -14,6 +14,8 @@ import bookingDetailRoute from "./routes/bookingDetails.js";
 import tourServiceRoute from "./routes/tourServices.js";
 import invoiceRoute from "./routes/invoices.js";
 import bookingCancellationRoute from "./routes/bookingCancellations.js";
+import paymentRoute from "./routes/payment.js";
+import vnpayIpn from "./routes/vnpayIpn.js";
 
 import path from "path";
 
@@ -57,16 +59,16 @@ app.use("/api/v1/momo", momoRoute);
 
 // Route cần token - áp dụng middleware từ đây trở đi
 
-app.use("/api/v1/users", verifyToken, userRoute);
-app.use("/api/v1/reviews", verifyToken, reviewRoute);
-app.use("/api/v1/guides", verifyToken, guideRoute);
-app.use("/api/v1/itineraries", verifyToken, itineraryRoute);
-app.use("/api/v1/groupTourRequests", verifyToken, groupTourRequestRoute);
-app.use("/api/v1/bookings", verifyToken, bookingRoute);
-app.use("/api/v1/booking-details", verifyToken, bookingDetailRoute);
-app.use("/api/v1/tour-services", verifyToken, tourServiceRoute);
-app.use("/api/v1/invoices", verifyToken, invoiceRoute);
-app.use("/api/v1/payment", verifyToken, paymentRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/reviews", reviewRoute);
+app.use("/api/v1/guides", guideRoute);
+app.use("/api/v1/itineraries", itineraryRoute);
+app.use("/api/v1/groupTourRequests", groupTourRequestRoute);
+app.use("/api/v1/bookings", bookingRoute);
+app.use("/api/v1/booking-details", bookingDetailRoute);
+app.use("/api/v1/tour-services", tourServiceRoute);
+app.use("/api/v1/invoices", invoiceRoute);
+app.use("/api/v1/payment", paymentRoute);
 // Route IPN (phải đặt riêng, không verifyToken!)
 app.use("/api/v1/payment-without-token", vnpayIpn);
 app.use("/api/v1/booking-cancellations", bookingCancellationRoute);
