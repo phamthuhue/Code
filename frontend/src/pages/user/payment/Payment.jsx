@@ -53,8 +53,7 @@ export const Payment = () => {
                 console.log("paymentUrl: ", paymentUrl);
                 if (paymentUrl) {
                     // 🔁 Redirect sang VNPAY
-                    // ✅ Mở tab mới thay vì redirect hiện tại
-                    window.open(paymentUrl, "_blank");
+                    window.location.href = paymentUrl; // Chuyển hướng trong cùng một tab
                 }
             } else if (paymentMethod === "momo") {
                 const res = await axios.post(
