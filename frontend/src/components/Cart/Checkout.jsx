@@ -30,12 +30,11 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
         // Lấy thông tin tour
         const tourRes = await axiosInstance.get(`/tours/${tourId}`);
         const tour = tourRes.data?.data;
-        // console.log("Tour lấy được:", tour);
 
         if (tour?.startDate) {
           setBooking((prev) => ({
             ...prev,
-            startDate: tour.startDate, // auto điền ngày khởi hành
+            startDate: tour.startDate,
           }));
         }
 
@@ -63,30 +62,40 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
   };
 
   const toggleService = (service) => {
+    setSelectedServices((prev) => {
+      const existingService = prev.find((s) => s._id === service._id);
+      if (existingService) {
+        // Nếu đã có, bỏ chọn
+        return prev.filter((s) => s._id !== service._id);
+      } else {
+        // Nếu chưa có, thêm mới với số lượng mặc định là 1
+        return [...prev, { ...service, quantity: 1 }];
+      }
+    });
+  };
+
+  const updateServiceQuantity = (serviceId, newQuantity) => {
     setSelectedServices((prev) =>
-      prev.find((s) => s._id === service._id)
-        ? prev.filter((s) => s._id !== service._id)
-        : [...prev, service]
+      prev.map((s) =>
+        s._id === serviceId ? { ...s, quantity: newQuantity } : s
+      )
     );
   };
 
   const totalServicePrice = selectedServices.reduce((total, s) => {
-    return total + s.servicePrice * booking.numberOfPeople;
+    return total + s.servicePrice * s.quantity;
   }, 0);
 
   const totalPrice = Number(price) * booking.numberOfPeople + totalServicePrice;
 
-  // Khi nhấn đặt tour, chuyển sang trang thanh toán kèm dữ liệu
   const handleCheckoutClick = () => {
     const { name, phone, startDate, numberOfPeople } = booking;
 
-    // Kiểm tra các trường bắt buộc
     if (!name.trim() || !phone.trim() || !numberOfPeople) {
       notify("error", "Lỗi", "Vui lòng điền đầy đủ thông tin đặt tour!");
       return;
     }
 
-    // Lưu dữ liệu vào localStorage để chuyển sang trang thanh toán
     localStorage.setItem('paymentData', JSON.stringify({
       booking,
       selectedServices,
@@ -146,25 +155,44 @@ export const Checkout = ({ title, price, reviews, avgRating, tourId }) => {
           <h5 className="mb-2 font-semibold">Chọn thêm dịch vụ:</h5>
           {Array.isArray(services) && services.length > 0 ? (
             <div className="space-y-2">
-              {services.map((service) => (
-                <div
-                  key={service._id}
-                  className="flex justify-between items-center p-3 bg-white rounded shadow text-black"
-                >
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedServices.some((s) => s._id === service._id)}
-                      onChange={() => toggleService(service)}
-                      className="accent-green-600"
-                    />
-                    <span>{service.note || 'Dịch vụ thêm'}</span>
-                  </label>
-                  <span className="font-medium text-right">
-                    {service.servicePrice?.toLocaleString()} VNĐ/người
-                  </span>
-                </div>
-              ))}
+              {services.map((service) => {
+                const selectedService = selectedServices.find((s) => s._id === service._id);
+                return (
+                  <div
+                    key={service._id}
+                    className="flex flex-col p-3 bg-white rounded shadow text-black"
+                  >
+                    <div className="flex justify-between items-center">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!!selectedService}
+                          onChange={() => toggleService(service)}
+                          className="accent-green-600"
+                        />
+                        <span>{service.note || 'Dịch vụ thêm'}</span>
+                      </label>
+                      <span className="font-medium text-right">
+                        {service.servicePrice?.toLocaleString()} VNĐ/người
+                      </span>
+                    </div>
+                    {selectedService && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <label>Số lượng:</label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={selectedService.quantity}
+                          onChange={(e) =>
+                            updateServiceQuantity(service._id, Number(e.target.value))
+                          }
+                          className="w-16 text-center border border-gray-300 rounded"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <p className="text-gray-300 italic">Không có dịch vụ nào.</p>

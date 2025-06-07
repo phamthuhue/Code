@@ -33,6 +33,7 @@ export const TourDetails = () => {
       if (tour?.guide?._id) {
         try {
           const res = await axiosInstance.get(`/reviews/guide/${tour.guide._id}`);
+          console.log("Dữ liệu guide reviews:", res.data.data); // Log dữ liệu ra đây
           setGuideReviews(Array.isArray(res.data.data) ? res.data.data : []);
         } catch (err) {
           console.error("Lỗi khi fetch guide reviews:", err);
@@ -64,8 +65,6 @@ export const TourDetails = () => {
     guideId,
   } = tour;
   const options = { day: "numeric", month: "long", year: "numeric" };
-
-  console.log(photos);
 
   //Hàm next/prev
   const nextPhoto = () => {
@@ -213,9 +212,10 @@ export const TourDetails = () => {
                   <div className="flex items-center">
                     <BsFillStarFill className="text-yellow mr-1" />
                     <span>
-                      {guideReviews.length > 0
+                      {/* {guideReviews.length > 0
                         ? `${tour.guideId.avgRating || 0} (${guideReviews.length} đánh giá)`
-                        : "Chưa có đánh giá"}
+                        : "Chưa có đánh giá"} */}
+                        {tour.guideId.avgRating}
                     </span>
                   </div>
                 </div>
