@@ -3,6 +3,7 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Tour = React.lazy(() => import('./views/tour/Tour'))
 const Booking = React.lazy(() => import('./views/booking/Booking'))
+const Itinerary = React.lazy(() => import('./views/itinerary/Itinerary'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -58,6 +59,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/tour', name: 'Tour', element: Tour },
   { path: '/booking', name: 'Tour', element: Booking },
+  { path: '/itinerary', name: 'Tour', element: Itinerary },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
