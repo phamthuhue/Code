@@ -8,7 +8,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/tour', name: 'Tour', element: Tour },
-  { path: '/booking', name: 'Tour', element: Booking },
+  { path: '/booking', name: 'Booking', element: Booking },
 ]
 
 export default routes
