@@ -7,7 +7,7 @@ import { BASE_URL } from "../../utils/config";
 import useFetch from "../../hooks/useFetch";
 
 export const Tours = () => {
-  const { data: tours, loading, error } = useFetch(`${BASE_URL}/tours`);
+  const { data: tours, loading, error } = useFetch(`tours`);
   return (
     <section className="max-w-[1640] px-4 py-12 mx-8 mb-10 text-sm">
       {/*Heading*/}

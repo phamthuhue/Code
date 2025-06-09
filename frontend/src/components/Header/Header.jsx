@@ -42,10 +42,7 @@ export const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -89,9 +86,17 @@ export const Header = () => {
         <div className="hidden md:flex">
           {user ? (
             <div className="flex items-center relative" ref={dropdownRef}>
-              <div className="flex justify-between items-center mr-2 cursor-pointer" onClick={handleToggleDropdown}>
-                <FaUserCircle size={30}/>
-                <span className="font-semibold text-gray-600">{user.info.username}</span>
+              <div
+                className="flex justify-between items-center mr-2 cursor-pointer p-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-100 hover:shadow-md border border-gray-300 hover:border-blue-500"
+                onClick={handleToggleDropdown}
+              >
+                <FaUserCircle
+                  size={30}
+                  className="text-gray-600 hover:text-blue-500 transition-colors duration-200"
+                />
+                <span className="font-semibold text-gray-800 ml-2 text-lg">
+                  {user.info.username}
+                </span>
               </div>
 
               {/* Dropdown menu */}
