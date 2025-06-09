@@ -3,7 +3,7 @@
     "$oid": "682efc0ac3da4111179609eb"
   },
   "tourId": {
-    "$oid": "681c137bb7e1685ffb7f9dd7"
+    "$oid": "681c137bb7e1685ffb7f9dd6"
   },
   "services": [
     {
@@ -22,7 +22,13 @@
       "servicePrice": 1500000,
       "note": "Combo nghỉ dưỡng khách sạn"
     }
-  ]
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 },
 {
   "_id": {
@@ -40,7 +46,13 @@
       "servicePrice": 2000000,
       "note": "Phòng Suite hướng biển"
     }
-  ]
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 },
 {
   "_id": {
@@ -66,5 +78,11 @@
       "servicePrice": 2000000,
       "note": "Phòng Suite hướng biển"
     }
-  ]
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 }]

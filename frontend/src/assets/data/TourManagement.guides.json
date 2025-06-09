@@ -1,0 +1,164 @@
+[{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed29"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd2"
+    }
+  ],
+  "name": "Phan Quốc Duy",
+  "age": 32,
+  "gender": "Nam",
+  "dob": "1992-02-18T00:00:00Z",
+  "address": "TP. Nha Trang, Khánh Hòa",
+  "phone": "0976543210",
+  "avgRating": 4,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed27"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd3"
+    },
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd4"
+    }
+  ],
+  "name": "Lê Minh Tuấn",
+  "age": 25,
+  "gender": "Nam",
+  "dob": "1999-05-12T00:00:00Z",
+  "address": "Quận Thanh Xuân, Hà Nội",
+  "phone": "0938123456",
+  "avgRating": 4.5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed28"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd5"
+    }
+  ],
+  "name": "Nguyễn Thị Lan",
+  "age": 30,
+  "gender": "Nữ",
+  "dob": "1994-08-24T00:00:00Z",
+  "address": "Quận Bình Thạnh, TP. Hồ Chí Minh",
+  "phone": "0903456789",
+  "avgRating": 5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed2b"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd6"
+    }
+  ],
+  "name": "Vũ Minh Tâm",
+  "age": 29,
+  "gender": "Nam",
+  "dob": "1995-06-20T00:00:00Z",
+  "address": "TP. Biên Hòa, Đồng Nai",
+  "phone": "0912345678",
+  "avgRating": 5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed2e"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd7"
+    }
+  ],
+  "name": "Lê Thị Kim Anh",
+  "age": 26,
+  "gender": "Nữ",
+  "dob": "1998-04-10T00:00:00Z",
+  "address": "TP. Đà Lạt, Lâm Đồng",
+  "phone": "0389012345",
+  "avgRating": 5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed2a"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd8"
+    }
+  ],
+  "name": "Trần Thị Minh Châu",
+  "age": 27,
+  "gender": "Nữ",
+  "dob": "1997-11-03T00:00:00Z",
+  "address": "TP. Huế, Thừa Thiên Huế",
+  "phone": "0356789123",
+  "avgRating": 5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "680eed4e17a002b7a98bed2c"
+  },
+  "toursId": [
+    {
+      "$oid": "681c137bb7e1685ffb7f9dd9"
+    }
+  ],
+  "name": "Đặng Ngọc Hân",
+  "age": 24,
+  "gender": "Nữ",
+  "dob": "2000-09-15T00:00:00Z",
+  "address": "TP. Vinh, Nghệ An",
+  "phone": "0967890123",
+  "avgRating": 5,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+}]

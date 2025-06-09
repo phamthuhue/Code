@@ -9,39 +9,21 @@
   "price": 2500000,
   "maxGroupSize": 30,
   "desc": "Khám phá Hội An cùng tour mới của VietnamTours - nơi di sản văn hóa hòa quyện với vẻ đẹp yên bình, mang đến trải nghiệm khó quên.",
-  "avgRating": 4.5,
-  "photo": "tourImg01",
-  "featured": true
-},
-{
-  "_id": {
-    "$oid": "681c137bb7e1685ffb7f9dd3"
+  "avgRating": 4,
+  "featured": true,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed29"
   },
-  "title": "Đảo Cát Bà",
-  "city": "Hải Phòng",
-  "startDate": "2025-07-01",
-  "endDate": "2025-07-05",
-  "price": 2000000,
-  "maxGroupSize": 25,
-  "desc": "Tận hưởng vẻ đẹp hoang sơ và yên bình của Cát Bà, với bãi biển tuyệt đẹp và những ngọn núi xanh mướt, lý tưởng cho các hoạt động khám phá thiên nhiên và thư giãn.",
-  "avgRating": 4.5,
-  "photo": "tourImg02",
-  "featured": true
-},
-{
-  "_id": {
-    "$oid": "681c137bb7e1685ffb7f9dd4"
+  "photos": [
+    "https://i.ibb.co/LhnG5ZwN/hoian.jpg",
+    "https://i.ibb.co/yF9ff9ms/group-Travel.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
   },
-  "title": "SaPa",
-  "city": "Lào Cai",
-  "startDate": "2025-07-10",
-  "endDate": "2025-07-15",
-  "price": 2200000,
-  "maxGroupSize": 30,
-  "desc": "Du lịch Sapa để chiêm ngưỡng cảnh sắc núi rừng Tây Bắc, với những thửa ruộng bậc thang và những bản làng dân tộc độc đáo, là điểm đến lý tưởng cho những ai muốn hòa mình vào thiên nhiên và văn hóa miền núi.",
-  "avgRating": 4.5,
-  "photo": "tourImg03",
-  "featured": true
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 },
 {
   "_id": {
@@ -54,24 +36,20 @@
   "price": 1800000,
   "maxGroupSize": 20,
   "desc": "Hành trình đến Tràng An, nơi được mệnh danh là “vịnh Hạ Long trên cạn”, với các hang động kỳ bí và cảnh quan hùng vĩ, mang đến trải nghiệm thú vị cho những người yêu thích khám phá.",
-  "avgRating": 4.5,
-  "photo": "tourImg04",
-  "featured": true
-},
-{
-  "_id": {
-    "$oid": "681c137bb7e1685ffb7f9dd6"
+  "avgRating": 5,
+  "featured": true,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed28"
   },
-  "title": "Cố Đô Huế",
-  "city": "Huế",
-  "startDate": "2025-08-10",
-  "endDate": "2025-08-15",
-  "price": 3500000,
-  "maxGroupSize": 28,
-  "desc": "Du ngoạn Cố Đô Huế, nơi lưu giữ những giá trị văn hóa, lịch sử với các công trình kiến trúc cổ kính như Đại Nội, lăng tẩm vua chúa, sẽ đưa bạn trở về một thời kỳ huy hoàng của đất nước.",
-  "avgRating": 4.5,
-  "photo": "tourImg05",
-  "featured": false
+  "photos": [
+    "https://i.ibb.co/5xFWpBBF/trangan.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 },
 {
   "_id": {
@@ -84,24 +62,20 @@
   "price": 3000000,
   "maxGroupSize": 25,
   "desc": "Đảo Lý Sơn, nổi bật với cảnh quan biển đảo hoang sơ và những di tích lịch sử độc đáo, mang đến cho bạn một chuyến đi đáng nhớ với thiên nhiên kỳ thú và văn hóa đặc sắc.",
-  "avgRating": 4.5,
-  "photo": "tourImg06",
-  "featured": false
-},
-{
-  "_id": {
-    "$oid": "681c137bb7e1685ffb7f9dd8"
+  "avgRating": 5,
+  "featured": false,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed2e"
   },
-  "title": "Bán Đảo Sơn Trà",
-  "city": "Đà Nẵng",
-  "startDate": "2025-07-15",
-  "endDate": "2025-07-20",
-  "price": 3200000,
-  "maxGroupSize": 20,
-  "desc": "Tham gia tour Bán Đảo Sơn Trà để chiêm ngưỡng cảnh quan biển cả và núi rừng tuyệt đẹp, cũng như khám phá hệ sinh thái đa dạng với những loài động vật quý hiếm.",
-  "avgRating": 4.5,
-  "photo": "tourImg07",
-  "featured": false
+  "photos": [
+    "https://i.ibb.co/tTZCsGQk/daoLySon.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 },
 {
   "_id": {
@@ -114,7 +88,122 @@
   "price": 3500000,
   "maxGroupSize": 25,
   "desc": "Khám phá Phú Quốc với bãi biển dài trắng mịn, làn nước trong xanh và hệ sinh thái biển phong phú, nơi bạn có thể thỏa sức tắm biển, thưởng thức hải sản tươi ngon và thư giãn.",
-  "avgRating": 4.5,
-  "photo": "tourImg08",
-  "featured": false
+  "avgRating": 5,
+  "featured": false,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed2c"
+  },
+  "photos": [
+    "https://i.ibb.co/s92m0M5c/phuquoc.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "681c137bb7e1685ffb7f9dd3"
+  },
+  "title": "Đảo Cát Bà",
+  "city": "Hải Phòng",
+  "startDate": "2025-07-01",
+  "endDate": "2025-07-05",
+  "price": 2000000,
+  "maxGroupSize": 25,
+  "desc": "Tận hưởng vẻ đẹp hoang sơ và yên bình của Cát Bà, với bãi biển tuyệt đẹp và những ngọn núi xanh mướt, lý tưởng cho các hoạt động khám phá thiên nhiên và thư giãn.",
+  "avgRating": 5,
+  "featured": true,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed27"
+  },
+  "photos": [
+    "https://i.ibb.co/j9q81RKC/daocatba.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "681c137bb7e1685ffb7f9dd8"
+  },
+  "title": "Bán Đảo Sơn Trà",
+  "city": "Đà Nẵng",
+  "startDate": "2025-07-15",
+  "endDate": "2025-07-20",
+  "price": 3200000,
+  "maxGroupSize": 20,
+  "desc": "Tham gia tour Bán Đảo Sơn Trà để chiêm ngưỡng cảnh quan biển cả và núi rừng tuyệt đẹp, cũng như khám phá hệ sinh thái đa dạng với những loài động vật quý hiếm.",
+  "avgRating": 5,
+  "featured": false,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed2a"
+  },
+  "photos": [
+    "https://i.ibb.co/vC2y3dt6/bandaosontra.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "681c137bb7e1685ffb7f9dd4"
+  },
+  "title": "SaPa",
+  "city": "Lào Cai",
+  "startDate": "2025-07-10",
+  "endDate": "2025-07-15",
+  "price": 2200000,
+  "maxGroupSize": 30,
+  "desc": "Du lịch Sapa để chiêm ngưỡng cảnh sắc núi rừng Tây Bắc, với những thửa ruộng bậc thang và những bản làng dân tộc độc đáo, là điểm đến lý tưởng cho những ai muốn hòa mình vào thiên nhiên và văn hóa miền núi.",
+  "avgRating": 4.3,
+  "featured": true,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed27"
+  },
+  "photos": [
+    "https://i.ibb.co/tPHj4zNC/sapa.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "681c137bb7e1685ffb7f9dd6"
+  },
+  "title": "Cố Đô Huế",
+  "city": "Huế",
+  "startDate": "2025-08-10",
+  "endDate": "2025-08-15",
+  "price": 3500000,
+  "maxGroupSize": 28,
+  "desc": "Du ngoạn Cố Đô Huế, nơi lưu giữ những giá trị văn hóa, lịch sử với các công trình kiến trúc cổ kính như Đại Nội, lăng tẩm vua chúa, sẽ đưa bạn trở về một thời kỳ huy hoàng của đất nước.",
+  "avgRating": 5,
+  "featured": false,
+  "guideId": {
+    "$oid": "680eed4e17a002b7a98bed2b"
+  },
+  "photos": [
+    "https://i.ibb.co/yBY8Gc2R/codohue.jpg"
+  ],
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
 }]

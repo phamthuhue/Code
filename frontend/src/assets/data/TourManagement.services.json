@@ -1,5 +1,24 @@
 [{
   "_id": {
+    "$oid": "682efa2fc3da4111179609e4"
+  },
+  "name": "Combo nghỉ dưỡng 2 ngày 1 đêm",
+  "description": "Bao gồm phòng Deluxe và bữa sáng buffet.",
+  "numberOfService": 20,
+  "unitPrice": 1500000,
+  "unit": "gói",
+  "partnerId": {
+    "$oid": "682efa40c3da4111179609e8"
+  },
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
     "$oid": "682efa2fc3da4111179609e3"
   },
   "name": "Buffet hải sản cao cấp",
@@ -9,32 +28,12 @@
   "unit": "người",
   "partnerId": {
     "$oid": "682ef87cc3da4111179609da"
-  }
-},
-{
-  "_id": {
-    "$oid": "682efa2fc3da4111179609e4"
   },
-  "name": "Combo nghỉ dưỡng khách sạn",
-  "description": "Bao gồm phòng Deluxe và bữa sáng buffet.",
-  "numberOfService": 20,
-  "unitPrice": 1500000,
-  "unit": "gói",
-  "partnerId": {
-    "$oid": "682efa40c3da4111179609e8"
-  }
-},
-{
-  "_id": {
-    "$oid": "682efa2fc3da4111179609e5"
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
   },
-  "name": "Thuê xe du lịch 16 chỗ",
-  "description": "Xe đời mới, máy lạnh, tài xế thân thiện.",
-  "numberOfService": 10,
-  "unitPrice": 1200000,
-  "unit": "ngày",
-  "partnerId": {
-    "$oid": "682ef87cc3da4111179609dc"
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
   }
 },
 {
@@ -48,6 +47,31 @@
   "unit": "lượt",
   "partnerId": {
     "$oid": "682ef87cc3da4111179609dd"
+  },
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "682efa2fc3da4111179609e5"
+  },
+  "name": "Thuê xe du lịch 16 chỗ",
+  "description": "Xe đời mới, máy lạnh, tài xế thân thiện.",
+  "numberOfService": 10,
+  "unitPrice": 1200000,
+  "unit": "ngày",
+  "partnerId": {
+    "$oid": "682ef87cc3da4111179609dc"
+  },
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
   }
 },
 {
@@ -57,9 +81,15 @@
   "name": "Phòng Suite hướng biển",
   "description": "Phòng rộng 50m2, view biển, đầy đủ tiện nghi cao cấp.",
   "numberOfService": 5,
-  "unitPrice": 2000000,
+  "unitPrice": 2500000,
   "unit": "đêm",
   "partnerId": {
     "$oid": "682ef87cc3da4111179609de"
+  },
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
   }
 }]
