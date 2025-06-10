@@ -10,6 +10,7 @@ const excludedUrls = [
 ];
 
 const BASE_URL_ENTRY = process.env.REACT_APP_BASE_URL_API || BASE_URL;
+console.log("BASE_URL_ENTRY: ", BASE_URL_ENTRY);
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL_ENTRY, // tuỳ cách bạn config .env
