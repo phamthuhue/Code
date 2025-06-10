@@ -9,6 +9,7 @@ import {
   CButton,
   CRow,
   CCol,
+  CFormTextarea,
 } from '@coreui/react';
 import { useState, useEffect } from 'react';
 
@@ -16,7 +17,7 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
   const [formData, setFormData] = useState({
     tourId: '',
     details: [{ time: '', description: '' }],
-    notes: [''], // Ban đầu là 1 note rỗng
+    notes: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -26,19 +27,20 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
       setFormData({
         tourId: initialData.tourId || '',
         details: initialData.details.length ? initialData.details : [{ time: '', description: '' }],
-        notes: initialData.notes && initialData.notes.length > 0 ? initialData.notes : [''],
+        notes: initialData.notes || [],
       });
     } else {
       setFormData({
         tourId: '',
         details: [{ time: '', description: '' }],
-        notes: [''],
+        notes: [],
       });
     }
 
     if (!visible) setErrors({});
   }, [initialData, visible]);
 
+  // ✅ Đảm bảo tourId luôn khớp với danh sách tours
   useEffect(() => {
     if (initialData && tours.length > 0) {
       const foundTour = tours.find((tour) => tour._id === initialData.tourId);
@@ -51,19 +53,14 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
   const validate = () => {
     const newErrors = {};
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống';
-    if (formData.details.length === 0) {
-      newErrors.details = 'Cần ít nhất 1 chi tiết hành trình';
-    } else {
-      formData.details.forEach((detail, index) => {
-        if (!detail.time || !detail.description) {
-          newErrors[`detail_${index}`] = 'Thời gian và mô tả không được để trống';
-        }
-      });
-    }
+    formData.details.forEach((detail, index) => {
+      if (!detail.time || !detail.description) {
+        newErrors[`detail_${index}`] = 'Thời gian và mô tả không được để trống';
+      }
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,34 +85,14 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
     setFormData((prev) => ({ ...prev, details: newDetails }));
   };
 
-  // ✅ Thêm/xóa/chỉnh sửa ghi chú
-  const handleNoteChange = (index, value) => {
-    const newNotes = [...formData.notes];
-    newNotes[index] = value;
-    setFormData((prev) => ({ ...prev, notes: newNotes }));
-  };
-
-  const handleAddNote = () => {
-    setFormData((prev) => ({
-      ...prev,
-      notes: [...prev.notes, ''],
-    }));
-  };
-
-  const handleRemoveNote = (index) => {
-    const newNotes = formData.notes.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, notes: newNotes }));
+  const handleNoteChange = (e) => {
+    const value = e.target.value.split('\n').filter((note) => note.trim() !== '');
+    setFormData((prev) => ({ ...prev, notes: value }));
   };
 
   const handleSubmit = () => {
     if (!validate()) return;
-    // Lọc các ghi chú rỗng (nếu muốn loại bỏ ghi chú rỗng trước khi submit)
-    const cleanedFormData = {
-      ...formData,
-      notes: formData.notes.filter((note) => note.trim() !== ''),
-    };
-    console.log('Dữ liệu submit:', cleanedFormData);
-    onSubmit(cleanedFormData);
+    onSubmit(formData);
     onClose();
   };
 
@@ -186,30 +163,18 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
           </CButton>
 
           <h6 className="fw-bold mt-4 mb-2">Ghi chú</h6>
-          {formData.notes.map((note, index) => (
-            <CRow className="mb-2" key={index}>
-              <CCol md={10}>
-                <CFormInput
-                  placeholder={`Ghi chú ${index + 1}`}
-                  value={note}
-                  onChange={(e) => handleNoteChange(index, e.target.value)}
-                />
-              </CCol>
-              <CCol md={2} className="d-flex align-items-end">
-                <CButton
-                  color="danger"
-                  size="sm"
-                  onClick={() => handleRemoveNote(index)}
-                  className="me-2"
-                >
-                  Xóa
-                </CButton>
-              </CCol>
-            </CRow>
-          ))}
-          <CButton color="secondary" size="sm" onClick={handleAddNote}>
-            Thêm ghi chú
-          </CButton>
+          <CRow className="mb-2">
+            <CCol md={12}>
+              <CFormLabel htmlFor="notes">Ghi chú (mỗi ghi chú 1 dòng)</CFormLabel>
+              <CFormTextarea
+                id="notes"
+                rows={4}
+                value={formData.notes.join('\n')}
+                onChange={handleNoteChange}
+                placeholder="Nhập mỗi ghi chú trên 1 dòng"
+              />
+            </CCol>
+          </CRow>
         </CForm>
       </CModalBody>
 

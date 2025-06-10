@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import ItineraryFormModal from './components/ItineraryForm'
 import { getTours} from '../../services/Api/tourService'
-import { createItinerary, deleteItinerary, getItineraries, updateItinerary, getItineraryByTour } from '../../services/Api/itineraryService'
+import { createItinerary, deleteItinerary, getItineraries, updateItinerary } from '../../services/Api/itineraryService'
 import ItineraryTable from './components/ItineraryTable'
 import ItineraryFilter from './components/ItineraryFilter'
 
@@ -93,29 +93,6 @@ const Itinerary = () => {
   const [formModalVisible, setFormModalVisible] = useState(false)
   const [editingItinerary, setEditingItinerary] = useState(null)
 
-  const handleAddItinerary = async (formData) => {
-    try {
-      // Thử kiểm tra xem đã có lịch trình chưa
-      const res = await getItineraryByTour(formData.tourId);
-
-      // Nếu có (status 200), hiển thị cảnh báo và không cho thêm mới
-      if (res) {
-        addToast(exampleToast('Tour đã có lịch trình, không thể thêm mới', 'warning'));
-        return;
-      }
-    } catch (error) {
-      // Nếu lỗi 404 (tức là không có lịch trình), tiến hành thêm mới
-      if (error.response && error.response.status === 404) {
-        const newItinerary = await createItinerary(formData);
-        setItineraries([...itineraries, newItinerary.data]);
-        addToast(exampleToast('Thêm mới lịch trình thành công', 'success'));
-      } else {
-        console.error(error);
-        addToast(exampleToast('Lỗi không thêm mới được lịch trình', 'error'));
-      }
-    }
-  };
-
   const submitForm = async (formData) => {
     try {
       if (editingItinerary) {
@@ -125,7 +102,9 @@ const Itinerary = () => {
         addToast(exampleToast('Cập nhật lịch trình thành công'))
       } else {
         // Thêm mới itinerary
-        handleAddItinerary(formData)
+        const newItinerary = await createItinerary(formData)
+        setItineraries([...itineraries, newItinerary.data])
+        addToast(exampleToast('Thêm mới lịch trình thành công'))
       }
       closeForm()
     } catch (error) {
