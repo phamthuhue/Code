@@ -1,6 +1,7 @@
 import axiosConfig from '../axiosConfig'
 const API = '/tours'
 export const getTours = () => axiosConfig.get(API)
+export const getToursWithoutItinerary = () => axiosConfig.get(`${API}/without-itinerary`)
 export const createTour = (data) =>
   axiosConfig.post(API, data, {
     headers: {

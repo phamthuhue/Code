@@ -1,6 +1,7 @@
 import Tour from "../models/Tour.js";
 import fs from "fs";
 import path from "path";
+import Itinerary from "../models/Itinerary.js";
 //create new tour
 // [POST] /api/tours
 export const createTour = async (req, res) => {
@@ -153,7 +154,21 @@ export const getAllTours = async (req, res) => {
     });
   }
 };
+export const getToursWithoutItinerary = async (req, res) => {
+  try {
+    // Lấy danh sách tourId đã có lịch trình
+    const tourIdsWithItinerary = await Itinerary.distinct("tourId");
 
+    // Lấy các tour KHÔNG có trong danh sách trên
+    const toursWithoutItinerary = await Tour.find({
+      _id: { $nin: tourIdsWithItinerary },
+    });
+
+    res.json(toursWithoutItinerary);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 // Tìm kiếm tour theo city và maxGroupSize, có kèm guide
 export const getTourBySearch = async (req, res) => {
   const city = new RegExp(req.query.city, "i");

@@ -15,8 +15,14 @@ import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import ItineraryFormModal from './components/ItineraryForm'
-import { getTours} from '../../services/Api/tourService'
-import { createItinerary, deleteItinerary, getItineraries, updateItinerary, getItineraryByTour } from '../../services/Api/itineraryService'
+import { getTours, getToursWithoutItinerary } from '../../services/Api/tourService'
+import {
+  createItinerary,
+  deleteItinerary,
+  getItineraries,
+  updateItinerary,
+  getItineraryByTour,
+} from '../../services/Api/itineraryService'
 import ItineraryTable from './components/ItineraryTable'
 import ItineraryFilter from './components/ItineraryFilter'
 
@@ -66,7 +72,7 @@ const Itinerary = () => {
   }, [])
 
   const fetchTours = async () => {
-    const res = await getTours()
+    const res = await getToursWithoutItinerary()
     setTours(res.data.data)
   }
 
@@ -96,32 +102,34 @@ const Itinerary = () => {
   const handleAddItinerary = async (formData) => {
     try {
       // Thử kiểm tra xem đã có lịch trình chưa
-      const res = await getItineraryByTour(formData.tourId);
+      const res = await getItineraryByTour(formData.tourId)
 
       // Nếu có (status 200), hiển thị cảnh báo và không cho thêm mới
       if (res) {
-        addToast(exampleToast('Tour đã có lịch trình, không thể thêm mới', 'warning'));
-        return;
+        addToast(exampleToast('Tour đã có lịch trình, không thể thêm mới', 'warning'))
+        return
       }
     } catch (error) {
       // Nếu lỗi 404 (tức là không có lịch trình), tiến hành thêm mới
       if (error.response && error.response.status === 404) {
-        const newItinerary = await createItinerary(formData);
-        setItineraries([...itineraries, newItinerary.data]);
-        addToast(exampleToast('Thêm mới lịch trình thành công', 'success'));
+        const newItinerary = await createItinerary(formData)
+        setItineraries([...itineraries, newItinerary.data])
+        addToast(exampleToast('Thêm mới lịch trình thành công', 'success'))
       } else {
-        console.error(error);
-        addToast(exampleToast('Lỗi không thêm mới được lịch trình', 'error'));
+        console.error(error)
+        addToast(exampleToast('Lỗi không thêm mới được lịch trình', 'error'))
       }
     }
-  };
+  }
 
   const submitForm = async (formData) => {
     try {
       if (editingItinerary) {
         // Cập nhật itinerary
         const updatedItinerary = await updateItinerary(editingItinerary._id, formData)
-        setItineraries(itineraries.map((i) => (i._id === editingItinerary._id ? updatedItinerary.data : i)))
+        setItineraries(
+          itineraries.map((i) => (i._id === editingItinerary._id ? updatedItinerary.data : i)),
+        )
         addToast(exampleToast('Cập nhật lịch trình thành công'))
       } else {
         // Thêm mới itinerary
@@ -161,7 +169,10 @@ const Itinerary = () => {
   const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.ceil(itineraries?.length / itemsPerPage)
-  const currentItineraries = itineraries?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const currentItineraries = itineraries?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  )
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -205,7 +216,7 @@ const Itinerary = () => {
             onClose={closeForm}
             onSubmit={submitForm}
             initialData={editingItinerary}
-            tours = {tours}
+            tours={tours}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}
