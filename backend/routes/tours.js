@@ -7,6 +7,7 @@ import {
   deleteTour,
   getTourBySearch,
   getTourCount,
+  getToursWithoutItinerary,
 } from "../controllers/tourController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 import upload from "../middlewares/upload.js";
@@ -19,6 +20,7 @@ router.get("/search/getTourCount", getTourCount);
 
 // Route chung
 router.get("/", getAllTours);
+router.get("/without-itinerary", getToursWithoutItinerary);
 router.get("/:id", getSingleTour);
 
 // Route cần quyền admin

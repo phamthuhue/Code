@@ -9,115 +9,105 @@ import {
   CButton,
   CRow,
   CCol,
-} from '@coreui/react';
-import { useState, useEffect } from 'react';
+} from '@coreui/react'
+import { useState, useEffect } from 'react'
 
 const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, tours = [] }) => {
   const [formData, setFormData] = useState({
     tourId: '',
     details: [{ time: '', description: '' }],
     notes: [''], // Ban đầu là 1 note rỗng
-  });
+  })
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        tourId: initialData.tourId || '',
+        tourId: initialData.tourId._id || '',
         details: initialData.details.length ? initialData.details : [{ time: '', description: '' }],
         notes: initialData.notes && initialData.notes.length > 0 ? initialData.notes : [''],
-      });
+      })
     } else {
       setFormData({
         tourId: '',
         details: [{ time: '', description: '' }],
         notes: [''],
-      });
+      })
     }
 
-    if (!visible) setErrors({});
-  }, [initialData, visible]);
-
-  useEffect(() => {
-    if (initialData && tours.length > 0) {
-      const foundTour = tours.find((tour) => tour._id === initialData.tourId);
-      if (!foundTour) {
-        setFormData((prev) => ({ ...prev, tourId: '' }));
-      }
-    }
-  }, [tours, initialData]);
+    if (!visible) setErrors({})
+  }, [initialData, visible])
 
   const validate = () => {
-    const newErrors = {};
-    if (!formData.tourId) newErrors.tourId = 'Tour không được để trống';
+    const newErrors = {}
+    if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
     if (formData.details.length === 0) {
-      newErrors.details = 'Cần ít nhất 1 chi tiết hành trình';
+      newErrors.details = 'Cần ít nhất 1 chi tiết hành trình'
     } else {
       formData.details.forEach((detail, index) => {
         if (!detail.time || !detail.description) {
-          newErrors[`detail_${index}`] = 'Thời gian và mô tả không được để trống';
+          newErrors[`detail_${index}`] = 'Thời gian và mô tả không được để trống'
         }
-      });
+      })
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleDetailChange = (index, field, value) => {
-    const newDetails = [...formData.details];
-    newDetails[index][field] = value;
-    setFormData((prev) => ({ ...prev, details: newDetails }));
-  };
+    const newDetails = [...formData.details]
+    newDetails[index][field] = value
+    setFormData((prev) => ({ ...prev, details: newDetails }))
+  }
 
   const handleAddDetail = () => {
     setFormData((prev) => ({
       ...prev,
       details: [...prev.details, { time: '', description: '' }],
-    }));
-  };
+    }))
+  }
 
   const handleRemoveDetail = (index) => {
-    const newDetails = formData.details.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, details: newDetails }));
-  };
+    const newDetails = formData.details.filter((_, i) => i !== index)
+    setFormData((prev) => ({ ...prev, details: newDetails }))
+  }
 
   // ✅ Thêm/xóa/chỉnh sửa ghi chú
   const handleNoteChange = (index, value) => {
-    const newNotes = [...formData.notes];
-    newNotes[index] = value;
-    setFormData((prev) => ({ ...prev, notes: newNotes }));
-  };
+    const newNotes = [...formData.notes]
+    newNotes[index] = value
+    setFormData((prev) => ({ ...prev, notes: newNotes }))
+  }
 
   const handleAddNote = () => {
     setFormData((prev) => ({
       ...prev,
       notes: [...prev.notes, ''],
-    }));
-  };
+    }))
+  }
 
   const handleRemoveNote = (index) => {
-    const newNotes = formData.notes.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, notes: newNotes }));
-  };
+    const newNotes = formData.notes.filter((_, i) => i !== index)
+    setFormData((prev) => ({ ...prev, notes: newNotes }))
+  }
 
   const handleSubmit = () => {
-    if (!validate()) return;
+    if (!validate()) return
     // Lọc các ghi chú rỗng (nếu muốn loại bỏ ghi chú rỗng trước khi submit)
     const cleanedFormData = {
       ...formData,
       notes: formData.notes.filter((note) => note.trim() !== ''),
-    };
-    console.log('Dữ liệu submit:', cleanedFormData);
-    onSubmit(cleanedFormData);
-    onClose();
-  };
+    }
+    console.log('Dữ liệu submit:', cleanedFormData)
+    onSubmit(cleanedFormData)
+    onClose()
+  }
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
@@ -131,6 +121,7 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
               <CFormSelect
                 id="tourId"
                 name="tourId"
+                disabled={!!initialData}
                 value={formData.tourId}
                 onChange={handleChange}
               >
@@ -222,7 +213,7 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
         </CButton>
       </div>
     </CModal>
-  );
-};
+  )
+}
 
-export default ItineraryFormModal;
+export default ItineraryFormModal
