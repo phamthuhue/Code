@@ -42,7 +42,7 @@ export const Payment = () => {
         if (!paymentMethod) {
             notify(
                 "warning",
-                "Cạnh báo",
+                "Cảnh báo",
                 "Vui lòng chọn phương thức thanh toán!"
             );
             return;
