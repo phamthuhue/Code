@@ -41,9 +41,11 @@ export const updateTour = async (req, res) => {
       : [req.body.removedPhotos];
 
     removedPhotos.forEach((relativePath) => {
-      const fullPath = path.join(process.cwd(), path.normalize(relativePath));
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
+      if (typeof relativePath === "string" && relativePath.trim() !== "") {
+        const fullPath = path.join(process.cwd(), path.normalize(relativePath));
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
       }
     });
     // Lọc danh sách ảnh còn giữ lại = ảnh cũ - ảnh bị xóa
