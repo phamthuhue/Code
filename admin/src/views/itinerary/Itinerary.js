@@ -73,7 +73,7 @@ const Itinerary = () => {
 
   const fetchTours = async () => {
     const res = await getToursWithoutItinerary()
-    setTours(res.data.data)
+    setTours(res.data)
   }
 
   // Xử lý bộ lọc
@@ -133,7 +133,9 @@ const Itinerary = () => {
         addToast(exampleToast('Cập nhật lịch trình thành công'))
       } else {
         // Thêm mới itinerary
-        handleAddItinerary(formData)
+        const newItinerary = await createItinerary(formData)
+        setItineraries([...itineraries, newItinerary.data])
+        addToast(exampleToast('Thêm mới lịch trình thành công', 'success'))
       }
       closeForm()
     } catch (error) {
