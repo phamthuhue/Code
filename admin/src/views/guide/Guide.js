@@ -13,14 +13,14 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
-import DeleteConfirmModal from './components/DeleteConfirmModal'
-import ItineraryFormModal from './components/ItineraryForm'
-import { getTours} from '../../services/Api/tourService'
-import { createItinerary, deleteItinerary, getItineraries, updateItinerary } from '../../services/Api/itineraryService'
-import ItineraryTable from './components/ItineraryTable'
-import ItineraryFilter from './components/ItineraryFilter'
+import DeleteConfirmModal from './components/DeleteConfirmModal.js'
+import GuideFormModal from './components/GuideForm.js'
+import { getTours } from '../../services/Api/tourService.js'
+import { createGuide, deleteGuide, getGuides, updateGuide } from '../../services/Api/guideService.js'
+import GuideTable from './components/GuideTable.js'
+import GuideFilter from './components/GuideFilter.js'
 
-const Itinerary = () => {
+const Guide = () => {
   // Hiển thị thông báo
   const [toast, addToast] = useState()
   const toaster = useRef(null)
@@ -47,16 +47,15 @@ const Itinerary = () => {
     )
   }
 
-  // Danh sách itinerary
-  const [itineraries, setItineraries] = useState([])
+  // Danh sách guides
+  const [guides, setGuides] = useState([])
   useEffect(() => {
-    fetchItineraries()
+    fetchGuides()
   }, [])
 
-  const fetchItineraries = async () => {
-    const res = await getItineraries()
-    console.log(itineraries)
-    setItineraries(res.data)
+  const fetchGuides = async () => {
+    const res = await getGuides()
+    setGuides(res.data.data)
   }
 
   // Danh sách tour
@@ -79,32 +78,32 @@ const Itinerary = () => {
     setFilters(updatedFilters)
   }
 
-  // Thêm mới và cập nhật itinerary
-  const openForm = (itinerary = null) => {
-    setEditingItinerary(itinerary)
+  // Thêm mới và cập nhật guide
+  const openForm = (guide = null) => {
+    setEditingGuide(guide)
     setFormModalVisible(true)
   }
 
   const closeForm = () => {
     setFormModalVisible(false)
-    setEditingItinerary(null)
+    setEditingGuide(null)
   }
 
   const [formModalVisible, setFormModalVisible] = useState(false)
-  const [editingItinerary, setEditingItinerary] = useState(null)
+  const [editingGuide, setEditingGuide] = useState(null)
 
   const submitForm = async (formData) => {
     try {
-      if (editingItinerary) {
-        // Cập nhật itinerary
-        const updatedItinerary = await updateItinerary(editingItinerary._id, formData)
-        setItineraries(itineraries.map((i) => (i._id === editingItinerary._id ? updatedItinerary.data : i)))
-        addToast(exampleToast('Cập nhật lịch trình thành công'))
+      if (editingGuide) {
+        // Cập nhật guide
+        const updatedGuide = await updateGuide(editingGuide._id, formData)
+        setGuides(guides.map((g) => (g._id === editingGuide._id ? updatedGuide.data : g)))
+        addToast(exampleToast('Cập nhật hướng dẫn thành công'))
       } else {
-        // Thêm mới itinerary
-        const newItinerary = await createItinerary(formData)
-        setItineraries([...itineraries, newItinerary.data])
-        addToast(exampleToast('Thêm mới lịch trình thành công'))
+        // Thêm mới guide
+        const newGuide = await createGuide(formData)
+        setGuides([...guides, newGuide.data])
+        addToast(exampleToast('Thêm mới hướng dẫn thành công'))
       }
       closeForm()
     } catch (error) {
@@ -115,32 +114,32 @@ const Itinerary = () => {
 
   // Xử lý xóa
   const [deleteModalVisible, setDeleteModalVisible] = useState(false)
-  const [itineraryToDelete, setItineraryToDelete] = useState(null)
+  const [guideToDelete, setGuideToDelete] = useState(null)
 
-  const handleDeleteClick = (itinerary) => {
-    setItineraryToDelete(itinerary)
+  const handleDeleteClick = (guide) => {
+    setGuideToDelete(guide)
     setDeleteModalVisible(true)
   }
 
   const confirmDelete = async () => {
     try {
-      await deleteItinerary(itineraryToDelete._id)
-      setItineraries(itineraries.filter((i) => i._id !== itineraryToDelete._id))
-      addToast(exampleToast('Xóa lịch trình thành công'))
+      await deleteGuide(guideToDelete._id)
+      setGuides(guides.filter((g) => g._id !== guideToDelete._id))
+      addToast(exampleToast('Xóa hướng dẫn thành công'))
     } catch (error) {
-      console.error('Lỗi khi xóa itinerary:', error)
-      addToast(exampleToast('Xóa lịch trình thất bại'))
+      console.error('Lỗi khi xóa guide:', error)
+      addToast(exampleToast('Xóa hướng dẫn thất bại'))
     } finally {
       setDeleteModalVisible(false)
-      setItineraryToDelete(null)
+      setGuideToDelete(null)
     }
   }
 
   // Phân trang
   const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(itineraries?.length / itemsPerPage)
-  const currentItineraries = itineraries?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const totalPages = Math.ceil(guides?.length / itemsPerPage)
+  const currentGuides = guides?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -150,13 +149,13 @@ const Itinerary = () => {
     <>
       <CRow>
         <CCol xs>
-          <ItineraryFilter filters={filters} onFilterChange={handleFilterChange} />
+          <GuideFilter filters={filters} onFilterChange={handleFilterChange} />
 
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
                 <CCol sm={5}>
-                  <h4 className="card-title mb-0">Danh sách lịch trình</h4>
+                  <h4 className="card-title mb-0">Danh sách hướng dẫn</h4>
                 </CCol>
                 <CCol sm={7} className="d-none d-md-block">
                   <CButton color="primary" className="float-end" onClick={() => openForm()}>
@@ -169,8 +168,8 @@ const Itinerary = () => {
               </CRow>
             </CCardHeader>
             <CCardBody>
-              <ItineraryTable
-                currentItineraries={currentItineraries}
+              <GuideTable
+                currentGuides={currentGuides}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
@@ -179,12 +178,12 @@ const Itinerary = () => {
               />
             </CCardBody>
           </CCard>
-          <ItineraryFormModal
+          <GuideFormModal
             visible={formModalVisible}
             onClose={closeForm}
             onSubmit={submitForm}
-            initialData={editingItinerary}
-            tours = {tours}
+            initialData={editingGuide}
+            tours={tours}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}
@@ -198,4 +197,4 @@ const Itinerary = () => {
   )
 }
 
-export default Itinerary
+export default Guide

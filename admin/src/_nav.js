@@ -41,6 +41,11 @@ const _nav = [
         name: 'Lịch trình',
         to: '/itinerary', // Đường dẫn cho Itinerary
       },
+      {
+        component: CNavItem,
+        name: 'Hướng dẫn viên',
+        to: '/guide', // Đường dẫn cho Itinerary
+      },
     ],
   },
   {

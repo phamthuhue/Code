@@ -10,12 +10,9 @@ import {
   CPagination,
   CPaginationItem,
 } from '@coreui/react'
-import { cilList } from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
-import { formatDate } from '../../../utilis/formatDate'
 
-const ItineraryTable = ({
-  currentItineraries = [],
+const GuideTable = ({
+  currentGuides = [],
   currentPage,
   totalPages,
   setCurrentPage,
@@ -28,10 +25,13 @@ const ItineraryTable = ({
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Tên tour
+              Tên hướng dẫn viên
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Chi tiết lịch trình
+              Số điện thoại
+            </CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">
+              Email
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
               Ghi chú
@@ -43,39 +43,43 @@ const ItineraryTable = ({
         </CTableHead>
 
         <CTableBody>
-          {currentItineraries.length === 0 ? (
+          {currentGuides.length === 0 ? (
             <CTableRow>
-              <CTableDataCell colSpan="6" className="text-center text-muted py-4">
-                Không có dữ liệu lịch trình để hiển thị.
+              <CTableDataCell colSpan="5" className="text-center text-muted py-4">
+                Không có dữ liệu hướng dẫn viên để hiển thị.
               </CTableDataCell>
             </CTableRow>
           ) : (
-            currentItineraries.map((itinerary, index) => (
+            currentGuides.map((guide, index) => (
               <CTableRow key={index}>
                 <CTableDataCell className="text-center">
                   <div className="text-body-secondary text-wrap">
-                    {itinerary.tourId?.title}
+                    {guide.name}
                   </div>
                 </CTableDataCell>
 
-                <CTableDataCell>
-                  <ul className="mb-0">
-                    {itinerary.details.map((detail, idx) => (
-                      <li key={idx}>
-                        <strong>{detail.time}</strong>: {detail.description}
-                      </li>
-                    ))}
-                  </ul>
+                <CTableDataCell className="text-center">
+                  {guide.phoneNumber || (
+                    <span className="text-muted">Không có</span>
+                  )}
+                </CTableDataCell>
+
+                <CTableDataCell className="text-center">
+                  {guide.email || (
+                    <span className="text-muted">Không có</span>
+                  )}
                 </CTableDataCell>
 
                 <CTableDataCell>
-                  <ul className="mb-0">
-                    {itinerary.notes && itinerary.notes.length > 0 ? (
-                      itinerary.notes.map((note, idx) => <li key={idx}>{note}</li>)
-                    ) : (
-                      <span className="text-muted">Không có ghi chú</span>
-                    )}
-                  </ul>
+                  {guide.notes && guide.notes.length > 0 ? (
+                    <ul className="mb-0">
+                      {guide.notes.map((note, idx) => (
+                        <li key={idx}>{note}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="text-muted">Không có ghi chú</span>
+                  )}
                 </CTableDataCell>
 
                 <CTableDataCell className="text-center">
@@ -85,7 +89,7 @@ const ItineraryTable = ({
                       size="sm"
                       variant="outline"
                       className="me-2"
-                      onClick={() => handleEdit(itinerary)}
+                      onClick={() => handleEdit(guide)}
                     >
                       Sửa
                     </CButton>
@@ -93,7 +97,7 @@ const ItineraryTable = ({
                       color="danger"
                       size="sm"
                       variant="outline"
-                      onClick={() => handleDeleteClick(itinerary)}
+                      onClick={() => handleDeleteClick(guide)}
                     >
                       Xoá
                     </CButton>
@@ -138,4 +142,4 @@ const ItineraryTable = ({
   )
 }
 
-export default ItineraryTable
+export default GuideTable

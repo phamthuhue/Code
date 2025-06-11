@@ -35,7 +35,7 @@ export const createGuide = async (req, res) => {
 
 export const getAllGuides = async (req, res) => {
   try {
-    const guides = await Guide.find().populate('toursId', 'title'); // Lấy tên tour nếu cần
+    const guides = await Guide.find(); // Lấy tên tour nếu cần
     res.status(200).json({ success: true, data: guides });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to fetch guides' });
