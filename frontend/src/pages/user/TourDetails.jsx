@@ -222,7 +222,7 @@ export const TourDetails = () => {
                   </div>
                 </div>
                 <div>
-                  <span>Tuổi: {tour.guideId.age}</span>
+                  <span>Năm sinh: {new Date(tour.guideId.dob).getFullYear()}</span>
                 </div>
                 <div>
                   <span>Giới tính: {tour.guideId.gender}</span>

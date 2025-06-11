@@ -27,14 +27,30 @@ const _nav = [
     },
   },
   {
-    component: CNavItem,
-    name: 'Tour',
-    to: '/tour',
-    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
+    component: CNavGroup, // Đổi từ CNavItem sang CNavGroup
+    name: 'Thông tin Tour',
+    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Danh sách tour',
+        to: '/tour',
+      },
+      {
+        component: CNavItem,
+        name: 'Lịch trình',
+        to: '/itinerary', // Đường dẫn cho Itinerary
+      },
+      {
+        component: CNavItem,
+        name: 'Hướng dẫn viên',
+        to: '/guide', // Đường dẫn cho Itinerary
+      },
+    ],
   },
   {
     component: CNavItem,
-    name: 'Booking',
+    name: 'Danh sách phiếu đặt',
     to: '/booking',
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
   },

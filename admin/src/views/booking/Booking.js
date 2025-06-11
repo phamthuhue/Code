@@ -99,7 +99,7 @@ const Booking = () => {
     if (booking) {
       try {
         const res = await getBookingDetail(booking._id);
-        setBookingDetails(res.data.data);
+        setBookingDetails(res.data);
       } catch (error) {
         console.error('Lỗi khi lấy chi tiết booking:', error);
         addToast(exampleToast('Không thể lấy chi tiết booking'));

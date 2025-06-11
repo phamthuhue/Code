@@ -1,0 +1,105 @@
+[{
+  "_id": {
+    "$oid": "685f30340dcbf834dab0a00a"
+  },
+  "bookingId": {
+    "$oid": "682d466d7d70c272e3bf9ee1"
+  },
+  "itemType": "Tour",
+  "description": "Cố Đô Huế",
+  "quantity": 2,
+  "unitPrice": 3500000,
+  "totalPrice": 7000000,
+  "createdAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6843db34a01264772d59e787"
+  },
+  "bookingId": {
+    "$oid": "682d466d7d70c272e3bf9ee1"
+  },
+  "tourServiceId": {
+    "$oid": "682efa2fc3da4111179609e3"
+  },
+  "itemType": "Service",
+  "description": "Buffet hải sản cao cấp",
+  "quantity": 2,
+  "unitPrice": 350000,
+  "totalPrice": 700000,
+  "createdAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6843db34a01264772d59e788"
+  },
+  "bookingId": {
+    "$oid": "682d466d7d70c272e3bf9ee1"
+  },
+  "tourServiceId": {
+    "$oid": "682efa2fc3da4111179609e4"
+  },
+  "itemType": "Service",
+  "description": "Combo nghỉ dưỡng khách sạn",
+  "quantity": 2,
+  "unitPrice": 1500000,
+  "totalPrice": 3000000,
+  "createdAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-22T08:20:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6843db34a01264772d59e789"
+  },
+  "bookingId": {
+    "$oid": "682d466d7d70c272e3bf9e9f"
+  },
+  "tourServiceId": null,
+  "itemType": "Tour",
+  "description": "Phố cổ Hội An",
+  "quantity": 2,
+  "unitPrice": 2500000,
+  "totalPrice": 5000000,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6843db34a01264772d59e78a"
+  },
+  "bookingId": {
+    "$oid": "682d466d7d70c272e3bf9e9f"
+  },
+  "tourServiceId": {
+    "$oid": "682efa2fc3da4111179609e7"
+  },
+  "itemType": "Service",
+  "description": "Phòng Suite hướng biển",
+  "quantity": 1,
+  "unitPrice": 2000000,
+  "totalPrice": 2000000,
+  "createdAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-14T08:00:00.000Z"
+  }
+}]

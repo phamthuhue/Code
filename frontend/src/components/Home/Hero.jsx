@@ -9,9 +9,6 @@ export const Hero = () => {
           <div className='heroOverlay'>
               <span className='text-gray'>Du lịch cùng chúng tôi</span>
               <h1>Cùng VietNamTours<br/>Đặt tour và trải nghiệm</h1>
-              <div className='pt-16'>
-                <SearchTour/>
-              </div>
           </div>
           <img className='heroImg' src={heroImg} alt='hero'/>
       </div>   

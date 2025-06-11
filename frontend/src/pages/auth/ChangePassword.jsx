@@ -31,8 +31,7 @@ export const ChangePassword = () => {
       });
       notify(
         "success",
-        "Đổi mật khẩu thành công",
-        2
+        "Đổi mật khẩu thành công"
       );
       navigate("/"); // Điều hướng về trang chủ
     } catch (err) {

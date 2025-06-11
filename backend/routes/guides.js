@@ -1,5 +1,4 @@
 import express from "express";
-import { verifyUser} from "../utils/verifyToken.js";
 import {
   createGuide,
   getAllGuides,
@@ -11,7 +10,7 @@ import {
 const router = express.Router();
 
 // Tạo mới hướng dẫn viên
-router.post("/",verifyUser, createGuide);
+router.post("/", createGuide);
 
 // Lấy tất cả hướng dẫn viên
 router.get("/", getAllGuides);

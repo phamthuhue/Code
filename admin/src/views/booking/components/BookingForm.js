@@ -118,7 +118,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
                 <option value="">-- Chọn tour --</option>
                 {tours.map((tour) => (
                   <option key={tour._id} value={tour._id}>
-                    {tour.name}
+                    {tour.title}
                   </option>
                 ))}
               </CFormSelect>

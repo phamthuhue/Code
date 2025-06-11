@@ -3,7 +3,7 @@ import Itinerary from '../models/Itinerary.js';
 // GET all itineraries
 export const getAllItineraries = async (req, res) => {
   try {
-    const itineraries = await Itinerary.find({});
+    const itineraries = await Itinerary.find({}).populate("tourId", "title");
     res.json(itineraries);
   } catch (err) {
     res.status(500).json({ error: err.message });
