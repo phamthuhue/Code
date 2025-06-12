@@ -1,10 +1,12 @@
 import TourService from '../models/TourService.js';
 import Service from "../models/Service.js";
+import Tour from "../models/Tour.js";
+import mongoose from 'mongoose';
 
 // Lấy tất cả các dịch vụ của tour
 export const getAllTourServices = async (req, res) => {
   try {
-    const services = await TourService.find().populate('tourId').populate('serviceId');
+    const services = await TourService.find().populate('tourId', 'title');
     res.status(200).json(services);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -83,6 +85,20 @@ export const deleteTourService = async (req, res) => {
     const deleted = await TourService.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: 'Không tìm thấy dịch vụ để xóa' });
     res.status(200).json({ message: 'Xóa thành công' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Xóa TourService theo tourId
+export const deleteTourServiceByTourId = async (req, res) => {
+  try {
+    const tourObjectId = new mongoose.Types.ObjectId(req.params.tourId);
+    const deleted = await TourService.findOneAndDelete({ tourId: tourObjectId  });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Không tìm thấy dịch vụ của tour để xóa' });
+    }
+    res.status(200).json({ message: 'Xóa dịch vụ của tour thành công' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
