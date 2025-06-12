@@ -6,3 +6,4 @@ export const createItinerary = (data) => axiosConfig.post(API, data)
 
 export const updateItinerary = (id, data) => axiosConfig.put(`${API}/${id}`, data)
 export const deleteItinerary = (id) => axiosConfig.delete(`${API}/${id}`)
+export const deleteItineraryByTour = (tourId) => axiosConfig.get(`${API}/tour/${tourId}`)
