@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
     {
-        dob: { type: Date },                          // NgaySinh
+        yearob: { type: String },                          // NgaySinh
         address: { type: String },                    // DiaChi
         phone: { type: String },                      // SDT
         gender: { type: String, enum: ['Nam', 'Nữ', 'Khác'] }, // GioiTinh
