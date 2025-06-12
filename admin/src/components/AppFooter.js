@@ -3,7 +3,12 @@ import { CFooter } from '@coreui/react'
 
 const AppFooter = () => {
   return (
-    <CFooter className="px-2">
+    <CFooter className="px-4">
+      <div>
+        <span className="ms-1">VIETNAMTOURS</span>
+      </div>
+      <div className="ms-auto">
+      </div>
     </CFooter>
   )
 }
