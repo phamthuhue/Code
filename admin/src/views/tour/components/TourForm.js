@@ -1,5 +1,6 @@
 import { cilTrash } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import { CFormSelect } from '@coreui/react'
 import {
   CModal,
   CModalHeader,
@@ -16,7 +17,7 @@ import {
 import './tour.scss'
 import { useState, useEffect, useRef } from 'react'
 const backendUrl = import.meta.env.VITE_END_POINT_BACKEND_URL
-const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
+const TourFormModal = ({ visible, onClose, onSubmit, initialData = null, guides = [] }) => {
   const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
     title: undefined,
@@ -27,6 +28,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     maxGroupSize: undefined,
     avgRating: undefined, // ✅ Bổ sung nếu chưa có
     desc: undefined,
+    guideId: undefined,
     photos: [],
   })
   // Xử lý ảnh xóa
@@ -61,7 +63,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         desc: 'Tour khám phá Quảng Ninh và Hội An tuyệt vời',
         photos: [],
         featured: true,
-        guideId: '6835925cedc05facf0fa6c6a',
+        guideId: '',
         avgRating: 4.8,
         createdAt: '2025-05-27T10:22:20.271Z',
         updatedAt: '2025-05-27T10:22:20.271Z',
@@ -93,6 +95,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
       newErrors.endDate = 'Ngày kết thúc phải sau ngày bắt đầu'
     }
     if (!formData.desc) newErrors.desc = 'Mô tả không được để trống'
+    if (!formData.guideId) newErrors.guideId = 'Hướng dẫn viên không được để trống'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -274,6 +277,24 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
               />
               {errors.endDate && <small className="text-danger">{errors.endDate}</small>}
             </CCol>
+                      <CCol md={12}>
+              <CFormLabel htmlFor="guideId">Hướng dẫn viên *</CFormLabel>
+              <CFormSelect
+                id="guideId"
+                name="guideId"
+                disabled={!!initialData}
+                value={formData.guideId}
+                onChange={handleChange}
+              >
+                <option value="">-- Chọn hướng dẫn viên --</option>
+                {guides.map((guide) => (
+                  <option key={guide._id} value={guide._id}>
+                    {guide.name}
+                  </option>
+                ))}
+              </CFormSelect>
+              {errors.guideId && <small className="text-danger">{errors.guideId}</small>}
+          </CCol>
           </CRow>
           <CRow className="mb-1">
             <CCol md={12}>

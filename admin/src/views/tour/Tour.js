@@ -18,6 +18,7 @@ import DeleteConfirmModal from './components/DeleteConfirmModal'
 import TourFormModal from './components/TourForm'
 
 import { createTour, deleteTour, getTours, updateTour } from '../../services/Api/tourService'
+import {getGuides} from '../../services/Api/guideService'
 import TourTable from './components/TourTable'
 import TourFilter from './components/TourFilter'
 
@@ -56,6 +57,17 @@ const Tour = () => {
   const fetchTours = async () => {
     const res = await getTours()
     setTours(res.data.data)
+  }
+
+  // Danh sách guide
+  const [guides, setGuides] = useState([])
+  useEffect(() => {
+    fetchGuides()
+  }, [])
+
+  const fetchGuides = async () => {
+    const res = await getGuides()
+    setGuides(res.data.data)
   }
   // Xử lý bộ lọc
   const [filters, setFilters] = useState({
@@ -173,6 +185,7 @@ const Tour = () => {
             onClose={closeForm}
             onSubmit={submitForm}
             initialData={editingTour}
+            guides={guides}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}
