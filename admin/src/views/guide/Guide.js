@@ -58,17 +58,6 @@ const Guide = () => {
     setGuides(res.data.data)
   }
 
-  // Danh sách tour
-  const [tours, setTours] = useState([])
-  useEffect(() => {
-    fetchTours()
-  }, [])
-
-  const fetchTours = async () => {
-    const res = await getTours()
-    setTours(res.data.data)
-  }
-
   // Xử lý bộ lọc
   const [filters, setFilters] = useState({
     tourId: '',
@@ -105,6 +94,7 @@ const Guide = () => {
         setGuides([...guides, newGuide.data])
         addToast(exampleToast('Thêm mới hướng dẫn thành công'))
       }
+      await fetchGuides()
       closeForm()
     } catch (error) {
       console.error('Lỗi khi submit form:', error)
@@ -183,7 +173,6 @@ const Guide = () => {
             onClose={closeForm}
             onSubmit={submitForm}
             initialData={editingGuide}
-            tours={tours}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}

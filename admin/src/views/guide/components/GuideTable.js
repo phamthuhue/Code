@@ -1,4 +1,4 @@
-import React from 'react'
+import { formatDate } from '../../../utilis/formatDate'
 import {
   CTable,
   CTableHead,
@@ -31,10 +31,13 @@ const GuideTable = ({
               Số điện thoại
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Email
+              Giới tính
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Ghi chú
+              Ngày sinh
+            </CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">
+              Địa chỉ
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
               Hành động
@@ -59,27 +62,27 @@ const GuideTable = ({
                 </CTableDataCell>
 
                 <CTableDataCell className="text-center">
-                  {guide.phoneNumber || (
-                    <span className="text-muted">Không có</span>
-                  )}
+                  <div className="text-center">
+                    {guide.phone}
+                  </div>
                 </CTableDataCell>
 
                 <CTableDataCell className="text-center">
-                  {guide.email || (
-                    <span className="text-muted">Không có</span>
-                  )}
+                  <div className="text-center">
+                    {guide.gender}
+                  </div>
                 </CTableDataCell>
 
-                <CTableDataCell>
-                  {guide.notes && guide.notes.length > 0 ? (
-                    <ul className="mb-0">
-                      {guide.notes.map((note, idx) => (
-                        <li key={idx}>{note}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span className="text-muted">Không có ghi chú</span>
-                  )}
+                <CTableDataCell className="text-center">
+                  <div className="text-center">
+                    {formatDate(guide.dob)}
+                  </div>
+                </CTableDataCell>
+
+                <CTableDataCell className="text-center">
+                  <div className="text-center">
+                    {guide.address}
+                  </div>
                 </CTableDataCell>
 
                 <CTableDataCell className="text-center">

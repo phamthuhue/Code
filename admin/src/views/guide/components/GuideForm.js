@@ -15,7 +15,6 @@ import { useState, useEffect } from 'react';
 const GuideFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
     name: '',
-    rating: 5,
     gender: '',
     dob: '',
     address: '',
@@ -28,7 +27,6 @@ const GuideFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     if (initialData) {
       setFormData({
         name: initialData.name || '',
-        rating: initialData.rating ?? 5,
         gender: initialData.gender || '',
         dob: initialData.dob ? new Date(initialData.dob).toISOString().split('T')[0] : '',
         address: initialData.address || '',
@@ -37,7 +35,6 @@ const GuideFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     } else {
       setFormData({
         name: '',
-        rating: 5,
         gender: '',
         dob: '',
         address: '',
@@ -63,7 +60,7 @@ const GuideFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'rating' ? Number(value) : value,
+      [name]: value,
     }));
   };
 
@@ -142,21 +139,6 @@ const GuideFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
                 onChange={handleChange}
               />
               {errors.address && <small className="text-danger">{errors.address}</small>}
-            </CCol>
-          </CRow>
-
-          <CRow className="mb-3">
-            <CCol md={6}>
-              <CFormLabel htmlFor="rating">Đánh giá (0-5)</CFormLabel>
-              <CFormInput
-                type="number"
-                id="rating"
-                name="rating"
-                min="0"
-                max="5"
-                value={formData.rating}
-                onChange={handleChange}
-              />
             </CCol>
           </CRow>
         </CForm>
