@@ -5,6 +5,7 @@ const Tour = React.lazy(() => import('./views/tour/Tour'))
 const Booking = React.lazy(() => import('./views/booking/Booking'))
 const Itinerary = React.lazy(() => import('./views/itinerary/Itinerary'))
 const Guide = React.lazy(() => import('./views/guide/Guide'))
+const TourService = React.lazy(() => import('./views/tourService/TourService'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -13,6 +14,7 @@ const routes = [
   { path: '/booking', name: 'Danh sách phiếu đặt', element: Booking },
   { path: '/itinerary', name: 'Lịch trình', element: Itinerary },
   { path: '/guide', name: 'Hướng dẫn viên', element: Guide },
+  { path: '/tour-service', name: 'Dịch vụ theo tour', element: TourService },
 ]
 
 export default routes
