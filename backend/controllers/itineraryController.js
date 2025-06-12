@@ -1,4 +1,5 @@
 import Itinerary from "../models/Itinerary.js";
+import mongoose from 'mongoose';
 
 // GET all itineraries
 export const getAllItineraries = async (req, res) => {
@@ -78,6 +79,18 @@ export const deleteItinerary = async (req, res) => {
     const deleted = await Itinerary.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Not found" });
     res.json({ message: "Deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// DELETE itinerary by tourId
+export const deleteItineraryByTourId = async (req, res) => {
+  try {
+    const tourObjectId = new mongoose.Types.ObjectId(req.params.tourId);
+    const deleted = await Itinerary.findOneAndDelete({ tourId: tourObjectId });
+    if (!deleted) return res.status(404).json({ message: "Itinerary not found for this tour" });
+    res.json({ message: "Itinerary deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

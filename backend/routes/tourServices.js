@@ -5,7 +5,8 @@ import {
   createTourServiceForTour,
   updateTourService,
   deleteTourService,
-  getTourServicesByTourId
+  getTourServicesByTourId,
+  deleteTourServiceByTourId
 } from '../controllers/tourServiceController.js';
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.post('/', createTourServiceForTour);
 router.put('/:id', updateTourService);
 router.delete('/:id', deleteTourService);
 router.get('/tour/:tourId', getTourServicesByTourId);
+router.delete('/tour/:tourId', deleteTourServiceByTourId);
 
 export default router;
