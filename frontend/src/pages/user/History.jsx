@@ -27,7 +27,7 @@ export const History = () => {
     loading,
     error,
   } = useFetch(
-    `/bookings/user/${userId}?page=${page}&limit=4&reload=${reloadTrigger}`
+    `/bookings/user/${userId}?page=${page}&limit=6&reload=${reloadTrigger}`
   );
 
   // Hàm reload

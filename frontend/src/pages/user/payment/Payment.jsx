@@ -116,7 +116,7 @@ export const Payment = () => {
         <ul className="list-disc pl-5">
           {selectedServices.map((s) => (
             <li key={s._id}>
-              {s.description}
+              {s.description || s.note}
             </li>
           ))}
         </ul>
