@@ -130,9 +130,9 @@ const validateBookingData = (
     return { valid: false, message: "Thông tin đặt tour không đầy đủ!" };
   }
 
-  if (!selectedServices || selectedServices.length === 0) {
-    return { valid: false, message: "Cần phải chọn ít nhất một dịch vụ!" };
-  }
+  // if (!selectedServices || selectedServices.length === 0) {
+  //   return { valid: false, message: "Cần phải chọn ít nhất một dịch vụ!" };
+  // }
 
   if (!totalPrice || totalPrice <= 0) {
     return {
