@@ -41,6 +41,28 @@ export const getBookingDetailsByBookingId = async (req, res) => {
   }
 };
 
+export const getBookingDetailsWithoutTourByBookingId = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // Tìm tất cả BookingDetail có bookingId và typeItem là "Service"
+    const bookingDetails = await BookingDetail.find({
+      bookingId,
+      itemType: "Service"
+    });
+
+    if (!bookingDetails || bookingDetails.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy chi tiết đặt tour' });
+    }
+
+    return res.status(200).json(bookingDetails);
+  } catch (error) {
+    console.error('Lỗi khi lấy BookingDetails:', error);
+    return res.status(500).json({ message: 'Lỗi server' });
+  }
+};
+
+
 // Tạo mới chi tiết
 export const createBookingDetail = async (req, res) => {
   try {

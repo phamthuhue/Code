@@ -1,46 +1,60 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { notify } from "@utils/notify";
 import axiosInstance from "@utils/axiosInstance";
 import { AuthContext } from "context/AuthContext";
 
 export const Payment = () => {
-  // Access user data from Redux store
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { bookingId } = useParams();
+
   const [paymentData, setPaymentData] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
-    const data = localStorage.getItem("paymentData");
-    if (data) {
-      const parsedData = JSON.parse(data);
-      console.log("Booking sẽ được lưu:", parsedData.booking);
-    } else {
-      console.warn("Không tìm thấy paymentData trong localStorage");
-    }
-
-    if (!data) {
-      navigate("/"); // hoặc về trang checkout
-    } else {
+    const fetchBookingFromDB = async () => {
       try {
-        const parsedData = JSON.parse(data);
-        setPaymentData(parsedData);
-      } catch (err) {
-        console.error("Lỗi đọc dữ liệu paymentData:", err);
+        const res = await axiosInstance.get(`/bookings/${bookingId}`);
+        const selectedServicesRes = await axiosInstance.get(`/booking-details/item-type/${bookingId}`);
+        const selectedServices = selectedServicesRes.data;
+        const booking = res.data.data;
+        const price = booking.tourPrice;
+        const totalPrice = booking.totalPrice;
+
+        setPaymentData({ booking, selectedServices, price, totalPrice });
+      } catch (error) {
+        console.error("Không thể lấy booking từ DB:", error);
+        navigate("/");
+      }
+    };
+
+    if (bookingId) {
+      fetchBookingFromDB();
+    } else {
+      const data = localStorage.getItem("paymentData");
+      if (data) {
+        try {
+          const parsedData = JSON.parse(data);
+          setPaymentData(parsedData);
+        } catch (err) {
+          console.error("Lỗi đọc dữ liệu paymentData:", err);
+          navigate("/");
+        }
+      } else {
         navigate("/");
       }
     }
-  }, [navigate]);
+  }, [bookingId, navigate]);
 
-  if (!paymentData) return null; // hoặc spinner/loading...
+  if (!paymentData) return null;
 
   const { booking, selectedServices, totalPrice, price } = paymentData;
 
   const handlePayment = async () => {
     if (!paymentMethod) {
-      notify("warning", "Cạnh báo", "Vui lòng chọn phương thức thanh toán!");
+      notify("warning", "Cảnh báo", "Vui lòng chọn phương thức thanh toán!");
       return;
     }
 
@@ -48,14 +62,12 @@ export const Payment = () => {
       if (paymentMethod === "vnpay") {
         const res = await axiosInstance.post("payment/create-payment", {
           ...paymentData,
-          user: user ? user.info : null, // Assuming user ID is stored in user._id from Redux
+          user: user ? user.info : null,
         });
 
         const { paymentUrl } = res.data;
-        console.log("paymentUrl: ", paymentUrl);
         if (paymentUrl) {
-          // 🔁 Redirect sang VNPAY
-          window.location.href = paymentUrl; // Chuyển hướng trong cùng một tab
+          window.location.href = paymentUrl;
         }
       } else if (paymentMethod === "momo") {
         const res = await axios.post(
@@ -78,25 +90,6 @@ export const Payment = () => {
     }
   };
 
-  const handleMomoPayment = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/api/momo/create", {
-        amount: totalPrice,
-        bookingInfo: booking,
-        redirectUrl: "http://localhost:3000/payment-success", // hoặc payment-notify nếu cần
-      });
-
-      if (res.data && res.data.payUrl) {
-        window.location.href = res.data.payUrl; // chuyển hướng đến cổng thanh toán MoMo
-      } else {
-        alert("Không nhận được URL thanh toán từ MoMo.");
-      }
-    } catch (error) {
-      console.error("Lỗi gọi API MoMo:", error);
-      alert("Đã có lỗi xảy ra khi tạo thanh toán.");
-    }
-  };
-
   return (
     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Thông tin đặt tour */}
@@ -116,14 +109,14 @@ export const Payment = () => {
           <strong>Số lượng:</strong> {booking.numberOfPeople}
         </p>
         <p>
-          <strong>Tổng tiền:</strong> {totalPrice.toLocaleString()} VNĐ
+          <strong>Tổng tiền:</strong> {totalPrice} VNĐ
         </p>
 
         <h2 className="mt-4 font-semibold">Dịch vụ đã chọn:</h2>
         <ul className="list-disc pl-5">
           {selectedServices.map((s) => (
             <li key={s._id}>
-              {s.note} - {s.servicePrice.toLocaleString()} VNĐ/người
+              {s.description}
             </li>
           ))}
         </ul>

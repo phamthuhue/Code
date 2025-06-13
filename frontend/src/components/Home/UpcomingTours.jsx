@@ -6,7 +6,7 @@ import img3 from "./../../assets/images/chuabaidinh.jpeg"
 
 export const UpcomingTours = () => {
   return (
-    <div className='max-w-[1620px] mt-[120px] lg:mt-[50px] pt-6 flex flex-col items-center justify-center'>
+    <div className='max-w-[1686px] mt-[120px] lg:mt-[50px] pt-6 flex flex-col items-center justify-center'>
         <div className='gradient grid grid-cols-1 lg:grid-cols-3 pb-12 place-items-center'>
             <div className='md:col-span-1 p-4 lg:ml-36'>
                 <span className='uppercase text-sm'>Khám phá</span>
