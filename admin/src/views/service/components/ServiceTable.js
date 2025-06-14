@@ -68,7 +68,7 @@ const ServiceTable = ({
 
                 <CTableDataCell className="text-center">
                   <div className="fw-semibold">
-                    {data.unitPrice.toLocaleString()} VND
+                    {(data.unitPrice ?? 0).toLocaleString()} VND
                   </div>
                 </CTableDataCell>
 

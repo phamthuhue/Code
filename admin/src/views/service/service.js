@@ -37,19 +37,31 @@ const Service = () => {
     fetchServices()
   }, [])
 
-  const fetchServices = async () => {
+  const fetchServices = async (filterValues = filters) => {
     try {
-        const res = await getServices()
-        const data = res?.data
-        if (Array.isArray(data)) {
-        setServices(data)
-        } else {
-        setServices([]) // fallback an toàn
-        addToast(exampleToast('Dữ liệu trả về không hợp lệ.'))
-        }
+      const res = await getServices()
+      let data = res.data
+
+      if (filterValues.name) {
+        data = data.filter(p =>
+          p.name?.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      if (filterValues.phone) {
+        data = data.filter(p =>
+          p.phone?.toLowerCase().includes(filterValues.phone.toLowerCase())
+        )
+      }
+
+      if (filterValues.partnerId) {
+        data = data.filter(p => p.partnerId._id === filterValues.partnerId)
+      }
+
+      setServices(data)
     } catch (error) {
       console.error(error)
-      addToast(exampleToast('Không thể tải danh sách dịch vụ.'))
+      addToast(exampleToast('Không thể tải danh sách đối tác.'))
     }
   }
 
@@ -69,12 +81,15 @@ const Service = () => {
       }
     }
     // Xử lý bộ lọc
-  const [filters, setFilters] = useState({
-    partnerId: '',
-  })
+    const [filters, setFilters] = useState({
+    name: '',
+    partnerId: ''
+    })
+
     const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters)
-  }
+        setFilters(updatedFilters)
+        fetchServices(updatedFilters)
+    }
 
   const [formModalVisible, setFormModalVisible] = useState(false)
   const [editingType, setEditingType] = useState(null)
@@ -97,9 +112,10 @@ const Service = () => {
         addToast(exampleToast('Cập nhật dịch vụ thành công'))
       } else {
         const res = await createService(formData)
-        setServices([...partners, res.data])
+        setServices([...services, res.data])
         addToast(exampleToast('Thêm mới dịch vụ thành công'))
       }
+      await fetchServices()
       closeForm()
     } catch (error) {
       console.error(error)
@@ -141,7 +157,11 @@ const Service = () => {
   return (
     <CRow>
       <CCol xs>
-        <ServiceFilter filters={filters} onFilterChange={handleFilterChange} partnerTypes = {partners}/>
+        <ServiceFilter
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          partners={partners}
+        />
         <CCard className="mb-4">
           <CCardHeader>
             <CRow>

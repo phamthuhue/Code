@@ -49,7 +49,7 @@ const ServiceFormModal = ({ visible, onClose, onSubmit, initialData = null, part
     const newErrors = {}
     if (!formData.name.trim()) newErrors.name = 'Tên không được để trống'
     if (!formData.description.trim()) newErrors.description = 'Mô tả không được để trống'
-    if (!formData.unitPrice.trim()) newErrors.unitPrice = 'Giá không được để trống'
+    if (!formData.unitPrice) newErrors.unitPrice = 'Giá không được để trống'
     if (!formData.unit.trim()) newErrors.unit = 'Đơn vị không được để trống'
     if (!formData.partnerId) newErrors.partnerId = 'Đối tác không được để trống'
     setErrors(newErrors)

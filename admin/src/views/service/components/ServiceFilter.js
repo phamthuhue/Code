@@ -33,11 +33,11 @@ const ServiceFilter = ({ filters, onFilterChange, partners=[] }) => {
       <CCol md={4}>
         <CInputGroup>
           <CInputGroupText>Đối tác cung cấp</CInputGroupText>
-          <CFormSelect name="type" value={localFilters.type} onChange={handleChange}>
+          <CFormSelect name="partnerId" value={localFilters.partnerId} onChange={handleChange}>
             <option value="">Tất cả</option>
-            {partners.map((type) => (
-              <option key={type._id} value={type._id}>
-                {type.name}
+            {partners.map((partnerId) => (
+              <option key={partnerId._id} value={partnerId._id}>
+                {partnerId.name}
               </option>
             ))}
           </CFormSelect>
