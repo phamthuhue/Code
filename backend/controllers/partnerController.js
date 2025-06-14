@@ -1,4 +1,4 @@
-import Partner from './models/partner.js'
+import Partner from '../models/Partner.js'
 
 // Lấy danh sách tất cả đối tác
 export const getPartners = async (req, res) => {

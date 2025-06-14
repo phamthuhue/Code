@@ -4,7 +4,7 @@ import {
   createPartnerType,
   updatePartnerType,
   deletePartnerType
-} from '../controllers/partnerTypeController'
+} from '../controllers/partnerTypeController.js'
 
 const router = express.Router()
 
