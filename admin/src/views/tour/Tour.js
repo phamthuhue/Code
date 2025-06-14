@@ -149,7 +149,7 @@ const Tour = () => {
   };
 
   // Cài đặt phân trang
-  const itemsPerPage = 3
+  const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.ceil(tours?.length / itemsPerPage)
   console.log('totalPages: ', totalPages)

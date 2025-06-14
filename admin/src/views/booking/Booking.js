@@ -161,7 +161,7 @@ const Booking = () => {
   }
 
   // Phân trang
-  const itemsPerPage = 3
+  const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.ceil(bookings?.length / itemsPerPage)
   const currentBookings = bookings?.slice(

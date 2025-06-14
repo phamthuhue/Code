@@ -1,4 +1,4 @@
-import PartnerType from "../models/PartnerType.js";
+import PartnerType from '../models/PartnerType.js'
 
 // Lấy tất cả loại đối tác
 export const getPartnerTypes = async (req, res) => {
