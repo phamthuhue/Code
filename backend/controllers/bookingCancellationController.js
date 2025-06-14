@@ -46,7 +46,7 @@ export const createBookingCancellation = async (req, res) => {
         // Cập nhật trạng thái booking
         await Booking.updateOne(
             { _id: bookingId },
-            { status: "Đang xử lý" }
+            { status: "Chờ hủy" }
         );
 
         res.status(201).json({ message: 'Yêu cầu hủy tour đã được gửi.', cancellation });

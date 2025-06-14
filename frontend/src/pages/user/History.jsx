@@ -6,6 +6,7 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 import ReviewModal from "@components/Modal/ReviewModal";
 import CancelModal from "@components/Modal/CancelModal";
 import axiosInstance from "@utils/axiosInstance";
+import { notify } from "@utils/notify";
 
 export const History = () => {
   const { user } = useContext(AuthContext);
@@ -84,9 +85,10 @@ export const History = () => {
     window.location.href = `/payment/${bookingId}`;
   };
 
-  const handleCancel = (bookingId) => {
-    setSelectedBooking(bookingId);
-    setShowCancelModal(true);
+  const handleCancel = async (bookingId) => {
+      // Cập nhật giao diện nếu cần (ví dụ: refresh danh sách)
+      setSelectedBooking(bookingId);
+      setShowCancelModal(true);
   };
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
