@@ -63,7 +63,6 @@ const Service = {
     _id: "60d21b4667d0d8992e610cee",
     name: "Đưa đón sân bay",
     description: "Dịch vụ đưa đón khách tại sân bay Tân Sơn Nhất.",
-    numberOfService: 2,
     unitPrice: 500000,
     unit: "lượt",
     partnerId: "60d21b4667d0d8992e610cab",
@@ -118,9 +117,9 @@ const TourService = {
     services: [
         {
             serviceId: "60d21b4667d0d8992e610cee",
-            numberOfPeopl: 2,
-            servicePrice: 1000000,
-            note: "Đã bao gồm phí khứ hồi.",
+            numberOfPeopl: 4,
+            servicePrice: 500000,
+            note: "Đưa đón sân bay",
         },
     ],
 };
@@ -132,7 +131,7 @@ const Booking = {
     name: "Nguyễn Văn A",
     phone: "0909123456",
     startDate: new Date("2025-03-25"),
-    numberOfPeople: 2,
+    numberOfPeople: 5,
     totalPrice: 7000000,
     status: "Xác nhận",
 };

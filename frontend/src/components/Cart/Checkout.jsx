@@ -14,14 +14,13 @@ export const Checkout = ({
     avgRating,
     tourId,
     maxGroupSize,
+    tour,
 }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [services, setServices] = useState([]);
-    console.log("services: ", services);
     const [selectedServices, setSelectedServices] = useState([]);
-
     const [booking, setBooking] = useState({
         userId: user && user._id,
         tourId: tourId,
@@ -29,6 +28,7 @@ export const Checkout = ({
         phone: "",
         startDate: "",
         numberOfPeople: 1,
+        tour: null,
     });
 
     useEffect(() => {
@@ -66,7 +66,14 @@ export const Checkout = ({
 
         fetchTourServices();
     }, [tourId]);
-
+    useEffect(() => {
+        if (tour) {
+            setBooking((prev) => ({
+                ...prev,
+                tour: tour,
+            }));
+        }
+    }, [tour]);
     const handleChange = (value, fieldName) => {
         setBooking((prev) => ({
             ...prev,
