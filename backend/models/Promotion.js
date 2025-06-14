@@ -17,23 +17,6 @@ const promotionSchema = new mongoose.Schema({
         type: Number,
         required: true, // Ví dụ 20% hoặc 500000 VNĐ
     },
-    staffId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Staff",
-        required: true,
-    },
-    startDate: {
-        type: Date,
-        default: Date.now,
-    },
-    endDate: {
-        type: Date,
-        required: true,
-    },
-    isActive: {
-        type: Boolean,
-        default: true,
-    },
 },
 { timestamps: true }
 );
