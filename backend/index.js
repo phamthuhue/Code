@@ -76,7 +76,7 @@ app.use("/api/v1/invoices", invoiceRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use('/api/v1/partners', partnerRoutes)
 app.use('/api/v1/partner-types', partnerTypeRoutes)
-app.use('/api/promotions', promotionRoutes)
+app.use('/api/v1/promotions', promotionRoutes)
 // Route IPN (phải đặt riêng, không verifyToken!)
 app.use("/api/v1/payment-without-token", vnpayIpn);
 app.use("/api/v1/booking-cancellations", bookingCancellationRoute);

@@ -10,8 +10,8 @@ const promotionSchema = new mongoose.Schema({
     },
     discountType: {
         type: String,
-        enum: ["percent", "fixed"],
-        default: "percent", // Giảm theo phần trăm hoặc cố định
+        enum: ["Phần trăm (%)", "VNĐ"],
+        default: "%", // Giảm theo phần trăm hoặc cố định
     },
     discountValue: {
         type: Number,
