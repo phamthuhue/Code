@@ -34,21 +34,32 @@ const PartnerType = () => {
     fetchPartnerTypes()
   }, [])
 
-  const fetchPartnerTypes = async () => {
+  const fetchPartnerTypes = async (filterValues = filters) => {
     try {
       const res = await getPartnerTypes()
-      setPartnerTypes(res.data.data)
+
+      let data = res.data.data
+
+      // Lọc trên client theo tên (nếu có nhập)
+      if (filterValues.name) {
+        data = data.filter((pt) =>
+          pt.name.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      setPartnerTypes(data)
     } catch (error) {
       console.error(error)
       addToast(exampleToast('Không thể tải danh sách loại đối tác.'))
     }
   }
 
-    const [filters, setFilters] = useState({
-    partnerTypeId: '',
+  const [filters, setFilters] = useState({
+    name: '',
   })
-    const handleFilterChange = (updatedFilters) => {
+  const handleFilterChange = (updatedFilters) => {
     setFilters(updatedFilters)
+    fetchPartnerTypes(updatedFilters) // gọi lại với bộ lọc mới
   }
 
   const [formModalVisible, setFormModalVisible] = useState(false)
@@ -75,6 +86,7 @@ const PartnerType = () => {
         setPartnerTypes([...partnerTypes, res.data])
         addToast(exampleToast('Thêm mới loại đối tác thành công'))
       }
+      await fetchPartnerTypes()
       closeForm()
     } catch (error) {
       console.error(error)

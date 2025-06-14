@@ -16,7 +16,7 @@ const ItineraryFilter = ({ filters, onFilterChange }) => {
       <CCol md={4}>
         <CInputGroup>
           <CInputGroupText>Tên tour</CInputGroupText>
-          <CFormInput name="title" value={localFilters.title} onChange={handleChange} />
+          <CFormInput name="name" value={localFilters.name} onChange={handleChange} />
         </CInputGroup>
       </CCol>
     </CRow>

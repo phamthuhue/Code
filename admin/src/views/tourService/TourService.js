@@ -60,13 +60,35 @@ const TourService = () => {
   const [tourServices, setTourServices] = useState([])
   const [services, setServices] = useState([])
   const [tours, setTours] = useState([])
+  const [filters, setFilters] = useState({
+    name: '',
+  })
 
   useEffect(() => {
-    fetchTourServices()
-  }, [])
-  const fetchTourServices = async () => {
-    const res = await getTourServices()
-    setTourServices(res.data)
+    fetchTourServices(filters)
+  }, [filters])
+  
+  const fetchTourServices = async (filterValues = {}) => {
+    try {
+      const res = await getTourServices()
+      let data = res.data
+
+      // Lọc theo tên tour
+      if (filterValues.name) {
+        data = data.filter(p =>
+          p.tourId?.title?.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      setTourServices(data)
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách lịch trình:', error)
+    }
+  }
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters)
+    fetchTourServices(updatedFilters)
   }
 
   useEffect(() => {
@@ -83,14 +105,6 @@ const TourService = () => {
   const fetchTours = async () => {
     const res = await getToursWithoutService()
     setTours(res.data)
-  }
-
-  const [filters, setFilters] = useState({
-    tourId: '',
-  })
-
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters)
   }
 
   const openForm = (tourService = null) => {

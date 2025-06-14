@@ -37,17 +37,35 @@ const Partner = () => {
     fetchPartners()
   }, [])
 
-  const fetchPartners = async () => {
+  const fetchPartners = async (filterValues = filters) => {
     try {
       const res = await getPartners()
-      setPartners(res.data.data)
+      let data = res.data.data
+
+      if (filterValues.name) {
+        data = data.filter(p =>
+          p.name?.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      if (filterValues.phone) {
+        data = data.filter(p =>
+          p.phone?.toLowerCase().includes(filterValues.phone.toLowerCase())
+        )
+      }
+
+      if (filterValues.type) {
+        data = data.filter(p => p.partnerTypeId._id === filterValues.type)
+      }
+
+      setPartners(data)
     } catch (error) {
       console.error(error)
       addToast(exampleToast('Không thể tải danh sách đối tác.'))
     }
   }
 
-    const [partnerTypes, setPartnerTypes] = useState([])
+  const [partnerTypes, setPartnerTypes] = useState([])
   
     useEffect(() => {
       fetchPartnerTypes()
@@ -64,10 +82,14 @@ const Partner = () => {
     }
     // Xử lý bộ lọc
   const [filters, setFilters] = useState({
-    partnerId: '',
+    name: '',
+    phone: '',
+    type: ''
   })
-    const handleFilterChange = (updatedFilters) => {
+
+  const handleFilterChange = (updatedFilters) => {
     setFilters(updatedFilters)
+    fetchPartners(updatedFilters)
   }
 
   const [formModalVisible, setFormModalVisible] = useState(false)
@@ -94,6 +116,7 @@ const Partner = () => {
         setPartners([...partners, res.data])
         addToast(exampleToast('Thêm mới đối tác thành công'))
       }
+      await fetchPartners()
       closeForm()
     } catch (error) {
       console.error(error)
@@ -135,7 +158,11 @@ const Partner = () => {
   return (
     <CRow>
       <CCol xs>
-        <PartnerFilter filters={filters} onFilterChange={handleFilterChange} partnerTypes = {partnerTypes}/>
+        <PartnerFilter
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          partnerTypes={partnerTypes}
+        />
         <CCard className="mb-4">
           <CCardHeader>
             <CRow>

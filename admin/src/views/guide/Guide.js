@@ -53,19 +53,40 @@ const Guide = () => {
     fetchGuides()
   }, [])
 
-  const fetchGuides = async () => {
-    const res = await getGuides()
-    setGuides(res.data.data)
+  const fetchGuides = async (filterValues = filters) => {
+    try {
+      const res = await getGuides()
+      let data = res.data.data
+
+      if (filterValues.name) {
+        data = data.filter(p =>
+          p.name?.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      if (filterValues.phone) {
+        data = data.filter(p =>
+          p.phone?.toLowerCase().includes(filterValues.phone.toLowerCase())
+        )
+      }
+
+      setGuides(data)
+    } catch (error) {
+      console.error(error)
+      addToast(exampleToast('Không thể tải danh sách đối tác.'))
+    }
   }
 
-  // Xử lý bộ lọc
-  const [filters, setFilters] = useState({
-    tourId: '',
-  })
+    // Xử lý bộ lọc
+    const [filters, setFilters] = useState({
+    name: '',
+    phone: ''
+    })
 
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters)
-  }
+    const handleFilterChange = (updatedFilters) => {
+        setFilters(updatedFilters)
+        fetchGuides(updatedFilters)
+    }
 
   // Thêm mới và cập nhật guide
   const openForm = (guide = null) => {
