@@ -1,16 +1,16 @@
-import express from 'express'
+import express from "express";
 import {
-  getPartnerTypes,
-  createPartnerType,
-  updatePartnerType,
-  deletePartnerType
-} from '../controllers/partnerTypeController'
+    getPartnerTypes,
+    createPartnerType,
+    updatePartnerType,
+    deletePartnerType,
+} from "../controllers/partnerTypeController.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', getPartnerTypes)
-router.post('/', createPartnerType)
-router.put('/:id', updatePartnerType)
-router.delete('/:id', deletePartnerType)
+router.get("/", getPartnerTypes);
+router.post("/", createPartnerType);
+router.put("/:id", updatePartnerType);
+router.delete("/:id", deletePartnerType);
 
-export default router
+export default router;
