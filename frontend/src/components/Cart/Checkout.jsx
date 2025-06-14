@@ -28,7 +28,6 @@ export const Checkout = ({
         phone: "",
         startDate: "",
         numberOfPeople: 1,
-        tour: null,
     });
 
     useEffect(() => {
@@ -66,14 +65,7 @@ export const Checkout = ({
 
         fetchTourServices();
     }, [tourId]);
-    useEffect(() => {
-        if (tour) {
-            setBooking((prev) => ({
-                ...prev,
-                tour: tour,
-            }));
-        }
-    }, [tour]);
+
     const handleChange = (value, fieldName) => {
         setBooking((prev) => ({
             ...prev,

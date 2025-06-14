@@ -40,8 +40,9 @@ export const createPaymentUrl = async (req, res) => {
 
         const savedBooking = await bookingData.save();
         // Tạo BookingDetails cho các Tour
-        const tourInfo = booking.tour;
-        console.log("tourInfo: ", tourInfo);
+        // Lấy hóa đơn từ txnRef (dùng txnRef làm tham chiếu để tìm invoice)
+        const tourInfo = await Tour.findById(tourId);
+
         // Tạo promise cho booking tour
         const bookingTourPromise = new BookingDetail({
             bookingId: savedBooking._id,
@@ -63,10 +64,10 @@ export const createPaymentUrl = async (req, res) => {
                     tourServiceId: service.serviceId._id,
                     itemType: "Service",
                     description: service.serviceId.description,
-                    quantity: service.numberOfPeopl,
+                    quantity: service.quantity,
                     unitPrice: service.serviceId.unitPrice,
                     totalPrice:
-                        Number(service.numberOfPeopl) *
+                        Number(service.quantity) *
                         Number(service.serviceId.unitPrice),
                 }).save();
             });
@@ -145,8 +146,7 @@ const validateBookingData = (
         !booking.name ||
         !booking.phone ||
         !booking.startDate ||
-        !booking.numberOfPeople ||
-        !booking.tour
+        !booking.numberOfPeople
     ) {
         return { valid: false, message: "Thông tin đặt tour không đầy đủ!" };
     }

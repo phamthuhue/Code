@@ -24,7 +24,7 @@ dotenv.config();
 // Map mockData key với model
 const modelMap = {
     Guide,
-    Invoice,
+    // Invoice,
     Itinerary,
     Partner,
     PartnerType,
@@ -36,9 +36,9 @@ const modelMap = {
     Tour,
     TourService,
     User,
-    Booking,
+    // Booking,
     BookingCancellation,
-    BookingDetail,
+    // BookingDetail,
     GroupTourRequest,
 };
 
