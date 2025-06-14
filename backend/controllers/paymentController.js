@@ -13,6 +13,58 @@ import TourService from "../models/TourService.js";
 export const createPaymentUrl = async (req, res) => {
     try {
         // Lấy dữ liệu từ frontend gửi lên
+        const { booking, invoiceSaved } = req.body;
+
+        // Tạo các tham số VNPay
+        const ipAddr =
+            req.headers["x-forwarded-for"] ||
+            req.connection.remoteAddress ||
+            "127.0.0.1";
+        const tmnCode = process.env.VNP_TMNCODE;
+        const secretKey = process.env.VNP_HASH_SECRET;
+        const vnpUrl = process.env.VNP_URL;
+        const returnUrl = `${process.env.CLIENT_URL}/payment-success`;
+        const createDate = moment().format("YYYYMMDDHHmmss");
+        const orderId = moment().format("HHmmss");
+
+        // Các tham số thanh toán
+
+        const orderInfo = `Thanh toán tour ${booking.name}`;
+        const vnp_Params = {
+            vnp_Version: "2.1.0",
+            vnp_Command: "pay",
+            vnp_TmnCode: tmnCode,
+            vnp_Locale: "vn",
+            vnp_CurrCode: "VND",
+            vnp_TxnRef: invoiceSaved.id.toString(), // Gửi ID của Invoice như là mã giao dịch
+            vnp_OrderInfo: sanitizeOrderInfo(orderInfo),
+            vnp_OrderType: "billpayment",
+            vnp_Amount: invoiceSaved.finalAmount * 100, // Đơn vị tiền tệ là VND (VNPay yêu cầu phải nhân với 100)
+            vnp_ReturnUrl: returnUrl,
+            vnp_IpAddr: ipAddr,
+            vnp_CreateDate: createDate,
+        };
+
+        // 🔐 Ký các tham số (phải encode giá trị)
+        const signedHash = signVnpayParams(vnp_Params, secretKey);
+        vnp_Params.vnp_SecureHash = signedHash;
+
+        // 🔗 Tạo URL thanh toán (encode giá trị đúng chuẩn)
+        const querystring = Object.entries(vnp_Params)
+            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+            .join("&");
+
+        const paymentUrl = `${vnpUrl}?${querystring}`;
+
+        return res.json({ paymentUrl });
+    } catch (error) {
+        console.error("Lỗi khi tạo URL thanh toán: ", error);
+        return res.status(500).json({ message: "Có lỗi xảy ra", error });
+    }
+};
+export const beforeCreatePaymentUrl = async (req, res) => {
+    try {
+        // Lấy dữ liệu từ frontend gửi lên
         const { booking, selectedServices, totalPrice, price, tourId, user } =
             req.body;
 
@@ -87,47 +139,11 @@ export const createPaymentUrl = async (req, res) => {
 
         const savedInvoice = await invoice.save();
         // Tạo các tham số VNPay
-        const ipAddr =
-            req.headers["x-forwarded-for"] ||
-            req.connection.remoteAddress ||
-            "127.0.0.1";
-        const tmnCode = process.env.VNP_TMNCODE;
-        const secretKey = process.env.VNP_HASH_SECRET;
-        const vnpUrl = process.env.VNP_URL;
-        const returnUrl = `${process.env.CLIENT_URL}/payment-success`;
-        const createDate = moment().format("YYYYMMDDHHmmss");
-        const orderId = moment().format("HHmmss");
 
-        // Các tham số thanh toán
-
-        const orderInfo = `Thanh toán tour ${savedBooking.name}`;
-        const vnp_Params = {
-            vnp_Version: "2.1.0",
-            vnp_Command: "pay",
-            vnp_TmnCode: tmnCode,
-            vnp_Locale: "vn",
-            vnp_CurrCode: "VND",
-            vnp_TxnRef: savedInvoice._id.toString(), // Gửi ID của Invoice như là mã giao dịch
-            vnp_OrderInfo: sanitizeOrderInfo(orderInfo),
-            vnp_OrderType: "billpayment",
-            vnp_Amount: totalPrice * 100, // Đơn vị tiền tệ là VND (VNPay yêu cầu phải nhân với 100)
-            vnp_ReturnUrl: returnUrl,
-            vnp_IpAddr: ipAddr,
-            vnp_CreateDate: createDate,
-        };
-
-        // 🔐 Ký các tham số (phải encode giá trị)
-        const signedHash = signVnpayParams(vnp_Params, secretKey);
-        vnp_Params.vnp_SecureHash = signedHash;
-
-        // 🔗 Tạo URL thanh toán (encode giá trị đúng chuẩn)
-        const querystring = Object.entries(vnp_Params)
-            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-            .join("&");
-
-        const paymentUrl = `${vnpUrl}?${querystring}`;
-
-        return res.json({ paymentUrl });
+        return res.json({
+            message: "Tạo thông tin bookings, bookingDetals thành công",
+            data: savedInvoice,
+        });
     } catch (error) {
         console.error("Lỗi khi tạo URL thanh toán: ", error);
         return res.status(500).json({ message: "Có lỗi xảy ra", error });

@@ -11,6 +11,7 @@ export const Payment = () => {
     const { bookingId } = useParams();
 
     const [paymentData, setPaymentData] = useState(null);
+    const [invoiceSaved, setInvoiceSaved] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState("");
 
     useEffect(() => {
@@ -53,10 +54,15 @@ export const Payment = () => {
                 navigate("/");
             }
         }
+
+        const invoiceSaved = localStorage.getItem("invoiceSaved") ?? null;
+        setInvoiceSaved(JSON.parse(invoiceSaved));
     }, [bookingId, navigate]);
 
     if (!paymentData) return null;
-    const { booking, selectedServices, totalPrice, price } = paymentData;
+    if (!invoiceSaved) return null;
+
+    const { booking, selectedServices, totalPrice } = paymentData;
 
     const handlePayment = async () => {
         if (!paymentMethod) {
@@ -73,6 +79,7 @@ export const Payment = () => {
                 const res = await axiosInstance.post("payment/create-payment", {
                     ...paymentData,
                     user: user ? user.info : null,
+                    invoiceSaved,
                 });
 
                 const { paymentUrl } = res.data;

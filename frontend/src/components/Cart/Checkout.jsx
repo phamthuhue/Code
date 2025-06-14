@@ -18,7 +18,7 @@ export const Checkout = ({
 }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
     const [services, setServices] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
     const [booking, setBooking] = useState({
@@ -101,39 +101,63 @@ export const Checkout = ({
     const totalPrice =
         Number(price) * booking.numberOfPeople + totalServicePrice;
 
-    const handleCheckoutClick = () => {
-        const { name, phone, startDate, numberOfPeople } = booking;
+    const handleCheckoutClick = async () => {
+        setLoading(true);
+        try {
+            const { name, phone, startDate, numberOfPeople } = booking;
 
-        // Kiểm tra thông tin đầy đủ
-        if (!name.trim() || !phone.trim() || !numberOfPeople) {
-            notify("error", "Lỗi", "Vui lòng điền đầy đủ thông tin đặt tour!");
-            return;
-        }
+            // Kiểm tra thông tin đầy đủ
+            if (!name.trim() || !phone.trim() || !numberOfPeople) {
+                notify(
+                    "error",
+                    "Lỗi",
+                    "Vui lòng điền đầy đủ thông tin đặt tour!"
+                );
+                setLoading(false);
+                return;
+            }
 
-        // Validate số điện thoại (regex kiểm tra định dạng)
-        const phoneRegex = /^0\d{9,10}$/; // Kiểm tra số điện thoại bắt đầu bằng 0 và có 10-11 chữ số
-        if (!phoneRegex.test(phone)) {
-            notify(
-                "error",
-                "Lỗi",
-                "Số điện thoại không hợp lệ. Vui lòng nhập lại!"
-            );
-            return;
-        }
-
-        // Nếu tất cả đều hợp lệ, lưu thông tin và điều hướng đến trang thanh toán
-        localStorage.setItem(
-            "paymentData",
-            JSON.stringify({
+            // Validate số điện thoại (regex kiểm tra định dạng)
+            const phoneRegex = /^0\d{9,10}$/; // Kiểm tra số điện thoại bắt đầu bằng 0 và có 10-11 chữ số
+            if (!phoneRegex.test(phone)) {
+                notify(
+                    "error",
+                    "Lỗi",
+                    "Số điện thoại không hợp lệ. Vui lòng nhập lại!"
+                );
+                return;
+            }
+            const paymentData = {
                 booking,
                 selectedServices,
                 totalPrice,
                 price,
                 tourId,
-            })
-        );
+            };
+            // Nếu tất cả đều hợp lệ, lưu thông tin và điều hướng đến trang thanh toán
+            localStorage.setItem("paymentData", JSON.stringify(paymentData));
+            const res = await axiosInstance.post(
+                "payment/before-create-payment",
+                {
+                    ...paymentData,
+                    user: user ? user.info : null,
+                }
+            );
 
-        navigate("/payment");
+            if (res) {
+                const invoiceSaved = res.data.data;
+                localStorage.setItem(
+                    "invoiceSaved",
+                    JSON.stringify(invoiceSaved)
+                );
+                navigate("/payment");
+            } else {
+                notify("error", "Lỗi", "Có lỗi máy chủ khi đặt tour !");
+                return;
+            }
+        } catch (error) {
+            setLoading(false);
+        }
     };
 
     return (
@@ -303,8 +327,34 @@ export const Checkout = ({
                         <button
                             onClick={handleCheckoutClick}
                             className="submitButton rounded-full px-8"
+                            disabled={loading}
                         >
-                            Đặt ngay
+                            {loading ? (
+                                <span>
+                                    <svg
+                                        className="inline mr-2 w-4 h-4 animate-spin"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            fill="none"
+                                        />
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v8z"
+                                        />
+                                    </svg>
+                                    Đang xử lý...
+                                </span>
+                            ) : (
+                                "Đặt ngay"
+                            )}
                         </button>
                     </div>
                 </div>
