@@ -1,0 +1,15 @@
+.image-wrapper:hover .preview-image {
+  opacity: 0.6;
+}
+
+.image-wrapper .delete-button {
+    display: none;
+    position: absolute;
+    top: 30%;
+    left: 30%;
+}
+
+.image-wrapper:hover .delete-button {
+    display: inline-block;
+    border-radius: 50%;
+}

@@ -5,17 +5,20 @@ import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
-import PartnerTypeFormModal from './components/PartnerTypeForm'
-import PartnerTypeTable from './components/PartnerTypeTable'
+import ServiceFormModal from './components/ServiceForm'
+import ServiceTable from './components/ServiceTable'
+import ServiceFilter from './components/ServiceFilter'
 import {
-  getPartnerTypes,
-  createPartnerType,
-  updatePartnerType,
-  deletePartnerType,
-} from '../../services/Api/partnerTypeService'
-import PartnerTypeFilter from './components/PartnerTypeFilter'
+  getServices,
+  createService,
+  updateService,
+  deleteService,
+} from '../../services/Api/service'
+import {
+  getPartners,
+} from '../../services/Api/partnerService'
 
-const PartnerType = () => {
+const Service = () => {
   const [toast, addToast] = useState()
   const toaster = useRef(null)
 
@@ -28,24 +31,46 @@ const PartnerType = () => {
     </CToast>
   )
 
-  const [partnerTypes, setPartnerTypes] = useState([])
+  const [services, setServices] = useState([])
 
   useEffect(() => {
-    fetchPartnerTypes()
+    fetchServices()
   }, [])
 
-  const fetchPartnerTypes = async () => {
+  const fetchServices = async () => {
     try {
-      const res = await getPartnerTypes()
-      setPartnerTypes(res.data.data)
+        const res = await getServices()
+        const data = res?.data
+        if (Array.isArray(data)) {
+        setServices(data)
+        } else {
+        setServices([]) // fallback an toàn
+        addToast(exampleToast('Dữ liệu trả về không hợp lệ.'))
+        }
     } catch (error) {
       console.error(error)
-      addToast(exampleToast('Không thể tải danh sách loại đối tác.'))
+      addToast(exampleToast('Không thể tải danh sách dịch vụ.'))
     }
   }
 
-    const [filters, setFilters] = useState({
-    partnerTypeId: '',
+    const [partners, setPartners] = useState([])
+  
+    useEffect(() => {
+      fetchPartners()
+    }, [])
+  
+    const fetchPartners = async () => {
+      try {
+        const res = await getPartners()
+        setPartners(res.data.data)
+      } catch (error) {
+        console.error(error)
+        addToast(exampleToast('Không thể tải danh sách đối tác.'))
+      }
+    }
+    // Xử lý bộ lọc
+  const [filters, setFilters] = useState({
+    partnerId: '',
   })
     const handleFilterChange = (updatedFilters) => {
     setFilters(updatedFilters)
@@ -67,13 +92,13 @@ const PartnerType = () => {
   const submitForm = async (formData) => {
     try {
       if (editingType) {
-        const res = await updatePartnerType(editingType._id, formData)
-        setPartnerTypes(partnerTypes.map(pt => pt._id === editingType._id ? res.data : pt))
-        addToast(exampleToast('Cập nhật loại đối tác thành công'))
+        const res = await updateService(editingType._id, formData)
+        setServices(services.map(pt => pt._id === editingType._id ? res.data : pt))
+        addToast(exampleToast('Cập nhật dịch vụ thành công'))
       } else {
-        const res = await createPartnerType(formData)
-        setPartnerTypes([...partnerTypes, res.data])
-        addToast(exampleToast('Thêm mới loại đối tác thành công'))
+        const res = await createService(formData)
+        setServices([...partners, res.data])
+        addToast(exampleToast('Thêm mới dịch vụ thành công'))
       }
       closeForm()
     } catch (error) {
@@ -92,12 +117,12 @@ const PartnerType = () => {
 
   const confirmDelete = async () => {
     try {
-      await deletePartnerType(typeToDelete._id)
-      setPartnerTypes(partnerTypes.filter(pt => pt._id !== typeToDelete._id))
-      addToast(exampleToast('Xóa loại đối tác thành công'))
+      await deleteService(typeToDelete._id)
+      setServices(services.filter(pt => pt._id !== typeToDelete._id))
+      addToast(exampleToast('Xóa dịch vụ thành công'))
     } catch (error) {
       console.error(error)
-      addToast(exampleToast('Không thể xóa loại đối tác.'))
+      addToast(exampleToast('Không thể xóa dịch vụ.'))
     } finally {
       setDeleteModalVisible(false)
     }
@@ -106,9 +131,9 @@ const PartnerType = () => {
   // Phân trang
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(partnerTypes.length / itemsPerPage)
+    const totalPages = Math.ceil((services?.length || 0) / itemsPerPage)
 
-  const currentPartnerTypes = partnerTypes.slice(
+  const currentData = services.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
@@ -116,11 +141,11 @@ const PartnerType = () => {
   return (
     <CRow>
       <CCol xs>
-        <PartnerTypeFilter filters={filters} onFilterChange={handleFilterChange} />
+        <ServiceFilter filters={filters} onFilterChange={handleFilterChange} partnerTypes = {partners}/>
         <CCard className="mb-4">
           <CCardHeader>
             <CRow>
-              <CCol sm={6}><h4 className="mb-0">Danh sách loại đối tác</h4></CCol>
+              <CCol sm={6}><h4 className="mb-0">Danh sách dịch vụ</h4></CCol>
               <CCol sm={6} className="text-end">
                 <CButton color="primary" onClick={() => openForm()}>
                   <CIcon icon={cilPlus} className="me-1" />
@@ -130,8 +155,8 @@ const PartnerType = () => {
             </CRow>
           </CCardHeader>
           <CCardBody>
-            <PartnerTypeTable
-              currentPartnerTypes={currentPartnerTypes}
+            <ServiceTable
+              currentData={currentData}
               currentPage={currentPage}
               totalPages={totalPages}
               setCurrentPage={setCurrentPage}
@@ -141,11 +166,12 @@ const PartnerType = () => {
           </CCardBody>
         </CCard>
 
-        <PartnerTypeFormModal
+        <ServiceFormModal
           visible={formModalVisible}
           onClose={closeForm}
           onSubmit={submitForm}
           initialData={editingType}
+          partners = {partners}
         />
 
         <DeleteConfirmModal
@@ -160,4 +186,4 @@ const PartnerType = () => {
   )
 }
 
-export default PartnerType
+export default Service

@@ -5,17 +5,20 @@ import CIcon from '@coreui/icons-react'
 import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
-import PartnerTypeFormModal from './components/PartnerTypeForm'
-import PartnerTypeTable from './components/PartnerTypeTable'
+import PartnerFormModal from './components/PartnerForm'
+import PartnerTable from './components/PartnerTable'
+import PartnerFilter from './components/PartnerFilter'
+import {
+  getPartners,
+  createPartner,
+  updatePartner,
+  deletePartner,
+} from '../../services/Api/partnerService'
 import {
   getPartnerTypes,
-  createPartnerType,
-  updatePartnerType,
-  deletePartnerType,
 } from '../../services/Api/partnerTypeService'
-import PartnerTypeFilter from './components/PartnerTypeFilter'
 
-const PartnerType = () => {
+const Partner = () => {
   const [toast, addToast] = useState()
   const toaster = useRef(null)
 
@@ -28,24 +31,40 @@ const PartnerType = () => {
     </CToast>
   )
 
-  const [partnerTypes, setPartnerTypes] = useState([])
+  const [partners, setPartners] = useState([])
 
   useEffect(() => {
-    fetchPartnerTypes()
+    fetchPartners()
   }, [])
 
-  const fetchPartnerTypes = async () => {
+  const fetchPartners = async () => {
     try {
-      const res = await getPartnerTypes()
-      setPartnerTypes(res.data.data)
+      const res = await getPartners()
+      setPartners(res.data.data)
     } catch (error) {
       console.error(error)
-      addToast(exampleToast('Không thể tải danh sách loại đối tác.'))
+      addToast(exampleToast('Không thể tải danh sách đối tác.'))
     }
   }
 
-    const [filters, setFilters] = useState({
-    partnerTypeId: '',
+    const [partnerTypes, setPartnerTypes] = useState([])
+  
+    useEffect(() => {
+      fetchPartnerTypes()
+    }, [])
+  
+    const fetchPartnerTypes = async () => {
+      try {
+        const res = await getPartnerTypes()
+        setPartnerTypes(res.data.data)
+      } catch (error) {
+        console.error(error)
+        addToast(exampleToast('Không thể tải danh sách loại đối tác.'))
+      }
+    }
+    // Xử lý bộ lọc
+  const [filters, setFilters] = useState({
+    partnerId: '',
   })
     const handleFilterChange = (updatedFilters) => {
     setFilters(updatedFilters)
@@ -67,13 +86,13 @@ const PartnerType = () => {
   const submitForm = async (formData) => {
     try {
       if (editingType) {
-        const res = await updatePartnerType(editingType._id, formData)
-        setPartnerTypes(partnerTypes.map(pt => pt._id === editingType._id ? res.data : pt))
-        addToast(exampleToast('Cập nhật loại đối tác thành công'))
+        const res = await updatePartner(editingType._id, formData)
+        setPartners(partners.map(pt => pt._id === editingType._id ? res.data : pt))
+        addToast(exampleToast('Cập nhật đối tác thành công'))
       } else {
-        const res = await createPartnerType(formData)
-        setPartnerTypes([...partnerTypes, res.data])
-        addToast(exampleToast('Thêm mới loại đối tác thành công'))
+        const res = await createPartner(formData)
+        setPartners([...partners, res.data])
+        addToast(exampleToast('Thêm mới đối tác thành công'))
       }
       closeForm()
     } catch (error) {
@@ -92,12 +111,12 @@ const PartnerType = () => {
 
   const confirmDelete = async () => {
     try {
-      await deletePartnerType(typeToDelete._id)
-      setPartnerTypes(partnerTypes.filter(pt => pt._id !== typeToDelete._id))
-      addToast(exampleToast('Xóa loại đối tác thành công'))
+      await deletePartner(typeToDelete._id)
+      setPartners(partners.filter(pt => pt._id !== typeToDelete._id))
+      addToast(exampleToast('Xóa đối tác thành công'))
     } catch (error) {
       console.error(error)
-      addToast(exampleToast('Không thể xóa loại đối tác.'))
+      addToast(exampleToast('Không thể xóa đối tác.'))
     } finally {
       setDeleteModalVisible(false)
     }
@@ -106,9 +125,9 @@ const PartnerType = () => {
   // Phân trang
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(partnerTypes.length / itemsPerPage)
+  const totalPages = Math.ceil(partners.length / itemsPerPage)
 
-  const currentPartnerTypes = partnerTypes.slice(
+  const currentPartners = partners.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
@@ -116,11 +135,11 @@ const PartnerType = () => {
   return (
     <CRow>
       <CCol xs>
-        <PartnerTypeFilter filters={filters} onFilterChange={handleFilterChange} />
+        <PartnerFilter filters={filters} onFilterChange={handleFilterChange} partnerTypes = {partnerTypes}/>
         <CCard className="mb-4">
           <CCardHeader>
             <CRow>
-              <CCol sm={6}><h4 className="mb-0">Danh sách loại đối tác</h4></CCol>
+              <CCol sm={6}><h4 className="mb-0">Danh sách đối tác</h4></CCol>
               <CCol sm={6} className="text-end">
                 <CButton color="primary" onClick={() => openForm()}>
                   <CIcon icon={cilPlus} className="me-1" />
@@ -130,8 +149,8 @@ const PartnerType = () => {
             </CRow>
           </CCardHeader>
           <CCardBody>
-            <PartnerTypeTable
-              currentPartnerTypes={currentPartnerTypes}
+            <PartnerTable
+              currentPartners={currentPartners}
               currentPage={currentPage}
               totalPages={totalPages}
               setCurrentPage={setCurrentPage}
@@ -141,11 +160,12 @@ const PartnerType = () => {
           </CCardBody>
         </CCard>
 
-        <PartnerTypeFormModal
+        <PartnerFormModal
           visible={formModalVisible}
           onClose={closeForm}
           onSubmit={submitForm}
           initialData={editingType}
+          partnerTypes = {partnerTypes}
         />
 
         <DeleteConfirmModal
@@ -160,4 +180,4 @@ const PartnerType = () => {
   )
 }
 
-export default PartnerType
+export default Partner
