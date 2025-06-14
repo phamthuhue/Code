@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const guideSchema = new mongoose.Schema(
     {
         name: { type: String, required: true }, // Tên hướng dẫn viên
-        averating: { type: Number, default: 5, min: 0, max: 5 }, // Đánh giá trung bình (mặc định 5)
+        avgrating: { type: Number, default: 5, min: 0, max: 5 }, // Đánh giá trung bình (mặc định 5)
         gender: { type: String, enum: ["Nam", "Nữ", "Khác"], required: true }, // Giới tính
         dob: { type: Date, required: true }, // Ngày sinh
         address: { type: String, required: true }, // Địa chỉ

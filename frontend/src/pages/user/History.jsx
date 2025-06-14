@@ -6,6 +6,7 @@ import Pagination from "../../components/Pagination/Pagination.jsx";
 import ReviewModal from "@components/Modal/ReviewModal";
 import CancelModal from "@components/Modal/CancelModal";
 import axiosInstance from "@utils/axiosInstance";
+import { notify } from "@utils/notify";
 
 export const History = () => {
   const { user } = useContext(AuthContext);
@@ -27,7 +28,7 @@ export const History = () => {
     loading,
     error,
   } = useFetch(
-    `/bookings/user/${userId}?page=${page}&limit=4&reload=${reloadTrigger}`
+    `/bookings/user/${userId}?page=${page}&limit=6&reload=${reloadTrigger}`
   );
 
   // Hàm reload
@@ -80,9 +81,14 @@ export const History = () => {
     window.location.href = `/tours/${tourId}`;
   };
 
-  const handleCancel = (bookingId) => {
-    setSelectedBooking(bookingId);
-    setShowCancelModal(true);
+  const handlePayment = (bookingId) => {
+    window.location.href = `/payment/${bookingId}`;
+  };
+
+  const handleCancel = async (bookingId) => {
+      // Cập nhật giao diện nếu cần (ví dụ: refresh danh sách)
+      setSelectedBooking(bookingId);
+      setShowCancelModal(true);
   };
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
@@ -175,7 +181,19 @@ export const History = () => {
                     >
                       Đặt lại
                     </button>
-                  ) : booking.status === "Mới tạo" ? (
+                  ): booking.status === "Mới tạo" ? (
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm text-red-500">
+                          ⚠️ Bạn cần thanh toán ngay để chỗ.
+                        </span>
+                        <button
+                          onClick={() => handlePayment(booking._id)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        >
+                          Thanh toán
+                        </button>
+                    </div>
+                  ) : booking.status === "Chờ xác nhận" ? (
                     <button
                       onClick={() => handleCancel(booking._id)} // nhớ định nghĩa hàm này
                       className="border border-red-500 text-red-400 bg-red-10 hover:bg-red-100 px-4 py-2 rounded"

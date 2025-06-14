@@ -171,3 +171,28 @@ export const getBookingWithDetails = async (req, res) => {
         return res.status(500).json({ message: "Lỗi server" });
     }
 };
+
+export const getBookingById = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const booking = await Booking.findById(bookingId)
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy booking.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: booking,
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy booking:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi server khi lấy booking.",
+    });
+  }
+};

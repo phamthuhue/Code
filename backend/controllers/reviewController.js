@@ -148,7 +148,7 @@ export const getReviewsByUser = async (req, res) => {
     // Tìm tất cả review của user, có thể populate thêm tour, guide hoặc booking nếu cần
     const reviews = await Review.find({ userId })
       .populate('tourId', 'title')    // lấy thông tin tour (nếu cần)
-      .populate('guideId', 'name', 'avgRating')    // lấy thông tin guide (nếu cần)
+      .populate('guideId', 'name')    // lấy thông tin guide (nếu cần)
       .populate('bookingId', 'updateAt')          // lấy thông tin booking (nếu có)
 
     res.status(200).json({ success: true, data: reviews });

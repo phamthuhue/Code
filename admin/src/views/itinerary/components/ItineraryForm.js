@@ -118,21 +118,31 @@ const ItineraryFormModal = ({ visible, onClose, onSubmit, initialData = null, to
           <CRow className="mb-3">
             <CCol md={12}>
               <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
-              <CFormSelect
-                id="tourId"
-                name="tourId"
-                disabled={!!initialData}
-                value={formData.tourId}
-                onChange={handleChange}
-              >
-                <option value="">-- Chọn tour --</option>
-                {tours.map((tour) => (
-                  <option key={tour._id} value={tour._id}>
-                    {tour.title}
-                  </option>
-                ))}
-              </CFormSelect>
-              {errors.tourId && <small className="text-danger">{errors.tourId}</small>}
+
+              {initialData ? (
+                <CFormInput
+                  disabled
+                  value={initialData.tourId?.title || "Không tìm thấy tour"}
+                />
+              ) : (
+                <CFormSelect
+                  id="tourId"
+                  name="tourId"
+                  value={formData.tourId}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn tour --</option>
+                  {tours.map((tour) => (
+                    <option key={tour._id} value={tour._id}>
+                      {tour.title}
+                    </option>
+                  ))}
+                </CFormSelect>
+              )}
+
+              {errors.tourId && (
+                <small className="text-danger">{errors.tourId}</small>
+              )}
             </CCol>
           </CRow>
 
