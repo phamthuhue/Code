@@ -272,3 +272,39 @@ export const getTourCount = async (req, res) => {
         });
     }
 };
+
+export const getTourBySearchClient = async (req, res) => {
+  try {
+    const { city, price, groupSize } = req.query
+
+    const filters = {}
+
+    // Tìm gần đúng theo tên thành phố (không phân biệt hoa thường)
+    if (city) {
+      filters.city = { $regex: city, $options: 'i' }
+    }
+
+    // Giá tour phải nhỏ hơn hoặc bằng giá được nhập
+    if (price) {
+      filters.price = { $lte: Number(price) }
+    }
+
+    // Tour có thể nhận đủ số lượng người
+    if (groupSize) {
+      filters.maxGroupSize = { $gte: Number(groupSize) }
+    }
+
+    const tours = await Tour.find(filters)
+
+    res.status(200).json({
+      success: true,
+      data: tours,
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi server khi tìm kiếm tour',
+    })
+  }
+}

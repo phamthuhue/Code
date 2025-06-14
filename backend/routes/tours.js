@@ -8,7 +8,8 @@ import {
   getTourBySearch,
   getTourCount,
   getToursWithoutItinerary,
-  getToursWithoutService
+  getToursWithoutService,
+  getTourBySearchClient
 } from "../controllers/tourController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 import upload from "../middlewares/upload.js";
@@ -16,7 +17,7 @@ import upload from "../middlewares/upload.js";
 const router = express.Router();
 
 // Route cụ thể đặt trước
-router.get("/search/getTourBySearch", getTourBySearch);
+router.get("/search/getTourBySearch", getTourBySearchClient);
 router.get("/search/getTourCount", getTourCount);
 
 // Route chung
