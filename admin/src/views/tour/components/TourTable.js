@@ -30,9 +30,6 @@ const TourTable = ({
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
           <CTableRow>
-            <CTableHeaderCell className="bg-body-tertiary text-center" style={{ width: '160px' }}>
-              <CIcon icon={cilMap} />
-            </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center" style={{ width: '200px' }}>
               Tên tour
             </CTableHeaderCell>
@@ -40,10 +37,10 @@ const TourTable = ({
               Thành phố
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center" style={{ width: '140px' }}>
-              Giờ khởi hành
+              Ngày khởi hành
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center" style={{ width: '140px' }}>
-              Giờ kết thúc
+              Ngày kết thúc
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center" style={{ width: '130px' }}>
               Giá
@@ -69,9 +66,6 @@ const TourTable = ({
           ) : (
             currentTours.map((tour, index) => (
               <CTableRow key={index}>
-                <CTableDataCell className="text-center" style={{ maxHeight: '120px' }}>
-                  <CImage rounded src={`${backendUrl}/${tour.photo}`} width={150} height={150} />
-                </CTableDataCell>
                 <CTableDataCell>
                   <div className="text-body-secondary text-nowrap">{tour.title}</div>
                 </CTableDataCell>

@@ -18,6 +18,9 @@ import DeleteConfirmModal from './components/DeleteConfirmModal'
 import TourFormModal from './components/TourForm'
 
 import { createTour, deleteTour, getTours, updateTour } from '../../services/Api/tourService'
+import { deleteItineraryByTour } from '../../services/Api/itineraryService'
+import { deleteTourServiceByTour } from '../../services/Api/serviceOfTour'
+import {getGuides} from '../../services/Api/guideService'
 import TourTable from './components/TourTable'
 import TourFilter from './components/TourFilter'
 
@@ -56,6 +59,17 @@ const Tour = () => {
   const fetchTours = async () => {
     const res = await getTours()
     setTours(res.data.data)
+  }
+
+  // Danh sách guide
+  const [guides, setGuides] = useState([])
+  useEffect(() => {
+    fetchGuides()
+  }, [])
+
+  const fetchGuides = async () => {
+    const res = await getGuides()
+    setGuides(res.data.data)
   }
   // Xử lý bộ lọc
   const [filters, setFilters] = useState({
@@ -112,17 +126,27 @@ const Tour = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteTour(tourToDelete._id) // Gọi API xóa tour theo ID
-      setTours(tours.filter((t) => t._id !== tourToDelete._id)) // Cập nhật danh sách
-      addToast(exampleToast('Xóa tour thành công'))
+      const deleteId = tourToDelete._id;
+      console.log(deleteId, 'aaaaaa')
+
+      // Thực hiện song song và không bị dừng nếu một API thất bại
+      await Promise.allSettled([
+        deleteItineraryByTour(deleteId),
+        deleteTourServiceByTour(deleteId),
+      ]);
+
+      await deleteTour(deleteId); // Chỉ xóa tour khi đã xử lý các bước trên
+
+      setTours(tours.filter((t) => t._id !== deleteId));
+      addToast(exampleToast('Xóa tour thành công'));
     } catch (error) {
-      console.error('Lỗi khi xóa tour:', error)
-      addToast(exampleToast('Xóa tour thất bại'))
+      console.error('Lỗi khi xóa tour:', error);
+      addToast(exampleToast('Xóa tour thất bại'));
     } finally {
-      setDeleteModalVisible(false)
-      setTourToDelete(null)
+      setDeleteModalVisible(false);
+      setTourToDelete(null);
     }
-  }
+  };
 
   // Cài đặt phân trang
   const itemsPerPage = 3
@@ -173,6 +197,7 @@ const Tour = () => {
             onClose={closeForm}
             onSubmit={submitForm}
             initialData={editingTour}
+            guides={guides}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}

@@ -2,6 +2,7 @@ import Tour from "../models/Tour.js";
 import fs from "fs";
 import path from "path";
 import Itinerary from "../models/Itinerary.js";
+import TourService from '../models/TourService.js'
 //create new tour
 // [POST] /api/tours
 export const createTour = async (req, res) => {
@@ -41,9 +42,11 @@ export const updateTour = async (req, res) => {
       : [req.body.removedPhotos];
 
     removedPhotos.forEach((relativePath) => {
-      const fullPath = path.join(process.cwd(), path.normalize(relativePath));
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
+      if (typeof relativePath === "string" && relativePath.trim() !== "") {
+        const fullPath = path.join(process.cwd(), path.normalize(relativePath));
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
       }
     });
     // Lọc danh sách ảnh còn giữ lại = ảnh cũ - ảnh bị xóa
@@ -165,6 +168,21 @@ export const getToursWithoutItinerary = async (req, res) => {
     });
 
     res.json(toursWithoutItinerary);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+export const getToursWithoutService = async (req, res) => {
+  try {
+    // Lấy danh sách tourId đã có dịch vụ
+    const tourIdsWithService = await TourService.distinct("tourId");
+
+    // Lấy các tour KHÔNG có trong danh sách trên
+    const toursWithoutService = await Tour.find({
+      _id: { $nin: tourIdsWithService },
+    });
+
+    res.json(toursWithoutService);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

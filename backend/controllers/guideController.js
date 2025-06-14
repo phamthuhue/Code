@@ -21,7 +21,7 @@ export const createGuide = async (req, res) => {
       dob,
       address,
       phone,
-      rating: 5,        // mặc định
+      avgrating: 5,        // mặc định
     });
 
     await newGuide.save();

@@ -5,7 +5,8 @@ import {
   getItineraryById,
   createItinerary,
   updateItinerary,
-  deleteItinerary
+  deleteItinerary,
+  deleteItineraryByTourId
 } from '../controllers/itineraryController.js';
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/tour/:tourId", getItineraryByTour);
 router.post("/", createItinerary);
 router.put("/:id", updateItinerary);
 router.delete("/:id", deleteItinerary);
+router.delete('/tour/:tourId', deleteItineraryByTourId);
 
 export default router;

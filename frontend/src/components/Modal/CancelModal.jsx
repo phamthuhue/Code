@@ -41,6 +41,10 @@ const CancelModal = ({ isOpen, onClose, bookingId, userId, onReload }) => {
 
         // Gửi yêu cầu hủy
         await axiosInstance.post("/booking-cancellations", payload);
+        // Gọi API cập nhật trạng thái booking thành "Chờ hủy"
+        await axiosInstance.put(`/bookings/${bookingId}/status`, {
+          status: "Chờ hủy",
+        });
 
         notify(
           "success",
@@ -76,7 +80,7 @@ const CancelModal = ({ isOpen, onClose, bookingId, userId, onReload }) => {
       <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Yêu cầu hủy tour</h2>
+          <h2 className="text-xl font-semibold">Yêu cầu hủy đặt tour</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-black text-2xl font-bold">&times;</button>
         </div>
 

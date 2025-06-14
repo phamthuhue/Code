@@ -15,14 +15,8 @@ const ItineraryFilter = ({ filters, onFilterChange }) => {
     <CRow className="mb-3">
       <CCol md={4}>
         <CInputGroup>
-          <CInputGroupText>Tên hướng dẫn viên</CInputGroupText>
-          <CFormInput name="name" value={localFilters.name} onChange={handleChange} />
-        </CInputGroup>
-      </CCol>
-      <CCol md={4}>
-        <CInputGroup>
-          <CInputGroupText>Số điện thoại</CInputGroupText>
-          <CFormInput name="phone" value={localFilters.phone} onChange={handleChange} />
+          <CInputGroupText>Tên tour</CInputGroupText>
+          <CFormInput name="title" value={localFilters.title} onChange={handleChange} />
         </CInputGroup>
       </CCol>
     </CRow>

@@ -17,6 +17,6 @@ export const UserRoutes = () => (
     <Route path="tours/search" element={<SearchResultList />} />
     <Route path="history" element={<History />} />
     <Route path="group-tour-request" element={<GroupTourRequest />} />
-    <Route path="payment" element={<Payment />} />
+    <Route path="/payment/:bookingId?" element={<Payment />} />
   </>
 );

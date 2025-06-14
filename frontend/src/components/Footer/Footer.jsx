@@ -56,12 +56,12 @@ export const Footer = () => {
           <div>+000 00000000</div>
           <div>VietNamTours@email.com</div>
           <div>Hà Nội, Việt Nam</div>
-          <button
+          {/* <button
             onClick={handlePayment}
             className="submitButton rounded-full px-8"
           >
             Đặt ngay
-          </button>
+          </button> */}
         </div>
       </div>
     </footer>

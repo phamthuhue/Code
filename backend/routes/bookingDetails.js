@@ -4,7 +4,8 @@ import {
   getBookingDetailsByBookingId,
   createBookingDetail,
   updateBookingDetail,
-  deleteBookingDetail
+  deleteBookingDetail,
+  getBookingDetailsWithoutTourByBookingId
 } from '../controllers/bookingDetailController.js';
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router.get('/', getAllBookingDetails);
 
 // Lấy chi tiết theo ID
 router.get('/:bookingId', getBookingDetailsByBookingId);
+router.get('/item-type/:bookingId', getBookingDetailsWithoutTourByBookingId);
 
 // Tạo mới booking detail
 router.post('/', createBookingDetail);
