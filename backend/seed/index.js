@@ -11,7 +11,7 @@ import Promotion from "../models/Promotion.js";
 import Review from "../models/Review.js";
 import Role from "../models/Role.js";
 import Service from "../models/Service.js";
-import Staff from "../models/Staff.js";
+
 import Tour from "../models/Tour.js";
 import TourService from "../models/TourService.js";
 import User from "../models/User.js";
@@ -24,7 +24,7 @@ dotenv.config();
 // Map mockData key với model
 const modelMap = {
     Guide,
-    Invoice,
+    // Invoice,
     Itinerary,
     Partner,
     PartnerType,
@@ -32,13 +32,13 @@ const modelMap = {
     Review,
     Role,
     Service,
-    Staff,
+
     Tour,
     TourService,
     User,
-    Booking,
+    // Booking,
     BookingCancellation,
-    BookingDetail,
+    // BookingDetail,
     GroupTourRequest,
 };
 
