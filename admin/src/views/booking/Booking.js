@@ -15,13 +15,19 @@ import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import BookingFormModal from './components/BookingForm'
-import {getTours} from '../../services/Api/tourService'
+import { getTours } from '../../services/Api/tourService'
 import { getBookingDetail } from '../../services/Api/bookingDetailService'
-import { createBooking, deleteBooking, getBookings, updateBooking, confirmMultipleBookings} from '../../services/Api/bookingService'
+import {
+  createBooking,
+  deleteBooking,
+  getBookings,
+  updateBooking,
+  confirmMultipleBookings,
+} from '../../services/Api/bookingService'
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
-import {getPromotions} from '../../services/Api/promotionService'
-import {getServicesByTourId} from '../../services/Api/serviceOfTour'
+import { getPromotions } from '../../services/Api/promotionService'
+import { getServicesByTourId } from '../../services/Api/serviceOfTour'
 
 const Booking = () => {
   // Thông báo
@@ -53,7 +59,7 @@ const Booking = () => {
     setSelectedBookings((prevSelected) =>
       prevSelected.includes(bookingId)
         ? prevSelected.filter((id) => id !== bookingId)
-        : [...prevSelected, bookingId]
+        : [...prevSelected, bookingId],
     )
   }
 
@@ -67,21 +73,21 @@ const Booking = () => {
   }
   const handleConfirmSelected = async () => {
     if (selectedBookings.length === 0) {
-      addToast(exampleToast('Vui lòng chọn ít nhất 1 booking để xác nhận'));
-      return;
+      addToast(exampleToast('Vui lòng chọn ít nhất 1 booking để xác nhận'))
+      return
     }
 
     try {
-      const bookingIds = selectedBookings; // Vì đã là mảng ID
-      await confirmMultipleBookings(bookingIds);
-      addToast(exampleToast('Xác nhận các booking thành công'));
-      setSelectedBookings([]);
-      fetchBookings();
+      const bookingIds = selectedBookings // Vì đã là mảng ID
+      await confirmMultipleBookings(bookingIds)
+      addToast(exampleToast('Xác nhận các booking thành công'))
+      setSelectedBookings([])
+      fetchBookings()
     } catch (error) {
-      console.error('Lỗi xác nhận:', error);
-      addToast(exampleToast('Lỗi khi xác nhận booking'));
+      console.error('Lỗi xác nhận:', error)
+      addToast(exampleToast('Lỗi khi xác nhận booking'))
     }
-  };
+  }
 
   // Bộ lọc
   const [filters, setFilters] = useState({
@@ -136,45 +142,43 @@ const Booking = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await getBookings();
-      let data = res.data.data;
+      const res = await getBookings()
+      let data = res.data.data
 
       // Apply filters
       if (filters.name) {
-        data = data.filter(inv => inv.name.toLowerCase().includes(filters.name.toLowerCase()));
+        data = data.filter((inv) => inv.name.toLowerCase().includes(filters.name.toLowerCase()))
       }
 
       if (filters.phone) {
-        data = data.filter(inv => inv.phone.toLowerCase().includes(filters.phone.toLowerCase()));
+        data = data.filter((inv) => inv.phone.toLowerCase().includes(filters.phone.toLowerCase()))
       }
 
       if (filters.promotionId) {
         if (filters.promotionId === 'Null') {
-          data = data.filter(inv => !inv.promotionId);
+          data = data.filter((inv) => !inv.promotionId)
         } else {
-          data = data.filter(inv =>
-            inv.promotionId?._id?.toLowerCase().includes(filters.promotionId.toLowerCase())
-          );
+          data = data.filter((inv) =>
+            inv.promotionId?._id?.toLowerCase().includes(filters.promotionId.toLowerCase()),
+          )
         }
       }
 
       if (filters.status) {
-        data = data.filter(inv =>
-          inv.status.toLowerCase().includes(filters.status.toLowerCase())
-        );
+        data = data.filter((inv) => inv.status.toLowerCase().includes(filters.status.toLowerCase()))
       }
 
-      setBookings(data);
+      setBookings(data)
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách phiếu đặt:', error);
-      addToast(exampleToast('Không thể lấy danh sách phiếu đặt'));
+      console.error('Lỗi khi lấy danh sách phiếu đặt:', error)
+      addToast(exampleToast('Không thể lấy danh sách phiếu đặt'))
     }
-  };
+  }
 
   // Gọi trong useEffect
   useEffect(() => {
-    fetchBookings();
-  }, [filters]);
+    fetchBookings()
+  }, [filters])
 
   useEffect(() => {
     fetchPromotions()
@@ -182,21 +186,21 @@ const Booking = () => {
   }, [])
 
   const openForm = async (booking = null) => {
-    setEditingBooking(booking);
-    setFormModalVisible(true);
+    setEditingBooking(booking)
+    setFormModalVisible(true)
 
     if (booking) {
       try {
-        const res = await getBookingDetail(booking._id);
-        setBookingDetails(res.data);
+        const res = await getBookingDetail(booking._id)
+        setBookingDetails(res.data)
       } catch (error) {
-        console.error('Lỗi khi lấy chi tiết booking:', error);
-        addToast(exampleToast('Không thể lấy chi tiết booking'));
+        console.error('Lỗi khi lấy chi tiết booking:', error)
+        addToast(exampleToast('Không thể lấy chi tiết booking'))
       }
     } else {
-      setBookingDetails([]);
+      setBookingDetails([])
     }
-  };
+  }
 
   const closeForm = () => {
     setFormModalVisible(false)
@@ -210,9 +214,7 @@ const Booking = () => {
     try {
       if (editingBooking) {
         const updatedBooking = await updateBooking(editingBooking._id, formData)
-        setBookings(
-          bookings.map((b) => (b._id === editingBooking._id ? updatedBooking.data : b)),
-        )
+        setBookings(bookings.map((b) => (b._id === editingBooking._id ? updatedBooking.data : b)))
         addToast(exampleToast('Cập nhật booking thành công'))
       } else {
         const newBooking = await createBooking(formData)
@@ -265,7 +267,11 @@ const Booking = () => {
     <>
       <CRow>
         <CCol xs>
-          <BookingFilter filters={filters} onFilterChange={handleFilterChange} promotions={promotions}/>
+          <BookingFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            promotions={promotions}
+          />
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
@@ -285,20 +291,19 @@ const Booking = () => {
               </CRow>
             </CCardHeader>
             <CCardBody>
-            <BookingTable
-              currentBookings={currentBookings}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              handleEdit={openForm}
-              handleGetDetail={openForm}
-              handleDeleteClick={handleDeleteClick}
-              selectedBookings={selectedBookings}
-              handleSelectBooking={handleSelectBooking}
-              handleSelectAll={handleSelectAll}
-              handleConfirmSelected={handleConfirmSelected}
-            />
-
+              <BookingTable
+                currentBookings={currentBookings}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                handleEdit={openForm}
+                handleGetDetail={openForm}
+                handleDeleteClick={handleDeleteClick}
+                selectedBookings={selectedBookings}
+                handleSelectBooking={handleSelectBooking}
+                handleSelectAll={handleSelectAll}
+                handleConfirmSelected={handleConfirmSelected}
+              />
             </CCardBody>
           </CCard>
           <BookingFormModal
@@ -306,9 +311,9 @@ const Booking = () => {
             onClose={closeForm}
             onSubmit={submitForm}
             initialData={editingBooking}
-            tours = {tours}
+            tours={tours}
             bookingDetails={bookingDetails}
-            setBookingDetails={setBookingDetails} 
+            setBookingDetails={setBookingDetails}
             promotions={promotions}
             tourServices={tourServices}
           />
