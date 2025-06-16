@@ -20,6 +20,8 @@ import { getBookingDetail } from '../../services/Api/bookingDetailService'
 import { createBooking, deleteBooking, getBookings, updateBooking, confirmMultipleBookings} from '../../services/Api/bookingService'
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
+import {getPromotions} from '../../services/Api/promotionService'
+import {getServicesByTourId} from '../../services/Api/serviceOfTour'
 
 const Booking = () => {
   // Thông báo
@@ -65,41 +67,26 @@ const Booking = () => {
   }
   const handleConfirmSelected = async () => {
     if (selectedBookings.length === 0) {
-      addToast(exampleToast('Vui lòng chọn ít nhất 1 booking để xác nhận'))
-      return
+      addToast(exampleToast('Vui lòng chọn ít nhất 1 booking để xác nhận'));
+      return;
     }
 
     try {
-      await confirmMultipleBookings(selectedBookings)
-      addToast(exampleToast('Xác nhận các booking thành công'))
-      setSelectedBookings([])
-      fetchBookings()
+      const bookingIds = selectedBookings; // Vì đã là mảng ID
+      await confirmMultipleBookings(bookingIds);
+      addToast(exampleToast('Xác nhận các booking thành công'));
+      setSelectedBookings([]);
+      fetchBookings();
     } catch (error) {
-      console.error('Lỗi xác nhận:', error)
-      addToast(exampleToast('Lỗi khi xác nhận booking'))
+      console.error('Lỗi xác nhận:', error);
+      addToast(exampleToast('Lỗi khi xác nhận booking'));
     }
-  }
-
-  // Danh sách booking
-  const [bookings, setBookings] = useState([])
-  useEffect(() => {
-    fetchBookings()
-  }, [])
-
-  const fetchBookings = async () => {
-    try {
-      const res = await getBookings()
-      setBookings(res.data.data)
-    } catch (error) {
-      console.error('Lỗi khi lấy danh sách booking:', error)
-      addToast(exampleToast('Không thể tải danh sách booking'))
-    }
-  }
+  };
 
   // Bộ lọc
   const [filters, setFilters] = useState({
     name: '',
-    createdAt: '',
+    phone: '',
     status: '',
   })
 
@@ -107,24 +94,92 @@ const Booking = () => {
     setFilters(updatedFilters)
   }
 
-  // Thêm & cập nhật booking
-
-  // Tạo state lưu bookingDetails
+  // Lấy các danh sách
+  const [bookings, setBookings] = useState([])
   const [bookingDetails, setBookingDetails] = useState([])
   const [tours, setTours] = useState([])
+  const [promotions, setPromotions] = useState([])
+  const [tourServices, setTourServices] = useState([])
 
-  useEffect(() => {
+  const fetchPromotions = async () => {
+    try {
+      const res = await getPromotions()
+      let data = res.data.data
+      setPromotions(data)
+    } catch (error) {
+      console.error(error)
+      addToast(exampleToast('Không thể tải danh sách khuyến mãi.'))
+    }
+  }
+
+  const fetchTourServices = async () => {
+    try {
+      const res = await getServicesByTourId()
+      let data = res.data.data
+      setTourServices(data)
+    } catch (error) {
+      console.error(error)
+      addToast(exampleToast('Không thể tải danh sách dịch vụ theo tour.'))
+    }
+  }
+
   const fetchTours = async () => {
     try {
-      const res = await getTours();
-      setTours(res.data.data);
+      const res = await getTours()
+      let data = res.data.data
+      setTours(data)
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách tours:', error);
-      addToast(exampleToast('Không thể lấy danh sách tour'));
+      console.error(error)
+      addToast(exampleToast('Không thể tải danh sách tour.'))
+    }
+  }
+
+  const fetchBookings = async () => {
+    try {
+      const res = await getBookings();
+      let data = res.data.data;
+
+      // Apply filters
+      if (filters.name) {
+        data = data.filter(inv => inv.name.toLowerCase().includes(filters.name.toLowerCase()));
+      }
+
+      if (filters.phone) {
+        data = data.filter(inv => inv.phone.toLowerCase().includes(filters.phone.toLowerCase()));
+      }
+
+      if (filters.promotionId) {
+        if (filters.promotionId === 'Null') {
+          data = data.filter(inv => !inv.promotionId);
+        } else {
+          data = data.filter(inv =>
+            inv.promotionId?._id?.toLowerCase().includes(filters.promotionId.toLowerCase())
+          );
+        }
+      }
+
+      if (filters.status) {
+        data = data.filter(inv =>
+          inv.status.toLowerCase().includes(filters.status.toLowerCase())
+        );
+      }
+
+      setBookings(data);
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách phiếu đặt:', error);
+      addToast(exampleToast('Không thể lấy danh sách phiếu đặt'));
     }
   };
-  fetchTours();
-  }, []);
+
+  // Gọi trong useEffect
+  useEffect(() => {
+    fetchBookings();
+  }, [filters]);
+
+  useEffect(() => {
+    fetchPromotions()
+    fetchTours()
+  }, [])
 
   const openForm = async (booking = null) => {
     setEditingBooking(booking);
@@ -210,7 +265,7 @@ const Booking = () => {
     <>
       <CRow>
         <CCol xs>
-          <BookingFilter filters={filters} onFilterChange={handleFilterChange} />
+          <BookingFilter filters={filters} onFilterChange={handleFilterChange} promotions={promotions}/>
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
@@ -241,6 +296,7 @@ const Booking = () => {
               selectedBookings={selectedBookings}
               handleSelectBooking={handleSelectBooking}
               handleSelectAll={handleSelectAll}
+              handleConfirmSelected={handleConfirmSelected}
             />
 
             </CCardBody>
@@ -253,6 +309,8 @@ const Booking = () => {
             tours = {tours}
             bookingDetails={bookingDetails}
             setBookingDetails={setBookingDetails} 
+            promotions={promotions}
+            tourServices={tourServices}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}
