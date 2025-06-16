@@ -17,7 +17,7 @@ import DeleteConfirmModal from './components/DeleteConfirmModal'
 import BookingFormModal from './components/BookingForm'
 import {getTours} from '../../services/Api/tourService'
 import { getBookingDetail } from '../../services/Api/bookingDetailService'
-import { createBooking, deleteBooking, getBookings, updateBooking} from '../../services/Api/bookingService'
+import { createBooking, deleteBooking, getBookings, updateBooking, confirmMultipleBookings} from '../../services/Api/bookingService'
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
 
@@ -45,6 +45,40 @@ const Booking = () => {
       <CToastBody>{message}</CToastBody>
     </CToast>
   )
+  const [selectedBookings, setSelectedBookings] = useState([])
+
+  const handleSelectBooking = (bookingId) => {
+    setSelectedBookings((prevSelected) =>
+      prevSelected.includes(bookingId)
+        ? prevSelected.filter((id) => id !== bookingId)
+        : [...prevSelected, bookingId]
+    )
+  }
+
+  const handleSelectAll = (isChecked) => {
+    if (isChecked) {
+      const allIds = currentBookings.map((b) => b._id)
+      setSelectedBookings(allIds)
+    } else {
+      setSelectedBookings([])
+    }
+  }
+  const handleConfirmSelected = async () => {
+    if (selectedBookings.length === 0) {
+      addToast(exampleToast('Vui lòng chọn ít nhất 1 booking để xác nhận'))
+      return
+    }
+
+    try {
+      await confirmMultipleBookings(selectedBookings)
+      addToast(exampleToast('Xác nhận các booking thành công'))
+      setSelectedBookings([])
+      fetchBookings()
+    } catch (error) {
+      console.error('Lỗi xác nhận:', error)
+      addToast(exampleToast('Lỗi khi xác nhận booking'))
+    }
+  }
 
   // Danh sách booking
   const [bookings, setBookings] = useState([])
@@ -196,15 +230,19 @@ const Booking = () => {
               </CRow>
             </CCardHeader>
             <CCardBody>
-              <BookingTable
-                currentBookings={currentBookings}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                setCurrentPage={setCurrentPage}
-                handleEdit={openForm}
-                handleGetDetail={openForm}
-                handleDeleteClick={handleDeleteClick}
-              />
+            <BookingTable
+              currentBookings={currentBookings}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              handleEdit={openForm}
+              handleGetDetail={openForm}
+              handleDeleteClick={handleDeleteClick}
+              selectedBookings={selectedBookings}
+              handleSelectBooking={handleSelectBooking}
+              handleSelectAll={handleSelectAll}
+            />
+
             </CCardBody>
           </CCard>
           <BookingFormModal

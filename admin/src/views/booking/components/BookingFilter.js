@@ -31,8 +31,9 @@ const BookingFilter = ({ filters, onFilterChange }) => {
           <CFormSelect name="status" value={localFilters.status} onChange={handleChange}>
             <option value="">Tất cả</option>
             <option value="new">Mới tạo</option>
-            <option value="pending">Đang xử lý</option>
-            <option value="confirmed">Đã xác nhận</option>
+            <option value="pending">Chờ xác nhận</option>
+            <option value="pending">Chờ hủy</option>
+            <option value="confirmed">Xác nhận</option>
             <option value="cancelled">Đã hủy</option>
           </CFormSelect>
         </CInputGroup>

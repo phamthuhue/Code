@@ -11,7 +11,7 @@ const DeleteConfirmModal = ({ visible, onClose, onConfirm }) => {
     >
       <CModalHeader>Bạn có chắc chắn?</CModalHeader>
       <CModalBody>
-        <p>Bạn có chắc chắn muốn xoá tour này? Hành động này không thể hoàn tác.</p>
+        <p>Bạn có chắc chắn muốn xoá phiếu đặt này? Hành động này không thể hoàn tác.</p>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" onClick={onClose}>

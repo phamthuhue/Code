@@ -12,8 +12,9 @@ import {
 } from '@coreui/react';
 import { useState, useEffect } from 'react';
 import BookingDetailTable from './BookingDetailTable';
+import ServiceSelectModal from './ServiceSelectModal' // bạn cần tạo file này
 
-const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tours, bookingDetails, setBookingDetails}) => {
+const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tours, bookingDetails, setBookingDetails, tourServices}) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -25,6 +26,9 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
   });
 
   const [errors, setErrors] = useState({});
+  const [serviceModalVisible, setServiceModalVisible] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+
 
   useEffect(() => {
     if (initialData) {
@@ -65,6 +69,33 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const handleAddService = () => {
+    setEditingIndex(null); // đang thêm mới
+    setServiceModalVisible(true);
+  }
+
+  const handleEditService = (index) => {
+    setEditingIndex(index); // sửa dòng đang có
+    setServiceModalVisible(true);
+  }
+
+  const handleDeleteService = (index) => {
+    const updated = [...bookingDetails];
+    updated.splice(index, 1);
+    setBookingDetails(updated);
+  }
+
+  const handleSaveService = (service) => {
+    const updated = [...bookingDetails];
+    if (editingIndex !== null) {
+      updated[editingIndex] = service;
+    } else {
+      updated.push(service);
+    }
+    setBookingDetails(updated);
+    setServiceModalVisible(false);
+  }
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -175,7 +206,20 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
 
         {/* Phần 2: Thông tin chi tiết dịch vụ */}
         <h6 className="fw-bold mt-4 mb-2">Chi tiết dịch vụ</h6>
-        <BookingDetailTable bookingDetails={bookingDetails} />
+        <BookingDetailTable
+          bookingDetails={bookingDetails}
+          onAdd={handleAddService}
+          onEdit={handleEditService}
+          onDelete={handleDeleteService}
+        />
+        <ServiceSelectModal
+          visible={serviceModalVisible}
+          onClose={() => setServiceModalVisible(false)}
+          onSave={handleSaveService}
+          tourServices={tourServices}
+          initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
+        />
+
       </CModalBody>
 
       <div className="d-flex justify-content-end p-3">
