@@ -200,24 +200,32 @@ export const getBookingById = async (req, res) => {
 // Xác nhận nhiều booking
 export const confirmMultipleBookings = async (req, res) => {
   try {
-    const { bookingIds } = req.body
+    const { bookingIds } = req.body;
+    console.log('Dữ liệu nhận được:', req.body);
 
     if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
-      return res.status(400).json({ message: 'Danh sách booking không hợp lệ.' })
+      return res.status(400).json({
+        success: false,
+        message: 'Danh sách booking không hợp lệ.'
+      });
     }
 
-    // Cập nhật trạng thái sang "Xác nhận"
     const result = await Booking.updateMany(
       { _id: { $in: bookingIds } },
       { $set: { status: 'Xác nhận' } }
-    )
+    );
 
     res.status(200).json({
+      success: true,
       message: `Đã xác nhận ${result.modifiedCount} booking.`,
       result,
-    })
+    });
   } catch (error) {
-    console.error('Lỗi xác nhận booking:', error)
-    res.status(500).json({ message: 'Đã xảy ra lỗi khi xác nhận booking.', error })
+    console.error('Lỗi xác nhận booking:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra lỗi khi xác nhận booking.',
+      error: error.message,
+    });
   }
-}
+};

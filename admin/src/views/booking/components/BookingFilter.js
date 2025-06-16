@@ -1,7 +1,7 @@
 import { CFormInput, CInputGroup, CInputGroupText, CRow, CCol, CFormSelect } from '@coreui/react'
 import { useState } from 'react'
 
-const BookingFilter = ({ filters, onFilterChange }) => {
+const BookingFilter = ({ filters, onFilterChange, promotions = [] }) => {
   const [localFilters, setLocalFilters] = useState(filters)
 
   const handleChange = (e) => {
@@ -21,8 +21,16 @@ const BookingFilter = ({ filters, onFilterChange }) => {
       </CCol>
       <CCol md={4}>
         <CInputGroup>
-          <CInputGroupText>Số điện thoại</CInputGroupText>
-          <CFormInput name="phone" value={localFilters.phone} onChange={handleChange} />
+          <CInputGroupText>Khuyến mãi</CInputGroupText>
+          <CFormSelect name="promotionId" value={localFilters.promotionId} onChange={handleChange}>
+            <option value="">Tất cả</option>
+            {promotions.map((p) => (
+              <option key={p._id} value={p._id}>
+                {p.name}
+              </option>
+            ))}
+            <option value="Null">Không áp dụng</option>
+          </CFormSelect>
         </CInputGroup>
       </CCol>
       <CCol md={4}>
@@ -36,6 +44,12 @@ const BookingFilter = ({ filters, onFilterChange }) => {
             <option value="Xác nhận">Xác nhận</option>
             <option value="Đã hủy">Đã hủy</option>
           </CFormSelect>
+        </CInputGroup>
+      </CCol>
+      <CCol md={4}>
+        <CInputGroup>
+          <CInputGroupText>Số điện thoại</CInputGroupText>
+          <CFormInput name="phone" value={localFilters.phone} onChange={handleChange} />
         </CInputGroup>
       </CCol>
     </CRow>

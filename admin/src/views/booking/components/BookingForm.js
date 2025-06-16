@@ -14,15 +14,14 @@ import { useState, useEffect } from 'react';
 import BookingDetailTable from './BookingDetailTable';
 import ServiceSelectModal from './ServiceSelectModal' // bạn cần tạo file này
 
-const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tours, bookingDetails, setBookingDetails, tourServices}) => {
+const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tours, bookingDetails, setBookingDetails, tourServices, promotions}) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     tourId: '',
-    numberOfPeople: '',
-    startDate: '',
     totalPrice: '',
     status: 'Mới tạo',
+    promotionId: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -36,10 +35,9 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
         name: initialData.name || '',
         phone: initialData.phone || '',
         tourId: initialData.tourId || '',
-        numberOfPeople: initialData.numberOfPeople || '',
-        startDate: initialData.startDate ? initialData.startDate.substring(0, 10) : '',
         totalPrice: initialData.totalPrice || '',
         status: initialData.status || 'Mới tạo',
+        promotionId: initialData.promotionId || '',
       });
       setBookingDetails(bookingDetails || []);
     } else {
@@ -47,8 +45,6 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
         name: '',
         phone: '',
         tourId: '',
-        numberOfPeople: '',
-        startDate: '',
         totalPrice: '',
         status: 'Mới tạo',
       });
@@ -63,9 +59,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
     if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống';
     if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống';
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống';
-    if (!formData.numberOfPeople || formData.numberOfPeople <= 0)
-      newErrors.numberOfPeople = 'Số lượng khách phải lớn hơn 0';
-    if (!formData.startDate) newErrors.startDate = 'Ngày bắt đầu không được để trống';
+    if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -140,44 +134,31 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
           <CRow className="mb-2">
             <CCol md={6}>
               <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
-              <CFormSelect
-                id="tourId"
-                name="tourId"
-                value={formData.tourId}
-                onChange={handleChange}
-              >
-                <option value="">-- Chọn tour --</option>
-                {tours.map((tour) => (
-                  <option key={tour._id} value={tour._id}>
-                    {tour.title}
-                  </option>
-                ))}
-              </CFormSelect>
-              {errors.tourId && <small className="text-danger">{errors.tourId}</small>}
-            </CCol>
-            <CCol md={6}>
-              <CFormLabel htmlFor="numberOfPeople">Số lượng khách *</CFormLabel>
-              <CFormInput
-                id="numberOfPeople"
-                type="number"
-                name="numberOfPeople"
-                value={formData.numberOfPeople}
-                onChange={handleChange}
-              />
-              {errors.numberOfPeople && <small className="text-danger">{errors.numberOfPeople}</small>}
-            </CCol>
-          </CRow>
-          <CRow className="mb-2">
-            <CCol md={6}>
-              <CFormLabel htmlFor="startDate">Ngày bắt đầu *</CFormLabel>
-              <CFormInput
-                id="startDate"
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-              />
-              {errors.startDate && <small className="text-danger">{errors.startDate}</small>}
+
+              {initialData ? (
+                <CFormInput
+                  disabled
+                  value={initialData.tourId?.title || "Không tìm thấy tour"}
+                />
+              ) : (
+                <CFormSelect
+                  id="tourId"
+                  name="tourId"
+                  value={formData.tourId}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn tour --</option>
+                  {tours.map((tour) => (
+                    <option key={tour._id} value={tour._id}>
+                      {tour.title}
+                    </option>
+                  ))}
+                </CFormSelect>
+              )}
+
+              {errors.tourId && (
+                <small className="text-danger">{errors.tourId}</small>
+              )}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="totalPrice">Tổng giá</CFormLabel>
@@ -200,6 +181,22 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
                 value={formData.status}
                 disabled
               />
+            </CCol>
+            <CCol md={6}>
+              <CFormLabel htmlFor="promotionId">Khuyến mãi</CFormLabel>
+              <CFormSelect
+                id="promotionId"
+                name="promotionId"
+                value={formData.promotionId}
+                onChange={handleChange}
+              >
+                <option value="">-- Không áp dụng khuyến mãi --</option>
+                {promotions.map((promo) => (
+                  <option key={promo._id} value={promo._id}>
+                    {promo.name} - Giảm {promo.discountPercentage}%
+                  </option>
+                ))}
+              </CFormSelect>
             </CCol>
           </CRow>
         </CForm>
