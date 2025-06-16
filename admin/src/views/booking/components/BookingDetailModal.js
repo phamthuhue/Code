@@ -7,19 +7,27 @@ const BookingDetailModal = ({ visible, onClose, bookingDetail }) => {
       <CModalBody>
         {bookingDetail ? (
           <>
-            <p><strong>Tên khách:</strong> {bookingDetail.customerName}</p>
-            <p><strong>Ngày tạo:</strong> {bookingDetail.createdAt}</p>
+            <p>
+              <strong>Tên khách:</strong> {bookingDetail.customerName}
+            </p>
+            <p>
+              <strong>Ngày tạo:</strong> {bookingDetail.createdAt}
+            </p>
             {/* Chi tiết các tour và booking detail */}
             <h6>Chi tiết tour:</h6>
             {bookingDetail.tours?.map((tour, idx) => (
               <div key={idx}>
-                <p>- {tour.name} ({tour.date})</p>
+                <p>
+                  - {tour.name} ({tour.date})
+                </p>
               </div>
             ))}
             <h6>Chi tiết BookingDetail:</h6>
             {bookingDetail.bookingDetails?.map((detail, idx) => (
               <div key={idx}>
-                <p>- {detail.serviceName} (Giá: {detail.price})</p>
+                <p>
+                  - {detail.serviceName} (Giá: {detail.price})
+                </p>
               </div>
             ))}
           </>
@@ -28,7 +36,9 @@ const BookingDetailModal = ({ visible, onClose, bookingDetail }) => {
         )}
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" onClick={onClose}>Đóng</CButton>
+        <CButton color="secondary" onClick={onClose}>
+          Đóng
+        </CButton>
       </CModalFooter>
     </CModal>
   )
