@@ -10,6 +10,7 @@ const PartnerType = React.lazy(() => import('./views/partnerType/partnerType'))
 const Partner = React.lazy(() => import('./views/partner/partner'))
 const Service = React.lazy(() => import('./views/service/service'))
 const Promotion = React.lazy(() => import('./views/promotion/promotion'))
+const GroupBooking = React.lazy(() => import('./views/groupBooking/groupBooking'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -23,6 +24,7 @@ const routes = [
   { path: '/partner', name: 'Đối tác', element: Partner },
   { path: '/service', name: 'Dịch vụ', element: Service },
   { path: '/promotion', name: 'Khuyến mãi', element: Promotion },
+  { path: '/group-request', name: 'Danh sách yêu cầu đặt theo đoàn', element: GroupBooking },
 ]
 
 export default routes
