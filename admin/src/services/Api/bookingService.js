@@ -14,4 +14,5 @@ export const updateBooking = (id, data) =>
       'Content-Type': 'multipart/form-data',
     },
   })
+export const confirmMultipleBookings = (id) => axiosConfig.put(`${API}/confirm-multiple/${id}`)
 export const deleteBooking = (id) => axiosConfig.delete(`${API}/${id}`)

@@ -5,7 +5,8 @@ import {createBooking,
         getBookingWithDetails,
         updateBooking,
         deleteBooking,
-        getBookingById
+        getBookingById,
+        confirmMultipleBookings 
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.get("/:bookingId", getBookingById)
 router.put("/:id", updateBooking);
 router.delete("/:id", deleteBooking);
 router.get("/details/:id", getBookingWithDetails)
+router.put('/confirm-multiple', confirmMultipleBookings)
 
 export default router;

@@ -8,4 +8,5 @@ const partnerTypeSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export default mongoose.model("PartnerType", partnerTypeSchema);
+const PartnerType = mongoose.model('PartnerType', partnerTypeSchema);
+export default PartnerType;

@@ -50,17 +50,43 @@ const Tour = () => {
       </CToast>
     )
   }
+
+  const [filters, setFilters] = useState({
+    destination: '',
+    maxPrice: '',
+  })
   // Danh sách tour
   const [tours, setTours] = useState([])
-  useEffect(() => {
-    fetchTours()
-  }, [])
-
   const fetchTours = async () => {
-    const res = await getTours()
-    setTours(res.data.data)
+    try {
+      const res = await getTours()
+      let data = res.data.data
+
+      // Lọc theo điểm đến
+      if (filters.destination) {
+        data = data.filter(tour =>
+          tour.city?.toLowerCase().includes(filters.destination.toLowerCase())
+        )
+      }
+      // Lọc theo giá
+      if (filters.maxPrice) {
+        data = data.filter(tour =>
+          tour.price <= Number(filters.maxPrice)
+        )
+      }
+      setTours(data)
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách tour:', error)
+    }
   }
 
+  useEffect(() => {
+    fetchTours()
+  }, [filters]) // gọi lại mỗi khi filters thay đổi
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters)
+  }
   // Danh sách guide
   const [guides, setGuides] = useState([])
   useEffect(() => {
@@ -71,16 +97,7 @@ const Tour = () => {
     const res = await getGuides()
     setGuides(res.data.data)
   }
-  // Xử lý bộ lọc
-  const [filters, setFilters] = useState({
-    destination: '',
-    departureDate: '',
-    maxPrice: '',
-  })
 
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters)
-  }
   // Thêm mới và cập nhật tour
   const openForm = (tour = null) => {
     setEditingTour(tour)
@@ -149,7 +166,7 @@ const Tour = () => {
   };
 
   // Cài đặt phân trang
-  const itemsPerPage = 3
+  const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.ceil(tours?.length / itemsPerPage)
   console.log('totalPages: ', totalPages)

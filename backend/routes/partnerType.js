@@ -1,10 +1,10 @@
 import express from "express";
 import {
-    getPartnerTypes,
-    createPartnerType,
-    updatePartnerType,
-    deletePartnerType,
-} from "../controllers/partnerTypeController.js";
+  getPartnerTypes,
+  createPartnerType,
+  updatePartnerType,
+  deletePartnerType
+} from '../controllers/partnerTypeController.js'
 
 const router = express.Router();
 

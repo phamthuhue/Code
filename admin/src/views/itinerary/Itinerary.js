@@ -54,15 +54,36 @@ const Itinerary = () => {
   }
 
   // Danh sách itinerary
+  const [filters, setFilters] = useState({
+    name: '',
+  })
+  // Danh sách tour
   const [itineraries, setItineraries] = useState([])
   useEffect(() => {
-    fetchItineraries()
-  }, [])
+    fetchItineraries(filters)
+  }, [filters])
 
-  const fetchItineraries = async () => {
-    const res = await getItineraries()
-    console.log(itineraries)
-    setItineraries(res.data)
+  const fetchItineraries = async (filterValues = {}) => {
+    try {
+      const res = await getItineraries()
+      let data = res.data
+
+      // Lọc theo tên tour
+      if (filterValues.name) {
+        data = data.filter(p =>
+          p.tourId?.title?.toLowerCase().includes(filterValues.name.toLowerCase())
+        )
+      }
+
+      setItineraries(data)
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách lịch trình:', error)
+    }
+  }
+
+  const handleFilterChange = (updatedFilters) => {
+    setFilters(updatedFilters)
+    fetchItineraries(updatedFilters)
   }
 
   // Danh sách tour
@@ -74,15 +95,6 @@ const Itinerary = () => {
   const fetchTours = async () => {
     const res = await getToursWithoutItinerary()
     setTours(res.data)
-  }
-
-  // Xử lý bộ lọc
-  const [filters, setFilters] = useState({
-    tourId: '',
-  })
-
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters)
   }
 
   // Thêm mới và cập nhật itinerary

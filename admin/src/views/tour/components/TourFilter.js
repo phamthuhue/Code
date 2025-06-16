@@ -21,17 +21,6 @@ const TourFilter = ({ filters, onFilterChange }) => {
       </CCol>
       <CCol md={4}>
         <CInputGroup>
-          <CInputGroupText>Ngày khởi hành</CInputGroupText>
-          <CFormInput
-            type="date"
-            name="departureDate"
-            value={localFilters.departureDate}
-            onChange={handleChange}
-          />
-        </CInputGroup>
-      </CCol>
-      <CCol md={4}>
-        <CInputGroup>
           <CInputGroupText>Mức giá tối đa</CInputGroupText>
           <CFormInput
             type="number"

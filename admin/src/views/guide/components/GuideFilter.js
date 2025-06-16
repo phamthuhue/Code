@@ -1,7 +1,7 @@
 import { CFormInput, CInputGroup, CInputGroupText, CRow, CCol, CFormSelect } from '@coreui/react'
 import { useState } from 'react'
 
-const ItineraryFilter = ({ filters, onFilterChange }) => {
+const GuideFilter = ({ filters, onFilterChange }) => {
   const [localFilters, setLocalFilters] = useState(filters)
 
   const handleChange = (e) => {
@@ -29,4 +29,4 @@ const ItineraryFilter = ({ filters, onFilterChange }) => {
   )
 }
 
-export default ItineraryFilter
+export default GuideFilter
