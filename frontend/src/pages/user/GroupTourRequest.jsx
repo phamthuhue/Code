@@ -20,7 +20,6 @@ export const GroupTourRequest = () => {
     phone: "",
     numberOfPeople: "",
     tourId: "", // Sửa lại cho đúng với model
-    travelDate: "",
     specialRequest: "",
   });
 
@@ -35,7 +34,7 @@ export const GroupTourRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { customerName, email, phone, numberOfPeople, tourId, travelDate } =
+    const { customerName, email, phone, numberOfPeople, tourId } =
       formData;
 
     if (
@@ -43,8 +42,7 @@ export const GroupTourRequest = () => {
       !email ||
       !phone ||
       !numberOfPeople ||
-      !tourId ||
-      !travelDate
+      !tourId
     ) {
       setError("Vui lòng điền đầy đủ các trường bắt buộc có dấu *.");
       return;
@@ -74,7 +72,6 @@ export const GroupTourRequest = () => {
         phone: "",
         numberOfPeople: "",
         tourId: "",
-        travelDate: "",
         specialRequest: "",
       });
     } catch (err) {
@@ -178,17 +175,6 @@ export const GroupTourRequest = () => {
               </option>
             ))}
           </select>
-        </label>
-
-        <label className="block">
-          Ngày khởi hành mong muốn <span className="text-red-500">*</span>
-          <input
-            className="w-full border p-2 rounded font-light"
-            type="date"
-            name="travelDate"
-            value={formData.travelDate}
-            onChange={handleChange}
-          />
         </label>
 
         <label className="block">

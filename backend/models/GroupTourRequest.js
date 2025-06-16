@@ -18,7 +18,6 @@ const GroupTourRequestSchema = new mongoose.Schema({
     required: true 
   },
 
-  travelDate: { type: Date, required: true },
   specialRequest: { type: String },
 
   status: {
