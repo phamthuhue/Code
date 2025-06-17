@@ -9,12 +9,7 @@ import {
   CButton,
 } from '@coreui/react'
 
-const BookingDetailTable = ({
-  bookingDetails = [],
-  onEdit,
-  onDelete,
-  onAdd,
-}) => {
+const BookingDetailTable = ({ bookingDetails = [], onEdit, onDelete, onAdd }) => {
   return (
     <>
       <div className="d-flex justify-content-end mb-2">
@@ -28,8 +23,12 @@ const BookingDetailTable = ({
             <CTableHeaderCell className="bg-body-tertiary text-center">Loại</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Mô tả</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Số lượng</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">Đơn giá (VND)</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">Thành tiền (VND)</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">
+              Đơn giá (VND)
+            </CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">
+              Thành tiền (VND)
+            </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Thao tác</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -56,7 +55,12 @@ const BookingDetailTable = ({
                   <CButton color="warning" size="sm" onClick={() => onEdit(index)} className="me-2">
                     Sửa
                   </CButton>
-                  <CButton color="danger" size="sm" onClick={() => onDelete(index)}>
+                  <CButton
+                    disabled={detail.itemType === 'Tour'}
+                    color="danger"
+                    size="sm"
+                    onClick={() => onDelete(index)}
+                  >
                     Xóa
                   </CButton>
                 </CTableDataCell>

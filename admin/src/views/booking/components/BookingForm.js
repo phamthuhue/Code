@@ -9,12 +9,22 @@ import {
   CButton,
   CRow,
   CCol,
-} from '@coreui/react';
-import { useState, useEffect } from 'react';
-import BookingDetailTable from './BookingDetailTable';
+} from '@coreui/react'
+import { useState, useEffect } from 'react'
+import BookingDetailTable from './BookingDetailTable'
 import ServiceSelectModal from './ServiceSelectModal' // bạn cần tạo file này
 
-const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tours, bookingDetails, setBookingDetails, tourServices, promotions}) => {
+const BookingFormModal = ({
+  visible,
+  onClose,
+  onSubmit,
+  initialData = null,
+  tours,
+  bookingDetails,
+  setBookingDetails,
+  tourServices,
+  promotions,
+}) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -22,12 +32,11 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
     totalPrice: '',
     status: 'Mới tạo',
     promotionId: '',
-  });
+  })
 
-  const [errors, setErrors] = useState({});
-  const [serviceModalVisible, setServiceModalVisible] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
-
+  const [errors, setErrors] = useState({})
+  const [serviceModalVisible, setServiceModalVisible] = useState(false)
+  const [editingIndex, setEditingIndex] = useState(null)
 
   useEffect(() => {
     if (initialData) {
@@ -38,8 +47,8 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
         totalPrice: initialData.totalPrice || '',
         status: initialData.status || 'Mới tạo',
         promotionId: initialData.promotionId || '',
-      });
-      setBookingDetails(bookingDetails || []);
+      })
+      setBookingDetails(bookingDetails || [])
     } else {
       setFormData({
         name: '',
@@ -47,60 +56,59 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
         tourId: '',
         totalPrice: '',
         status: 'Mới tạo',
-      });
-      setBookingDetails([]);
+      })
+      setBookingDetails([])
     }
 
-    if (!visible) setErrors({});
-  }, [initialData, visible]);
+    if (!visible) setErrors({})
+  }, [initialData, visible])
 
   const validate = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống';
-    if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống';
-    if (!formData.tourId) newErrors.tourId = 'Tour không được để trống';
-    if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    const newErrors = {}
+    if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống'
+    if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống'
+    if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
+    if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
   const handleAddService = () => {
-    setEditingIndex(null); // đang thêm mới
-    setServiceModalVisible(true);
+    setEditingIndex(null) // đang thêm mới
+    setServiceModalVisible(true)
   }
 
   const handleEditService = (index) => {
-    setEditingIndex(index); // sửa dòng đang có
-    setServiceModalVisible(true);
+    setEditingIndex(index) // sửa dòng đang có
+    setServiceModalVisible(true)
   }
 
   const handleDeleteService = (index) => {
-    const updated = [...bookingDetails];
-    updated.splice(index, 1);
-    setBookingDetails(updated);
+    const updated = [...bookingDetails]
+    updated.splice(index, 1)
+    setBookingDetails(updated)
   }
 
   const handleSaveService = (service) => {
-    const updated = [...bookingDetails];
+    const updated = [...bookingDetails]
     if (editingIndex !== null) {
-      updated[editingIndex] = service;
+      updated[editingIndex] = service
     } else {
-      updated.push(service);
+      updated.push(service)
     }
-    setBookingDetails(updated);
-    setServiceModalVisible(false);
+    setBookingDetails(updated)
+    setServiceModalVisible(false)
   }
 
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = () => {
-    if (!validate()) return;
-    onSubmit({ ...formData, bookingDetails });
-    onClose();
-  };
+    if (!validate()) return
+    onSubmit({ ...formData, bookingDetails })
+    onClose()
+  }
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
@@ -112,22 +120,12 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
           <CRow className="mb-2">
             <CCol md={6}>
               <CFormLabel htmlFor="name">Tên khách hàng *</CFormLabel>
-              <CFormInput
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-              />
+              <CFormInput id="name" name="name" value={formData.name} onChange={handleChange} />
               {errors.name && <small className="text-danger">{errors.name}</small>}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="phone">Số điện thoại *</CFormLabel>
-              <CFormInput
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-              />
+              <CFormInput id="phone" name="phone" value={formData.phone} onChange={handleChange} />
               {errors.phone && <small className="text-danger">{errors.phone}</small>}
             </CCol>
           </CRow>
@@ -136,10 +134,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
               <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
 
               {initialData ? (
-                <CFormInput
-                  disabled
-                  value={initialData.tourId?.title || "Không tìm thấy tour"}
-                />
+                <CFormInput disabled value={initialData.tourId?.title || 'Không tìm thấy tour'} />
               ) : (
                 <CFormSelect
                   id="tourId"
@@ -156,9 +151,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
                 </CFormSelect>
               )}
 
-              {errors.tourId && (
-                <small className="text-danger">{errors.tourId}</small>
-              )}
+              {errors.tourId && <small className="text-danger">{errors.tourId}</small>}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="totalPrice">Tổng giá</CFormLabel>
@@ -175,12 +168,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
           <CRow className="mb-2">
             <CCol md={6}>
               <CFormLabel htmlFor="status">Trạng thái</CFormLabel>
-              <CFormInput
-                id="status"
-                name="status"
-                value={formData.status}
-                disabled
-              />
+              <CFormInput id="status" name="status" value={formData.status} disabled />
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="promotionId">Khuyến mãi</CFormLabel>
@@ -216,7 +204,6 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
           tourServices={tourServices}
           initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
         />
-
       </CModalBody>
 
       <div className="d-flex justify-content-end p-3">
@@ -228,7 +215,7 @@ const BookingFormModal = ({ visible, onClose, onSubmit, initialData = null, tour
         </CButton>
       </div>
     </CModal>
-  );
-};
+  )
+}
 
-export default BookingFormModal;
+export default BookingFormModal

@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react'
 import {
-  CModal, CModalHeader, CModalBody,
-  CFormSelect, CFormInput, CFormLabel, CButton
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CFormSelect,
+  CFormInput,
+  CFormLabel,
+  CButton,
 } from '@coreui/react'
 
 const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initialData }) => {
@@ -19,7 +24,7 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
   }, [initialData, visible])
 
   const handleSave = () => {
-    const selected = tourServices.find(s => s._id === selectedServiceId)
+    const selected = tourServices.find((s) => s._id === selectedServiceId)
     if (!selected) return
 
     const service = {
@@ -38,18 +43,22 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
     <CModal alignment="center" visible={visible} onClose={onClose}>
       <CModalHeader>Chọn dịch vụ</CModalHeader>
       <CModalBody>
-        <CFormLabel>Dịch vụ</CFormLabel>
-        <CFormSelect
-          value={selectedServiceId}
-          onChange={(e) => setSelectedServiceId(e.target.value)}
-        >
-          <option value="">-- Chọn dịch vụ --</option>
-          {tourServices.map(service => (
-            <option key={service._id} value={service._id}>
-              {service.name} ({service.price.toLocaleString()} VND)
-            </option>
-          ))}
-        </CFormSelect>
+        {!initialData && (
+          <>
+            <CFormLabel>Dịch vụ</CFormLabel>
+            <CFormSelect
+              value={selectedServiceId}
+              onChange={(e) => setSelectedServiceId(e.target.value)}
+            >
+              <option value="">-- Chọn dịch vụ --</option>
+              {tourServices.map((service) => (
+                <option key={service._id} value={service._id}>
+                  {service.name} ({service.price.toLocaleString()} VND)
+                </option>
+              ))}
+            </CFormSelect>
+          </>
+        )}
 
         <CFormLabel className="mt-3">Số lượng</CFormLabel>
         <CFormInput
@@ -60,8 +69,12 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
         />
 
         <div className="mt-4 d-flex justify-content-end">
-          <CButton color="secondary" className="me-2" onClick={onClose}>Hủy</CButton>
-          <CButton color="primary" onClick={handleSave}>Lưu</CButton>
+          <CButton color="secondary" className="me-2" onClick={onClose}>
+            Hủy
+          </CButton>
+          <CButton color="primary" onClick={handleSave}>
+            Lưu
+          </CButton>
         </div>
       </CModalBody>
     </CModal>
