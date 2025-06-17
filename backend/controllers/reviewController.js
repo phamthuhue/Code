@@ -55,7 +55,7 @@ export const createReview = async (req, res) => {
 export const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate('userId', 'username')
+      .populate('userId', 'username email')
       .populate('tourId', 'title')
       .populate('guideId', 'name');
     res.status(200).json({ success: true, data: reviews });
