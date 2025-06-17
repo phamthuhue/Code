@@ -7,8 +7,6 @@ import './scss/style.scss'
 
 // We use those styles to show code examples, you should remove them in your application.
 import './scss/examples.scss'
-import routes from './routes'
-import PrivateRoute from './components/PrivateRoute'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -51,15 +49,6 @@ const App = () => {
           <Route exact path="/register" name="Register Page" element={<Register />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          {routes.map((route, idx) => {
-            return (
-              <Route
-                key={idx}
-                path={route.path}
-                element={<PrivateRoute element={<route.element />} />}
-              />
-            )
-          })}
           <Route path="*" name="Home" element={<DefaultLayout />} />
         </Routes>
       </Suspense>
