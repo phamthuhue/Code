@@ -144,11 +144,11 @@ const Login = () => {
                           )}
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right">
+                      {/* <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
                           Quên mật khẩu?
                         </CButton>
-                      </CCol>
+                      </CCol> */}
                     </CRow>
                   </CForm>
                 </CCardBody>
@@ -158,14 +158,13 @@ const Login = () => {
                   <div>
                     <h2>Đăng Ký</h2>
                     <p>
-                      Chưa có tài khoản? Đăng ký ngay để trải nghiệm các dịch vụ tuyệt vời mà chúng
-                      tôi cung cấp!
+                      Chưa có tài khoản? Đăng ký ngay với adminstator để có thể truy cập vào hệ
+                      thống của chúng tôi cung cấp!
                     </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Đăng Ký Ngay!
-                      </CButton>
-                    </Link>
+
+                    <CButton color="primary" className="mt-3" active tabIndex={-1}>
+                      Đăng Ký Ngay!
+                    </CButton>
                   </div>
                 </CCardBody>
               </CCard>
