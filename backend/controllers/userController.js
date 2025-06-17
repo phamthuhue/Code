@@ -1,7 +1,10 @@
 import Role from "../models/Role.js";
 import User from "../models/User.js";
 import sendEmail from "../utils/emailService.js";
-import { generateEmailHtml } from "../utils/emailTemplates.js";
+import {
+  generateEmailHtml,
+  generateUpdatedUserEmailHtml,
+} from "../utils/emailTemplates.js";
 import { hassPassword } from "../utils/hassPassword.js";
 
 //create new user
@@ -66,20 +69,61 @@ export const updateUser = async (req, res) => {
   const id = req.params.id;
 
   try {
+    // Lấy người dùng cũ trước khi cập nhật
+    const oldUser = await User.findById(id);
+    if (!oldUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Người dùng không tồn tại",
+      });
+    }
+
+    // Xóa email khỏi dữ liệu request để tránh sửa email
+    const { email, ...updateData } = req.body;
+
+    // Cập nhật thông tin người dùng (ngoại trừ email)
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      {
-        $set: req.body,
-      },
+      { $set: updateData },
       { new: true }
     );
 
+    // So sánh dữ liệu cũ và mới để xác định những trường đã thay đổi
+    const changes = [];
+    for (let key in updateData) {
+      if (oldUser[key] !== updatedUser[key]) {
+        changes.push({
+          field: key,
+          oldValue: oldUser[key],
+          newValue: updatedUser[key],
+        });
+      }
+    }
+
+    // Nếu có thay đổi, gửi email thông báo
+    if (changes.length > 0) {
+      // Nếu có thay đổi, gửi email thông báo
+      if (changes.length > 0) {
+        const { html: emailHtml, text: plainText } =
+          generateUpdatedUserEmailHtml(updatedUser.username, changes);
+        const emailSubject = "Thông báo cập nhật thông tin tài khoản";
+
+        await sendEmail({
+          to: updatedUser.email,
+          subject: emailSubject,
+          text: plainText,
+          html: emailHtml,
+        });
+      }
+    }
+
     res.status(200).json({
       success: true,
-      message: "Succesfully updated",
+      message: "Successfully updated",
       data: updatedUser,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Failed to update. Try again",
@@ -124,16 +168,18 @@ export const getSingleUser = async (req, res) => {
   }
 };
 
-//get all users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    // Tìm tất cả người dùng và populate thông tin của role
+    const users = await User.find({}).populate("role"); // populate
+
     res.status(200).json({
       success: true,
       message: "Thành công",
       data: users,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Không tìm thấy người dùng",

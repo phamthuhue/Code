@@ -18,6 +18,15 @@ const UserTable = ({
   handleEdit,
   handleDeleteClick,
 }) => {
+  const getReadableRoleName = (role) => {
+    const roleNames = {
+      user: 'Người dùng',
+      staff: 'Nhân viên',
+      admin: 'Quản trị viên',
+    }
+
+    return roleNames[role] || role // Trả về tên dễ đọc nếu có, nếu không trả về role gốc
+  }
   return (
     <>
       <CTable align="middle" className="mb-0 border" hover responsive>
@@ -55,7 +64,7 @@ const UserTable = ({
                 <CTableDataCell className="text-center">{user.gender}</CTableDataCell>
                 <CTableDataCell className="text-center">{user.yearob}</CTableDataCell>
                 <CTableDataCell className="text-center">
-                  {user.role?.name || 'Không xác định'}
+                  {getReadableRoleName(user.role?.name) || 'Không xác định'}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   <div className="d-flex align-items-center justify-content-center">

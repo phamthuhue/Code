@@ -9,10 +9,11 @@ import {
   CRow,
   CCol,
   CFormSelect,
+  CSpinner,
 } from '@coreui/react'
 import { useState, useEffect } from 'react'
 
-const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles = [] }) => {
+const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -20,11 +21,10 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
     address: '',
     gender: '',
     yearob: '',
-    role: 'Staff',
   })
 
   const [errors, setErrors] = useState({})
-
+  const [isLoading, setIsLoading] = useState(false) // Thêm trạng thái loading
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -34,7 +34,6 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
         address: initialData.address || '',
         gender: initialData.gender || '',
         yearob: initialData.yearob || '',
-        role: 'Staff',
       })
     } else {
       setFormData({
@@ -44,7 +43,6 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
         address: '',
         gender: '',
         yearob: '2025-06-07',
-        role: 'Staff',
       })
     }
 
@@ -69,10 +67,19 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
     }))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validate()) return
-    onSubmit(formData)
-    onClose()
+
+    setIsLoading(true) // Bật loading khi gửi dữ liệu
+
+    try {
+      await onSubmit(formData) // Gửi dữ liệu khi submit
+      setIsLoading(false) // Tắt loading khi hoàn thành
+      onClose() // Đóng modal sau khi thành công
+    } catch (error) {
+      console.error(error)
+      setIsLoading(false) // Tắt loading khi có lỗi
+    }
   }
 
   return (
@@ -93,7 +100,12 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
               <CFormLabel>
                 Email <span style={{ color: 'red' }}>*</span>
               </CFormLabel>
-              <CFormInput name="email" value={formData.email} onChange={handleChange} />
+              <CFormInput
+                disabled={!!initialData}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
               {errors.email && <small className="text-danger">{errors.email}</small>}
             </CCol>
           </CRow>
@@ -139,11 +151,26 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles =
       </CModalBody>
 
       <div className="d-flex justify-content-end p-3">
-        <CButton color="secondary" onClick={onClose} className="me-2">
-          Hủy
+        <CButton
+          color="secondary"
+          onClick={onClose}
+          className="me-2"
+          disabled={isLoading} // Disable nút hủy khi đang loading
+        >
+          {isLoading ? <CSpinner component="span" size="sm" aria-hidden="true" /> : 'Hủy'}
         </CButton>
-        <CButton color="primary" onClick={handleSubmit}>
-          {initialData ? 'Lưu thay đổi' : 'Thêm mới'}
+        <CButton
+          color="primary"
+          onClick={handleSubmit}
+          disabled={isLoading} // Disable button khi đang loading
+        >
+          {isLoading ? (
+            <CSpinner component="span" size="sm" aria-hidden="true" /> // Hiển thị spinner khi loading
+          ) : initialData ? (
+            'Lưu thay đổi'
+          ) : (
+            'Thêm mới'
+          )}
         </CButton>
       </div>
     </CModal>

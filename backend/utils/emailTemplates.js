@@ -29,7 +29,7 @@ export const generateEmailHtml = (username, password) => {
 
       <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
         <tr>
-          <td style="padding: 8px; background-color: #f2f2f2; font-weight: bold;">Tên đăng nhập:</td>
+          <td style="padding: 8px; background-color: #f2f2f2; font-weight: bold;">Email:</td>
           <td style="padding: 8px;">${username}</td>
         </tr>
         <tr>
@@ -62,6 +62,44 @@ export const generateEmailHtml = (username, password) => {
     Trân trọng,
     Đội ngũ Tour Booking
   `;
+
+  return { html, text };
+};
+
+// Hàm tạo nội dung email thông báo thay đổi thông tin
+export const generateUpdatedUserEmailHtml = (username, changes) => {
+  const changedFields = changes
+    .map((change) => {
+      return `<p><strong>${change.field}:</strong> từ "${change.oldValue}" thành "${change.newValue}"</p>`;
+    })
+    .join("");
+
+  const html = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #0d6efd;">Thông báo cập nhật thông tin tài khoản</h2>
+        <p>Chào ${username},</p>
+        <p>Chúng tôi muốn thông báo rằng thông tin tài khoản của bạn đã được cập nhật. Dưới đây là các trường đã thay đổi:</p>
+        ${changedFields}
+        <p>Chúc bạn một ngày tuyệt vời!</p>
+        <p>Trân trọng,<br/>Đội ngũ hỗ trợ Tour Booking</p>
+      </div>
+    `;
+
+  const text = `Chào ${username},
+
+    Chúng tôi muốn thông báo rằng thông tin tài khoản của bạn đã được cập nhật. Dưới đây là các trường đã thay đổi:
+    ${changes
+      .map(
+        (change) =>
+          `${change.field}: từ "${change.oldValue}" thành "${change.newValue}"`
+      )
+      .join("\n")}
+
+    Chúc bạn một ngày tuyệt vời!
+
+    Trân trọng,
+    Đội ngũ hỗ trợ Tour Booking
+    `;
 
   return { html, text };
 };
