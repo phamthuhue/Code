@@ -1,0 +1,153 @@
+import {
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CForm,
+  CFormInput,
+  CFormLabel,
+  CButton,
+  CRow,
+  CCol,
+  CFormSelect,
+} from '@coreui/react'
+import { useState, useEffect } from 'react'
+
+const UserFormModal = ({ visible, onClose, onSubmit, initialData = null, roles = [] }) => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    address: '',
+    gender: '',
+    yearob: '',
+    role: 'Staff',
+  })
+
+  const [errors, setErrors] = useState({})
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        username: initialData.username || '',
+        email: initialData.email || '',
+        phone: initialData.phone || '',
+        address: initialData.address || '',
+        gender: initialData.gender || '',
+        yearob: initialData.yearob || '',
+        role: 'Staff',
+      })
+    } else {
+      setFormData({
+        username: '',
+        email: '',
+        phone: '',
+        address: '',
+        gender: '',
+        yearob: '2025-06-07',
+        role: 'Staff',
+      })
+    }
+
+    if (!visible) setErrors({})
+  }, [initialData, visible])
+
+  const validate = () => {
+    const newErrors = {}
+    if (!formData.username.trim()) newErrors.username = 'Tên đăng nhập không được để trống'
+    if (!formData.email.trim()) newErrors.email = 'Email không được để trống'
+    if (!formData.gender.trim()) newErrors.gender = 'Giới tính không được để trống'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  const handleSubmit = () => {
+    if (!validate()) return
+    onSubmit(formData)
+    onClose()
+  }
+
+  return (
+    <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
+      <CModalHeader>{initialData ? 'Chỉnh sửa người dùng' : 'Thêm người dùng'}</CModalHeader>
+      <CModalBody>
+        <CForm>
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <CFormLabel>
+                Tên đăng nhập <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput name="username" value={formData.username} onChange={handleChange} />
+              {errors.username && <small className="text-danger">{errors.username}</small>}
+            </CCol>
+
+            <CCol md={6}>
+              <CFormLabel>
+                Email <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput name="email" value={formData.email} onChange={handleChange} />
+              {errors.email && <small className="text-danger">{errors.email}</small>}
+            </CCol>
+          </CRow>
+
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <CFormLabel>Số điện thoại</CFormLabel>
+              <CFormInput name="phone" value={formData.phone} onChange={handleChange} />
+            </CCol>
+
+            <CCol md={6}>
+              <CFormLabel>Địa chỉ</CFormLabel>
+              <CFormInput name="address" value={formData.address} onChange={handleChange} />
+            </CCol>
+          </CRow>
+
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <CFormLabel>
+                Giới tính <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormSelect name="gender" value={formData.gender} onChange={handleChange}>
+                <option value="">-- Chọn giới tính --</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </CFormSelect>
+              {errors.gender && <small className="text-danger">{errors.gender}</small>}
+            </CCol>
+
+            <CCol md={6}>
+              <CFormLabel htmlFor="yearob">Ngày sinh</CFormLabel>
+              <CFormInput
+                id="yearob"
+                type="date"
+                name="yearob"
+                value={formData.yearob}
+                onChange={handleChange}
+              />
+            </CCol>
+          </CRow>
+        </CForm>
+      </CModalBody>
+
+      <div className="d-flex justify-content-end p-3">
+        <CButton color="secondary" onClick={onClose} className="me-2">
+          Hủy
+        </CButton>
+        <CButton color="primary" onClick={handleSubmit}>
+          {initialData ? 'Lưu thay đổi' : 'Thêm mới'}
+        </CButton>
+      </div>
+    </CModal>
+  )
+}
+
+export default UserFormModal
