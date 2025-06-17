@@ -88,6 +88,7 @@ const Booking = () => {
     name: '',
     phone: '',
     status: '',
+    tourId: '',
   })
 
   const handleFilterChange = (updatedFilters) => {
@@ -146,6 +147,10 @@ const Booking = () => {
 
       if (filters.phone) {
         data = data.filter(inv => inv.phone.toLowerCase().includes(filters.phone.toLowerCase()));
+      }
+
+      if (filters.tourId) {
+        data = data.filter(inv => inv.tourId._id.toLowerCase().includes(filters.tourId.toLowerCase()));
       }
 
       if (filters.promotionId) {
@@ -265,7 +270,7 @@ const Booking = () => {
     <>
       <CRow>
         <CCol xs>
-          <BookingFilter filters={filters} onFilterChange={handleFilterChange} promotions={promotions}/>
+          <BookingFilter filters={filters} onFilterChange={handleFilterChange} promotions={promotions} tours={tours}/>
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
