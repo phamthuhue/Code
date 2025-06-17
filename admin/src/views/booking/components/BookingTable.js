@@ -56,8 +56,10 @@ const BookingTable = ({
             <CTableHeaderCell className="bg-body-tertiary text-center">Tên khách hàng</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Số điện thoại</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Ngày đặt</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">Trạng thái</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">Khuyến mãi</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">Giảm giá (VND)</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Tổng giá (VND)</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">Trạng thái</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Hành động</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -85,10 +87,12 @@ const BookingTable = ({
                 <CTableDataCell className="text-center">{booking.name}</CTableDataCell>
                 <CTableDataCell className="text-center">{booking.phone}</CTableDataCell>
                 <CTableDataCell className="text-center">{formatDate(booking.createdAt)}</CTableDataCell>
-                <CTableDataCell className="text-center">{booking.status}</CTableDataCell>
+                <CTableDataCell className="text-center">{booking.promotionId?.name || 'Không áp dụng'}</CTableDataCell>
+                <CTableDataCell className="text-center">{booking.discountAmount?.toLocaleString()} VND</CTableDataCell>
                 <CTableDataCell className="text-center">
                   {booking.totalPrice?.toLocaleString()} VND
                 </CTableDataCell>
+                <CTableDataCell className="text-center">{booking.status}</CTableDataCell>
                 <CTableDataCell className="text-center">
                   <div className="d-flex align-items-center justify-content-center">
                     <CButton

@@ -13,6 +13,7 @@ const Promotion = React.lazy(() => import('./views/promotion/promotion'))
 const GroupBooking = React.lazy(() => import('./views/groupBooking/groupBooking'))
 const Invoice = React.lazy(() => import('./views/invoice/invoice'))
 const Account = React.lazy(() => import('./views/account/account'))
+const Review = React.lazy(() => import('./views/review/review'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -29,6 +30,7 @@ const routes = [
   { path: '/group-request', name: 'Danh sách yêu cầu đặt theo đoàn', element: GroupBooking },
   { path: '/invoice', name: 'Danh sách hóa đơn', element: Invoice },
   { path: '/account', name: 'Quản lý tài khoản', element: Account },
+  { path: '/review', name: 'Danh sách đánh giá', element: Review },
 ]
 
 export default routes
