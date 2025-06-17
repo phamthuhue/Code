@@ -119,17 +119,6 @@ const Booking = () => {
     }
   }
 
-  const fetchTourServices = async () => {
-    try {
-      const res = await getServicesByTourId()
-      let data = res.data.data
-      setTourServices(data)
-    } catch (error) {
-      console.error(error)
-      addToast(exampleToast('Không thể tải danh sách dịch vụ theo tour.'))
-    }
-  }
-
   const fetchTours = async () => {
     try {
       const res = await getTours()
@@ -197,13 +186,16 @@ const Booking = () => {
     if (booking) {
       try {
         const res = await getBookingDetail(booking._id)
+        const ServiceRes = await getServicesByTourId(booking.tourId._id)
         setBookingDetails(res.data)
+        setTourServices(ServiceRes.data.services)
       } catch (error) {
-        console.error('Lỗi khi lấy chi tiết booking:', error)
-        addToast(exampleToast('Không thể lấy chi tiết booking'))
+        console.error('Lỗi khi lấy chi tiết dịch vụ:', error)
+        addToast(exampleToast('Không thể lấy chi tiết dịch vụ'))
       }
     } else {
       setBookingDetails([])
+      setTourServices([])
     }
   }
 

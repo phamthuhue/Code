@@ -101,6 +101,7 @@ const BookingTable = ({
                       variant="outline"
                       className="me-2"
                       onClick={() => handleEdit(booking)}
+                      disabled={booking.status === 'Xác nhận'}
                     >
                       Sửa
                     </CButton>

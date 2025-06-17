@@ -38,6 +38,8 @@ const BookingFormModal = ({
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
 
+  console.log('BookingFormModal - tourServices:', tourServices)
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -72,32 +74,6 @@ const BookingFormModal = ({
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-  const handleAddService = () => {
-    setEditingIndex(null) // đang thêm mới
-    setServiceModalVisible(true)
-  }
-
-  const handleEditService = (index) => {
-    setEditingIndex(index) // sửa dòng đang có
-    setServiceModalVisible(true)
-  }
-
-  const handleDeleteService = (index) => {
-    const updated = [...bookingDetails]
-    updated.splice(index, 1)
-    setBookingDetails(updated)
-  }
-
-  const handleSaveService = (service) => {
-    const updated = [...bookingDetails]
-    if (editingIndex !== null) {
-      updated[editingIndex] = service
-    } else {
-      updated.push(service)
-    }
-    setBookingDetails(updated)
-    setServiceModalVisible(false)
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -111,7 +87,7 @@ const BookingFormModal = ({
   }
 
   return (
-    <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
+    <CModal alignment="center" visible={visible} onClose={onClose} size="xl">
       <CModalHeader>{initialData ? 'Chỉnh sửa đặt tour' : 'Thêm mới đặt tour'}</CModalHeader>
       <CModalBody>
         {/* Phần 1: Thông tin chung */}
@@ -193,16 +169,8 @@ const BookingFormModal = ({
         <h6 className="fw-bold mt-4 mb-2">Chi tiết dịch vụ</h6>
         <BookingDetailTable
           bookingDetails={bookingDetails}
-          onAdd={handleAddService}
-          onEdit={handleEditService}
-          onDelete={handleDeleteService}
-        />
-        <ServiceSelectModal
-          visible={serviceModalVisible}
-          onClose={() => setServiceModalVisible(false)}
-          onSave={handleSaveService}
+          onChange={(newDetails) => setBookingDetails(newDetails)}
           tourServices={tourServices}
-          initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
         />
       </CModalBody>
 

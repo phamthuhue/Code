@@ -12,11 +12,12 @@ import {
 const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initialData }) => {
   const [selectedServiceId, setSelectedServiceId] = useState('')
   const [quantity, setQuantity] = useState(1)
+  console.log("Data truyền:", initialData)
 
   useEffect(() => {
     if (initialData) {
-      setSelectedServiceId(initialData.serviceId)
-      setQuantity(initialData.quantity)
+      setSelectedServiceId(initialData.serviceId?._id || '')
+      setQuantity(initialData.numberOfPeopl || 1)
     } else {
       setSelectedServiceId('')
       setQuantity(1)
@@ -24,16 +25,16 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
   }, [initialData, visible])
 
   const handleSave = () => {
-    const selected = tourServices.find((s) => s._id === selectedServiceId)
+    const selected = tourServices.find((s) => s.serviceId._id === selectedServiceId)
     if (!selected) return
 
     const service = {
-      serviceId: selected._id,
-      itemType: selected.name,
-      description: selected.description,
-      unitPrice: selected.price,
+      serviceId: selected.serviceId._id,
+      itemType: selected.serviceId.name,
+      description: selected.serviceId.description,
+      unitPrice: selected.servicePrice,
       quantity,
-      totalPrice: selected.price * quantity,
+      totalPrice: selected.servicePrice * quantity,
     }
 
     onSave(service)
@@ -51,9 +52,9 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
               onChange={(e) => setSelectedServiceId(e.target.value)}
             >
               <option value="">-- Chọn dịch vụ --</option>
-              {tourServices.map((service) => (
-                <option key={service._id} value={service._id}>
-                  {service.name} ({service.price.toLocaleString()} VND)
+              {tourServices.map((s) => (
+                <option key={s._id} value={s.serviceId._id}>
+                  {s.serviceId.name} ({s.servicePrice.toLocaleString()} VND)
                 </option>
               ))}
             </CFormSelect>
@@ -65,7 +66,7 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
           type="number"
           value={quantity}
           min={1}
-          onChange={(e) => setQuantity(Number(e.target.value))}
+          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
         />
 
         <div className="mt-4 d-flex justify-content-end">

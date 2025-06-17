@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CTable,
   CTableHead,
@@ -8,12 +8,46 @@ import {
   CTableDataCell,
   CButton,
 } from '@coreui/react'
+import ServiceSelectModal from './ServiceSelectModal'
 
-const BookingDetailTable = ({ bookingDetails = [], onEdit, onDelete, onAdd }) => {
+const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServices = [] }) => {
+  const [serviceModalVisible, setServiceModalVisible] = useState(false)
+  const [editingIndex, setEditingIndex] = useState(null)
+  const [localBookingDetails, setLocalBookingDetails] = useState(bookingDetails || [])
+
+  const handleAdd = () => {
+    setEditingIndex(null)
+    setServiceModalVisible(true)
+  }
+
+  const handleEdit = (index) => {
+    setEditingIndex(index)
+    setServiceModalVisible(true)
+  }
+
+  const handleDelete = (index) => {
+    const updated = [...localBookingDetails]
+    updated.splice(index, 1)
+    setLocalBookingDetails(updated)
+    onChange(updated)
+  }
+
+  const handleSave = (service) => {
+    const updated = [...localBookingDetails]
+    if (editingIndex !== null) {
+      updated[editingIndex] = service
+    } else {
+      updated.push(service)
+    }
+    setLocalBookingDetails(updated)
+    onChange(updated)
+    setServiceModalVisible(false)
+  }
+
   return (
     <>
       <div className="d-flex justify-content-end mb-2">
-        <CButton color="success" size="sm" onClick={onAdd}>
+        <CButton color="success" size="sm" onClick={handleAdd}>
           Thêm dịch vụ
         </CButton>
       </div>
@@ -52,14 +86,14 @@ const BookingDetailTable = ({ bookingDetails = [], onEdit, onDelete, onAdd }) =>
                   {detail.totalPrice?.toLocaleString()}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton color="warning" size="sm" onClick={() => onEdit(index)} className="me-2">
+                  <CButton color="warning" size="sm" onClick={() => handleEdit(index)} className="me-2">
                     Sửa
                   </CButton>
                   <CButton
                     disabled={detail.itemType === 'Tour'}
                     color="danger"
                     size="sm"
-                    onClick={() => onDelete(index)}
+                    onClick={() => handleDelete(index)}
                   >
                     Xóa
                   </CButton>
@@ -69,6 +103,13 @@ const BookingDetailTable = ({ bookingDetails = [], onEdit, onDelete, onAdd }) =>
           )}
         </CTableBody>
       </CTable>
+      <ServiceSelectModal
+        visible={serviceModalVisible}
+        onClose={() => setServiceModalVisible(false)}
+        onSave={handleSave}
+        tourServices={tourServices}
+        initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
+      />
     </>
   )
 }
