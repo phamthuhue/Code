@@ -4,14 +4,14 @@ export const getCancellationBookings = () => axiosConfig.get(API)
 export const createCancellationBooking = (data) => axiosConfig.post(API, data)
 
 export const updateCancellationBooking = (id, data) => axiosConfig.put(`${API}/${id}`, data)
-export const confirmMultipleCancellationBookings = (bookingIds) => {
+export const confirmMultipleCancellationBookings = (selectedCancellationBookingIds) => {
   return axiosConfig.put(`${API}/confirm-multiple`, {
-    bookingIds: bookingIds
-  });
-};
-export const rejectMultipleCancellationBookings = (bookingIds) => {
+    selectedCancellationBookingIds: selectedCancellationBookingIds,
+  })
+}
+export const rejectMultipleCancellationBookings = (selectedCancellationBookingIds) => {
   return axiosConfig.put(`${API}/reject-multiple`, {
-    bookingIds: bookingIds
-  });
-};
+    selectedCancellationBookingIds: selectedCancellationBookingIds,
+  })
+}
 export const deleteCancellationBooking = (id) => axiosConfig.delete(`${API}/${id}`)
