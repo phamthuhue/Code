@@ -4,6 +4,7 @@ import { CContainer, CSpinner } from '@coreui/react'
 
 // routes config
 import routes from '../routes'
+import PrivateRoute from '../components/PrivateRoute' // Import PrivateRoute
 
 const AppContent = () => {
   return (
@@ -18,11 +19,17 @@ const AppContent = () => {
                   path={route.path}
                   exact={route.exact}
                   name={route.name}
-                  element={<route.element />}
+                  element={
+                    // Bọc mỗi route bằng PrivateRoute
+                    <PrivateRoute>
+                      <route.element />
+                    </PrivateRoute>
+                  }
                 />
               )
             )
           })}
+          {/* Route mặc định (ví dụ chuyển hướng về dashboard nếu không có route nào phù hợp) */}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
         </Routes>
       </Suspense>

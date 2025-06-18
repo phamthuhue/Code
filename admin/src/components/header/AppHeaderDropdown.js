@@ -9,16 +9,30 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import {
-  cilUser,
-  cilPowerStandby,
-  cilLoop
-} from '@coreui/icons'
+import { cilUser, cilPowerStandby, cilLoop } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
 import avatar from './../../assets/images/avatars/10.png'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { logout } from '../../store'
 
 const AppHeaderDropdown = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    // Xoá token và thông tin người dùng từ Redux store và localStorage
+    dispatch(logout()) // Gọi action logout để reset trạng thái trong Redux
+
+    // Xoá thông tin trong localStorage
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+
+    // Chuyển hướng người dùng về trang đăng nhập
+    navigate('/login')
+  }
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
@@ -35,7 +49,7 @@ const AppHeaderDropdown = () => {
           Đổi mật khẩu
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" onClick={handleLogout}>
           <CIcon icon={cilPowerStandby} className="me-2" />
           Đăng xuất
         </CDropdownItem>
