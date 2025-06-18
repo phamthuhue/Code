@@ -95,7 +95,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Phiếu hủy đặt tour',
-        to: '/booking-cancellation', // Đường dẫn cho Itinerary
+        to: '/cancellation-booking', // Đường dẫn cho Itinerary
       },
       {
         component: CNavItem,

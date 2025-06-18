@@ -52,11 +52,13 @@ const ServiceSelectModal = ({ visible, onClose, onSave, tourServices = [], initi
               onChange={(e) => setSelectedServiceId(e.target.value)}
             >
               <option value="">-- Chọn dịch vụ --</option>
-              {tourServices.map((s) => (
-                <option key={s._id} value={s.serviceId._id}>
-                  {s.serviceId.name} ({s.servicePrice.toLocaleString()} VND)
-                </option>
-              ))}
+              {tourServices
+                .filter((s) => s.serviceId && s.serviceId._id)
+                .map((s) => (
+                  <option key={s._id} value={s.serviceId._id}>
+                    {s.serviceId.name} ({s.servicePrice.toLocaleString()} VND)
+                  </option>
+                ))}
             </CFormSelect>
           </>
         )}

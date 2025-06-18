@@ -3,6 +3,7 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Tour = React.lazy(() => import('./views/tour/Tour'))
 const Booking = React.lazy(() => import('./views/booking/Booking'))
+const CancellationBooking = React.lazy(() => import('./views/cancellationBooking/cancellationBooking'))
 const Itinerary = React.lazy(() => import('./views/itinerary/Itinerary'))
 const Guide = React.lazy(() => import('./views/guide/Guide'))
 const TourService = React.lazy(() => import('./views/tourService/TourService'))
@@ -31,6 +32,7 @@ const routes = [
   { path: '/invoice', name: 'Danh sách hóa đơn', element: Invoice },
   { path: '/account', name: 'Quản lý tài khoản', element: Account },
   { path: '/review', name: 'Danh sách đánh giá', element: Review },
+  { path: '/cancellation-booking', name: 'Danh sách phiếu yêu cầu hủy', element: CancellationBooking },
 ]
 
 export default routes

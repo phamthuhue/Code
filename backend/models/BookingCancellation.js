@@ -23,7 +23,7 @@ const BookingCancellationSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Đang xử lý', 'Đã hoàn', 'Hủy'],
+        enum: ['Đang xử lý', 'Đã hoàn', 'Từ chối'],
         default: 'Đang xử lý',
     },
     refundMethod: {

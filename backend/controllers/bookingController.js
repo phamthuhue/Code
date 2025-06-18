@@ -199,7 +199,6 @@ export const getBookingById = async (req, res) => {
 export const confirmMultipleBookings = async (req, res) => {
   try {
     const { bookingIds } = req.body;
-    console.log("Dữ liệu nhận được:", req.body);
 
     if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
       return res.status(400).json({
