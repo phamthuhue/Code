@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import BookingFormModal from './components/BookingForm'
 import { getTours } from '../../services/Api/tourService'
+import { getUsersByUserRole } from '../../services/Api/accountService'
 import { getBookingDetail } from '../../services/Api/bookingDetailService'
 import {
   createBooking,
@@ -105,6 +106,7 @@ const Booking = () => {
   const [bookings, setBookings] = useState([])
   const [bookingDetails, setBookingDetails] = useState([])
   const [tours, setTours] = useState([])
+  const [users, setUsers] = useState([])
   const [promotions, setPromotions] = useState([])
   const [tourServices, setTourServices] = useState([])
 
@@ -116,6 +118,17 @@ const Booking = () => {
     } catch (error) {
       console.error(error)
       addToast(exampleToast('Không thể tải danh sách khuyến mãi.'))
+    }
+  }
+
+  const fetchUsers = async () => {
+    try {
+      const res = await getUsersByUserRole()
+      let data = res.data.data
+      setUsers(data)
+    } catch (error) {
+      console.error(error)
+      addToast(exampleToast('Không thể tải danh sách khách hàng.'))
     }
   }
 
@@ -177,6 +190,7 @@ const Booking = () => {
   useEffect(() => {
     fetchPromotions()
     fetchTours()
+    fetchUsers()
   }, [])
 
   const openForm = async (booking = null) => {
@@ -309,6 +323,7 @@ const Booking = () => {
             setBookingDetails={setBookingDetails}
             promotions={promotions}
             tourServices={tourServices}
+            users={users}
           />
           <DeleteConfirmModal
             visible={deleteModalVisible}

@@ -186,3 +186,25 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
+
+export const getUsersByUserRole = async (req, res) => {
+  try {
+    // Tìm tất cả user và populate thông tin role
+    const allUsers = await User.find().populate('role');
+
+    // Lọc những user có role.name === "user"
+    const filteredUsers = allUsers.filter(user => user.role?.name === 'user');
+
+    res.status(200).json({
+      success: true,
+      message: 'Lấy danh sách người dùng thành công',
+      data: filteredUsers,
+    });
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách user:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy danh sách user',
+    });
+  }
+};

@@ -101,7 +101,7 @@ const BookingTable = ({
                       variant="outline"
                       className="me-2"
                       onClick={() => handleEdit(booking)}
-                      disabled={booking.status === 'Xác nhận'}
+                      disabled={booking.status === 'Xác nhận' || booking.status === 'Đã hủy'}
                     >
                       Sửa
                     </CButton>

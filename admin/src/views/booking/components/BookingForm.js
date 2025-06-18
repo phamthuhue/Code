@@ -24,11 +24,13 @@ const BookingFormModal = ({
   setBookingDetails,
   tourServices,
   promotions,
+  users,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     tourId: '',
+    userId: '',
     totalPrice: '',
     status: 'Mới tạo',
     promotionId: '',
@@ -46,6 +48,7 @@ const BookingFormModal = ({
         name: initialData.name || '',
         phone: initialData.phone || '',
         tourId: initialData.tourId || '',
+        userId: initialData.userId || '',
         totalPrice: initialData.totalPrice || '',
         status: initialData.status || 'Mới tạo',
         promotionId: initialData.promotionId || '',
@@ -56,6 +59,7 @@ const BookingFormModal = ({
         name: '',
         phone: '',
         tourId: '',
+        userId: '',
         totalPrice: '',
         status: 'Mới tạo',
       })
@@ -70,6 +74,7 @@ const BookingFormModal = ({
     if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống'
     if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống'
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
+    if (!formData.userId) newErrors.userId = 'Tài khoản khách hàng không được để trống'
     if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -95,17 +100,22 @@ const BookingFormModal = ({
         <CForm>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="name">Tên khách hàng *</CFormLabel>
-              <CFormInput id="name" name="name" value={formData.name} onChange={handleChange} />
-              {errors.name && <small className="text-danger">{errors.name}</small>}
+              <CFormLabel htmlFor="userId">TK khách hàng *</CFormLabel>
+              <CFormSelect
+                id="userId"
+                name="userId"
+                value={formData.userId}
+                onChange={handleChange}
+              >
+                <option value="">-- Chọn khách hàng --</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.username} ({user.email})
+                  </option>
+                ))}
+              </CFormSelect>
+              {errors.userId && <small className="text-danger">{errors.userId}</small>}
             </CCol>
-            <CCol md={6}>
-              <CFormLabel htmlFor="phone">Số điện thoại *</CFormLabel>
-              <CFormInput id="phone" name="phone" value={formData.phone} onChange={handleChange} />
-              {errors.phone && <small className="text-danger">{errors.phone}</small>}
-            </CCol>
-          </CRow>
-          <CRow className="mb-2">
             <CCol md={6}>
               <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
 
@@ -129,22 +139,24 @@ const BookingFormModal = ({
 
               {errors.tourId && <small className="text-danger">{errors.tourId}</small>}
             </CCol>
+          </CRow>
+          <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="totalPrice">Tổng giá</CFormLabel>
-              <CFormInput
-                id="totalPrice"
-                type="number"
-                name="totalPrice"
-                value={formData.totalPrice}
-                onChange={handleChange}
-                disabled
-              />
+              <CFormLabel htmlFor="name">Tên người liên hệ chính*</CFormLabel>
+              <CFormInput id="name" name="name" value={formData.name} onChange={handleChange} />
+              {errors.name && <small className="text-danger">{errors.name}</small>}
+            </CCol>
+            <CCol md={6}>
+              <CFormLabel htmlFor="phone">Số điện thoại *</CFormLabel>
+              <CFormInput id="phone" name="phone" value={formData.phone} onChange={handleChange} />
+              {errors.phone && <small className="text-danger">{errors.phone}</small>}
             </CCol>
           </CRow>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="status">Trạng thái</CFormLabel>
-              <CFormInput id="status" name="status" value={formData.status} disabled />
+              <CFormLabel htmlFor="numberOfPeople">Số lượng khách *</CFormLabel>
+              <CFormInput id="numberOfPeople" name="numberOfPeople" value={formData.numberOfPeople} onChange={handleChange} />
+              {errors.numberOfPeople && <small className="text-danger">{errors.numberOfPeople}</small>}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="promotionId">Khuyến mãi</CFormLabel>
@@ -161,6 +173,23 @@ const BookingFormModal = ({
                   </option>
                 ))}
               </CFormSelect>
+            </CCol>
+          </CRow>
+          <CRow className="mb-2">
+            <CCol md={6}>
+              <CFormLabel htmlFor="status">Trạng thái</CFormLabel>
+              <CFormInput id="status" name="status" value={formData.status} disabled />
+            </CCol>
+            <CCol md={6}>
+              <CFormLabel htmlFor="totalPrice">Tổng giá</CFormLabel>
+              <CFormInput
+                id="totalPrice"
+                type="number"
+                name="totalPrice"
+                value={formData.totalPrice}
+                onChange={handleChange}
+                disabled
+              />
             </CCol>
           </CRow>
         </CForm>
