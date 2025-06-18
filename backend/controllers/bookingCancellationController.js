@@ -140,22 +140,22 @@ export const deleteBookingCancellation = async (req, res) => {
 
 export const confirmMultipleBookingCancellations = async (req, res) => {
   try {
-    const { bookingIds } = req.body; // Mảng bookingId được chọn
-    console.log("cf_bookingIds", bookingIds);
+    const { ObjectId } = mongoose.Types;
+    const rawIds = req.body.selectedCancellationBookingIds || [];
 
-    if (!Array.isArray(bookingIds) || bookingIds.length === 0) {
+    if (!Array.isArray(rawIds) || rawIds.length === 0) {
       return res
         .status(400)
-        .json({ error: "Vui lòng chọn ít nhất một phiếu hủy để xác nhận." });
+        .json({ error: "Vui lòng chọn ít nhất một phiếu hủy để từ chối." });
     }
-
-    // Lấy danh sách phiếu hủy theo bookingId
+    const bookingCancellationIds = rawIds.map((id) => new ObjectId(id));
     const cancellations = await BookingCancellation.find({
-      bookingId: { $in: bookingIds },
+      _id: { $in: bookingCancellationIds },
     });
 
     for (const cancellation of cancellations) {
       const bookingId = cancellation.bookingId;
+      const invoiceId = cancellation.invoiceId;
 
       // ✅ 1. Cập nhật trạng thái phiếu hủy sang "Đã hoàn"
       await BookingCancellation.updateOne(
@@ -168,7 +168,7 @@ export const confirmMultipleBookingCancellations = async (req, res) => {
 
       // ✅ 3. Cập nhật hóa đơn liên quan sang "Đã hoàn tiền"
       await Invoice.updateMany(
-        { bookingId: bookingId },
+        { _id: invoiceId },
         { status: "Đã hoàn tiền" }
       );
     }
@@ -186,7 +186,6 @@ export const rejectMultipleBookingCancellations = async (req, res) => {
   try {
     const { ObjectId } = mongoose.Types;
     const rawIds = req.body.selectedCancellationBookingIds || [];
-    console.log("rj_bookingIds", rawIds);
 
     if (!Array.isArray(rawIds) || rawIds.length === 0) {
       return res
