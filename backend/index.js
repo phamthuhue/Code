@@ -72,8 +72,8 @@ app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/booking-details", bookingDetailRoute);
 app.use("/api/v1/tour-services", tourServiceRoute);
 app.use("/api/v1/services", serviceRoute);
-app.use("/api/v1/invoices", invoiceRoute);
-app.use("/api/v1/payment", paymentRoute);
+app.use("/api/v1/invoices",invoiceRoute);
+app.use("/api/v1/payment", verifyToken, paymentRoute);
 app.use('/api/v1/partners', partnerRoutes)
 app.use('/api/v1/partner-types', partnerTypeRoutes)
 app.use('/api/v1/promotions', promotionRoutes)
