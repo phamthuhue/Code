@@ -9,6 +9,7 @@ import {
   CButton,
   CRow,
   CCol,
+  CFormTextarea
 } from '@coreui/react'
 import { useState, useEffect } from 'react'
 
@@ -19,10 +20,12 @@ const CancellationBookingFormModal = ({
   initialData = null,
   bookingId,
   userId,
+  invoiceId,
 }) => {
   const initialForm = {
     bookingId: bookingId || '',
     userId: userId || '',
+    invoiceId: invoiceId || '',
     cancelReason: '',
     status: 'Đang xử lý',
     refundMethod: '',
@@ -41,6 +44,7 @@ const CancellationBookingFormModal = ({
       setFormData({
         bookingId: initialData.bookingId || '',
         userId: initialData.userId || '',
+        invoiceId: initialData.invoiceId || '',
         cancelReason: initialData.cancelReason || '',
         status: initialData.status || '',
         refundMethod: initialData.refundMethod || '',
@@ -54,6 +58,7 @@ const CancellationBookingFormModal = ({
       setFormData({
         bookingId: bookingId || '',
         userId: userId || '',
+        invoiceId: invoiceId || '',
         cancelReason: '',
         status: 'Đang xử lý',
         refundMethod: '',
@@ -104,11 +109,12 @@ const CancellationBookingFormModal = ({
           <CRow className="mb-2">
             <CCol>
               <CFormLabel htmlFor="cancelReason">Lý do hủy *</CFormLabel>
-              <CFormInput
+              <CFormTextarea
                 id="cancelReason"
                 name="cancelReason"
                 value={formData.cancelReason}
                 onChange={handleChange}
+                className="mb-1"
               />
               {errors.cancelReason && <small className="text-danger">{errors.cancelReason}</small>}
             </CCol>
