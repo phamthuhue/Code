@@ -15,7 +15,7 @@ const CancelModal = ({ isOpen, onClose, bookingId, userId, onReload }) => {
   const [error, setError] = useState(null);
 
   const bankOptions = ["Vietcombank", "Techcombank", "BIDV", "VPBank", "ACB"];
-  const walletOptions = ["MoMo", "ZaloPay", "VNPay"];
+  const walletOptions = ["MoMo", "VNPay"];
 
   const handleSubmit = async () => {
     setSubmitting(true);
