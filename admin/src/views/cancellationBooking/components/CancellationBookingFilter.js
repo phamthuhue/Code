@@ -40,7 +40,7 @@ const CancellationBookingFilter = ({ filters, onFilterChange}) => {
             <option value="">Tất cả</option>
             <option value="Đang xử lý">Đang xử lý</option>
             <option value="Đã hoàn">Đã hoàn</option>
-            <option value="Hủy">Hủy</option>
+            <option value="Từ chối">Từ chối</option>
           </CFormSelect>
         </CInputGroup>
       </CCol>

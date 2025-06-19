@@ -174,7 +174,7 @@ const Booking = () => {
       }
 
       if (filters.status) {
-        data = data.filter((inv) => inv.status.toLowerCase().includes(filters.status.toLowerCase()))
+        data = data.filter((inv) => inv.status.toLowerCase() === filters.status.toLowerCase())
       }
 
       setBookings(data)
