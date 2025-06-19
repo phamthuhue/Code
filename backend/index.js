@@ -20,6 +20,7 @@ import serviceRoute from "./routes/services.js";
 import partnerRoutes from './routes/partner.js'
 import partnerTypeRoutes from './routes/partnerType.js'
 import promotionRoutes from './routes/promotion.js'
+import DashboardRoutes from './routes/dashboard.js'
 
 import path from "path";
 
@@ -63,6 +64,7 @@ app.use("/api/v1/momo", momoRoute);
 
 // Route cần token - áp dụng middleware từ đây trở đi
 
+app.use("/api/v1/dashboard", DashboardRoutes);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/reviews", reviewRoute);
 app.use("/api/v1/guides", guideRoute);
