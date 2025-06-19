@@ -180,7 +180,7 @@ const Dashboard = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>Traffic {' & '} Sales</CCardHeader>
+            <CCardHeader>Đơn đặt {' & '} Dịch vụ</CCardHeader>
             <CCardBody>
               <CRow>
                 <CCol xs={12} md={6} xl={6}>
@@ -199,6 +199,8 @@ const Dashboard = () => {
                     </CCol>
                   </CRow>
                   <hr className="mt-0" />
+                  <h6 id="progressGroupPartnerTypes" className="card-title mb-0">Thống kê đối tác theo loại</h6>
+                  <hr className="mt-4" />
                   {progressGroupPartnerTypes.map((item, index) => (
                     <div className="progress-group mb-4" key={index}>
                       <div className="progress-group-header">
@@ -214,6 +216,8 @@ const Dashboard = () => {
 
                   <hr className="mt-4" />
 
+                  <h6 id="serviceTypeStats" className="card-title mb-0">Thống kê dịch vụ theo loại đối tác</h6>
+                  <hr className="mt-4" />
                   {serviceTypeStats.map((item, index) => (
                     <div className="progress-group mb-4" key={index}>
                       <div className="progress-group-header">
@@ -245,6 +249,9 @@ const Dashboard = () => {
                   </CRow>
 
                   <hr className="mt-0" />
+                  
+                  <h6 id="serviceTypeStats" className="card-title mb-0">Thống kê đơn đặt theo trạng thái</h6>
+                  <hr className="mt-4" />
                   {bookingStatusStats.map((item, index) => (
                     <div className="progress-group" key={index}>
                       <div className="progress-group-header">
@@ -263,6 +270,8 @@ const Dashboard = () => {
                   
                   <hr className="mt-4" />
 
+                  <h6 id="progressGroupExample2" className="card-title mb-0">Thống kê đơn đặt theo loại lẻ/đoàn</h6>
+                  <hr className="mt-4" />
                   {progressGroupExample2.map((item, index) => (
                     <div className="progress-group mb-4" key={index}>
                       <div className="progress-group-header">
