@@ -73,6 +73,7 @@ const BookingFormModal = ({
     const newErrors = {}
     if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống'
     if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống'
+    if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Số lượng khách không được để trống'
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
     if (!formData.userId) newErrors.userId = 'Tài khoản khách hàng không được để trống'
     if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống'
@@ -100,7 +101,9 @@ const BookingFormModal = ({
         <CForm>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="userId">TK khách hàng *</CFormLabel>
+              <CFormLabel htmlFor="userId">
+                TK khách hàng <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormSelect
                 id="userId"
                 name="userId"
@@ -117,7 +120,9 @@ const BookingFormModal = ({
               {errors.userId && <small className="text-danger">{errors.userId}</small>}
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
+              <CFormLabel htmlFor="tourId">
+                Tour <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
 
               {initialData ? (
                 <CFormInput disabled value={initialData.tourId?.title || 'Không tìm thấy tour'} />
@@ -142,21 +147,34 @@ const BookingFormModal = ({
           </CRow>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="name">Tên người liên hệ chính*</CFormLabel>
+              <CFormLabel htmlFor="name">
+                Tên người liên hệ chính <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormInput id="name" name="name" value={formData.name} onChange={handleChange} />
               {errors.name && <small className="text-danger">{errors.name}</small>}
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="phone">Số điện thoại *</CFormLabel>
+              <CFormLabel htmlFor="phone">
+                Số điện thoại <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormInput id="phone" name="phone" value={formData.phone} onChange={handleChange} />
               {errors.phone && <small className="text-danger">{errors.phone}</small>}
             </CCol>
           </CRow>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="numberOfPeople">Số lượng khách *</CFormLabel>
-              <CFormInput id="numberOfPeople" name="numberOfPeople" value={formData.numberOfPeople} onChange={handleChange} />
-              {errors.numberOfPeople && <small className="text-danger">{errors.numberOfPeople}</small>}
+              <CFormLabel htmlFor="numberOfPeople">
+                Số lượng khách <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput
+                id="numberOfPeople"
+                name="numberOfPeople"
+                value={formData.numberOfPeople}
+                onChange={handleChange}
+              />
+              {errors.numberOfPeople && (
+                <small className="text-danger">{errors.numberOfPeople}</small>
+              )}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="promotionId">Khuyến mãi</CFormLabel>

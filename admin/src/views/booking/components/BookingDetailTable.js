@@ -15,6 +15,10 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
   const [editingIndex, setEditingIndex] = useState(null)
   const [localBookingDetails, setLocalBookingDetails] = useState(bookingDetails || [])
 
+  useEffect(() => {
+    setLocalBookingDetails(bookingDetails)
+  }, [bookingDetails])
+
   const handleAdd = () => {
     setEditingIndex(null)
     setServiceModalVisible(true)
@@ -33,7 +37,7 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
   }
 
   const handleSave = (service) => {
-    const updated = [...localBookingDetails]
+    const updated = localBookingDetails
     if (editingIndex !== null) {
       updated[editingIndex] = service
     } else {
@@ -86,7 +90,12 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
                   {detail.totalPrice?.toLocaleString()}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton color="warning" size="sm" onClick={() => handleEdit(index)} className="me-2">
+                  <CButton
+                    color="warning"
+                    size="sm"
+                    onClick={() => handleEdit(index)}
+                    className="me-2"
+                  >
                     Sửa
                   </CButton>
                   <CButton
@@ -108,6 +117,7 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
         onClose={() => setServiceModalVisible(false)}
         onSave={handleSave}
         tourServices={tourServices}
+        rowDataDetailTable={localBookingDetails}
         initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
       />
     </>

@@ -26,7 +26,7 @@ import {
   updateBooking,
   confirmMultipleBookings,
 } from '../../services/Api/bookingService'
-import {createCancellationBooking} from '../../services/Api/cancellationBookingService'
+import { createCancellationBooking } from '../../services/Api/cancellationBookingService'
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
 import { getPromotions } from '../../services/Api/promotionService'
@@ -160,7 +160,9 @@ const Booking = () => {
       }
 
       if (filters.tourId) {
-        data = data.filter(inv => inv.tourId._id.toLowerCase().includes(filters.tourId.toLowerCase()));
+        data = data.filter((inv) =>
+          inv.tourId._id.toLowerCase().includes(filters.tourId.toLowerCase()),
+        )
       }
 
       if (filters.promotionId) {
@@ -207,12 +209,12 @@ const Booking = () => {
   const handleSaveCancellation = async (cancellationData) => {
     try {
       await createCancellationBooking(cancellationData)
-      addToast(exampleToast("Đã lưu yêu cầu hủy!"))
+      addToast(exampleToast('Đã lưu yêu cầu hủy!'))
       setShowCancelForm(false)
-      fetchBookings()  // reload list nếu cần
+      fetchBookings() // reload list nếu cần
     } catch (err) {
       console.error(err)
-      const msg = err?.response?.data?.message || "Lỗi khi lưu yêu cầu hủy"
+      const msg = err?.response?.data?.message || 'Lỗi khi lưu yêu cầu hủy'
       addToast(exampleToast(msg))
     }
   }
@@ -226,14 +228,15 @@ const Booking = () => {
       try {
         const res = await getBookingDetail(booking._id)
         const ServiceRes = await getServicesByTourId(booking.tourId._id)
-        setBookingDetails(res.data)
+        const filterdData = res.data?.filter((item) => item.itemType == 'Service')
+        setBookingDetails(filterdData)
         setTourServices(ServiceRes.data.services)
       } catch (error) {
         console.error('Lỗi khi lấy chi tiết dịch vụ:', error)
         addToast(exampleToast('Không thể lấy chi tiết dịch vụ'))
       }
     } else {
-      setBookingDetails([])
+      setBookingDetails(filterdData)
       setTourServices([])
     }
   }
@@ -303,7 +306,12 @@ const Booking = () => {
     <>
       <CRow>
         <CCol xs>
-          <BookingFilter filters={filters} onFilterChange={handleFilterChange} promotions={promotions} tours={tours}/>
+          <BookingFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            promotions={promotions}
+            tours={tours}
+          />
           <CCard className="mb-4">
             <CCardHeader>
               <CRow>
