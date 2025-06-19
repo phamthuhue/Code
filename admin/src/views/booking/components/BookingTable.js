@@ -24,6 +24,7 @@ const BookingTable = ({
   handleSelectBooking,
   handleSelectAll,
   handleConfirmSelected,
+  handleCancelClick,
 }) => {
   const isAllSelected =
     currentBookings.length > 0 &&
@@ -94,12 +95,20 @@ const BookingTable = ({
                 </CTableDataCell>
                 <CTableDataCell className="text-center">{booking.status}</CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <div className="d-flex align-items-center justify-content-center">
+                  <div className="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                    <CButton
+                      color="secondary"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleCancelClick(booking)}
+                      disabled={booking.status === 'Đã hủy' || booking.status === 'Xác nhận' || booking.status === 'Chờ hủy'}
+                    >
+                      Hủy đặt
+                    </CButton>
                     <CButton
                       color="warning"
                       size="sm"
                       variant="outline"
-                      className="me-2"
                       onClick={() => handleEdit(booking)}
                       disabled={booking.status === 'Xác nhận' || booking.status === 'Đã hủy'}
                     >

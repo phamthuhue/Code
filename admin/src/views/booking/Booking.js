@@ -15,6 +15,7 @@ import { cilPlus } from '@coreui/icons'
 import { useEffect, useRef, useState } from 'react'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
 import BookingFormModal from './components/BookingForm'
+import CancellationBookingForm from './components/CancellationBookingForm'
 import { getTours } from '../../services/Api/tourService'
 import { getUsersByUserRole } from '../../services/Api/accountService'
 import { getBookingDetail } from '../../services/Api/bookingDetailService'
@@ -25,6 +26,7 @@ import {
   updateBooking,
   confirmMultipleBookings,
 } from '../../services/Api/bookingService'
+import {createCancellationBooking} from '../../services/Api/cancellationBookingService'
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
 import { getPromotions } from '../../services/Api/promotionService'
@@ -193,6 +195,29 @@ const Booking = () => {
     fetchUsers()
   }, [])
 
+  // Nút hủy đặt hiện cancellationbookingForm
+  const [showCancelForm, setShowCancelForm] = useState(false)
+  const [bookingToCancel, setBookingToCancel] = useState(null)
+
+  const handleCancelClick = (booking) => {
+    setBookingToCancel(booking)
+    setShowCancelForm(true)
+  }
+
+  const handleSaveCancellation = async (cancellationData) => {
+    try {
+      await createCancellationBooking(cancellationData)
+      addToast(exampleToast("Đã lưu yêu cầu hủy!"))
+      setShowCancelForm(false)
+      fetchBookings()  // reload list nếu cần
+    } catch (err) {
+      console.error(err)
+      const msg = err?.response?.data?.message || "Lỗi khi lưu yêu cầu hủy"
+      addToast(exampleToast(msg))
+    }
+  }
+
+  // Mở bookingForm
   const openForm = async (booking = null) => {
     setEditingBooking(booking)
     setFormModalVisible(true)
@@ -310,7 +335,15 @@ const Booking = () => {
                 handleSelectBooking={handleSelectBooking}
                 handleSelectAll={handleSelectAll}
                 handleConfirmSelected={handleConfirmSelected}
+                handleCancelClick={handleCancelClick}
               />
+              {showCancelForm && (
+                <CancellationBookingForm
+                  booking={bookingToCancel}
+                  onSave={handleSaveCancellation}
+                  onClose={() => setShowCancelForm(false)}
+                />
+              )}
             </CCardBody>
           </CCard>
           <BookingFormModal

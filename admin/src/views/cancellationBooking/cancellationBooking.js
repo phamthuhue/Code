@@ -214,14 +214,6 @@ const CancellationBooking = () => {
               <CCol sm={5}>
                 <h4 className="card-title mb-0">Danh sách phiếu yêu cầu hủy</h4>
               </CCol>
-              <CCol sm={7} className="d-none d-md-block">
-                <CButton color="primary" className="float-end" onClick={() => openForm()}>
-                  <div className="small d-flex align-items-center">
-                    <CIcon icon={cilPlus} />
-                    <span className="ms-1">Thêm mới</span>
-                  </div>
-                </CButton>
-              </CCol>
             </CRow>
           </CCardHeader>
           <CCardBody>

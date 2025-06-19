@@ -99,7 +99,7 @@ export const getBooking = async (req, res) => {
 // Get all bookings
 export const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("tourId", "title");
+    const bookings = await Booking.find().populate("tourId", "title").populate("userId", "username email");
     res.status(200).json({
       success: true,
       message: "Lấy danh sách đặt tour thành công.",
