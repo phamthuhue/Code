@@ -32,16 +32,12 @@ export const createReview = async (req, res) => {
     });
 
     await newReview.save();
+    await new Promise(resolve => setTimeout(resolve, 100)); // Delay 100ms
     try {
       await updateTourAvgRating(tourId);
-    } catch (err) {
-      console.error("Lỗi updateTourAvgRating:", err.message || err);
-    }
-
-    try {
       await updateGuideAvgRating(guideId);
     } catch (err) {
-      console.error("Lỗi updateGuideAvgRating:", err.message || err);
+      console.error("Lỗi updateAvgRating:", err.message || err);
     }
 
     res.status(201).json({ success: true, message: 'Review created successfully.', data: newReview });
