@@ -18,20 +18,6 @@ const ServiceSelectModal = ({
   initialData,
   rowDataDetailTable,
 }) => {
-  const filterTourServices = (tourServices, rowDataDetailTable) => {
-    return tourServices
-      .filter(
-        (s) =>
-          s.serviceId &&
-          s.serviceId._id &&
-          !rowDataDetailTable.some((row) => row.tourServiceId === s.serviceId._id),
-      )
-      .map((s) => (
-        <option key={s._id} value={s.serviceId._id}>
-          {s.serviceId.name} ({s.servicePrice.toLocaleString()} VND)
-        </option>
-      ))
-  }
   const [errors, setErrors] = useState({})
 
   const [selectedServiceId, setSelectedServiceId] = useState(null)
@@ -88,17 +74,11 @@ const ServiceSelectModal = ({
                 onChange={(e) => setSelectedServiceId(e.target.value)}
               >
                 <option value="">-- Chọn dịch vụ --</option>
-                {tourServices
-                  .filter((s) => {
-                    const idForCompare = rowDataDetailTable?.map((el) => el.tourServiceId)
-
-                    return !idForCompare.includes(s.serviceId._id)
-                  })
-                  .map((s) => (
-                    <option key={s._id} value={s.serviceId._id}>
-                      {s.serviceId.name} ({s.servicePrice.toLocaleString()} VND)
-                    </option>
-                  ))}
+                {tourServices?.services?.map((s) => (
+                  <option key={s._id} value={s._id}>
+                    {s.note} ({s.servicePrice.toLocaleString()} VND)
+                  </option>
+                ))}
               </CFormSelect>
             </>
           )}

@@ -37,7 +37,7 @@ const modelMap = {
   TourService,
   User,
   // Booking,
-  BookingCancellation,
+  // BookingCancellation,
   // BookingDetail,
   GroupTourRequest,
 };

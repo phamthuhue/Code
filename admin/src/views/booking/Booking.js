@@ -30,7 +30,7 @@ import { createCancellationBooking } from '../../services/Api/cancellationBookin
 import BookingTable from './components/BookingTable'
 import BookingFilter from './components/BookingFilter'
 import { getPromotions } from '../../services/Api/promotionService'
-import { getServicesByTourId } from '../../services/Api/serviceOfTour'
+import { getServicesByTourId, getTourServices } from '../../services/Api/serviceOfTour'
 
 const Booking = () => {
   // Thông báo
@@ -195,6 +195,7 @@ const Booking = () => {
     fetchPromotions()
     fetchTours()
     fetchUsers()
+    fetchTourServices()
   }, [])
 
   // Nút hủy đặt hiện cancellationbookingForm
@@ -236,8 +237,16 @@ const Booking = () => {
         addToast(exampleToast('Không thể lấy chi tiết dịch vụ'))
       }
     } else {
-      setBookingDetails(filterdData)
-      setTourServices([])
+      setBookingDetails([])
+    }
+  }
+  const fetchTourServices = async (filterValues = {}) => {
+    try {
+      const res = await getTourServices()
+      let data = res.data
+      setTourServices(data)
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách lịch trình:', error)
     }
   }
 

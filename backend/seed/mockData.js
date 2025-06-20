@@ -2,6 +2,8 @@
 // Đây là file mockData.js chứa dữ liệu mẫu cho các model trong ứng dụng
 // Mỗi model sẽ có một đối tượng chứa dữ liệu mẫu tương ứng
 
+import mongoose from "mongoose";
+
 // 2. User
 const User = {
   _id: "6832a0b981f79edcf2bdd14e",
@@ -54,15 +56,6 @@ const Partner = {
   partnerTypeId: "60d21b4667d0d8992e610caa",
 };
 
-// 7. Service
-const Service = {
-  _id: "60d21b4667d0d8992e610cee",
-  name: "Đưa đón sân bay",
-  description: "Dịch vụ đưa đón khách tại sân bay Tân Sơn Nhất.",
-  unitPrice: 500000,
-  unit: "lượt",
-  partnerId: "60d21b4667d0d8992e610cab",
-};
 // 8. Tour
 const Tour = {
   _id: "60d21b4667d0d8992e610cb5",
@@ -105,68 +98,93 @@ const Itinerary = {
   ],
   notes: ["Mang theo giấy tờ tùy thân.", "Mặc trang phục lịch sự."],
 };
-
+// 7. Service
+const Service = [
+  {
+    _id: new mongoose.Types.ObjectId("6832a0b981f79edcf2bdd221"),
+    name: "Đưa đón sân bay",
+    description: "Xe đưa đón 2 chiều sân bay - khách sạn",
+    unitPrice: 500000,
+    unit: "người",
+    partnerId: new mongoose.Types.ObjectId("60d21b4667d0d8992e610cab"), // bạn tự seed partner nếu cần
+  },
+  {
+    _id: new mongoose.Types.ObjectId("6832a0b981f79edcf2bdd222"),
+    name: "Bữa ăn đặc biệt",
+    description: "Suất ăn 5 sao trong hành trình",
+    unitPrice: 300000,
+    unit: "suất",
+    partnerId: new mongoose.Types.ObjectId("60d21b4667d0d8992e610cab"),
+  },
+];
 // 10. TourService
-const TourService = {
-  _id: "60d21b4667d0d8992e610cff",
-  tourId: "60d21b4667d0d8992e610cb5",
-  services: [
-    {
-      serviceId: "60d21b4667d0d8992e610cee",
-      numberOfPeopl: 4,
-      servicePrice: 500000,
-      note: "Đưa đón sân bay",
-    },
-  ],
-};
+const TourService = [
+  {
+    tourId: new mongoose.Types.ObjectId("60d21b4667d0d8992e610cb5"), // trỏ tới Tour
+    services: [
+      {
+        serviceId: new mongoose.Types.ObjectId("6832a0b981f79edcf2bdd221"), // Đưa đón sân bay
+        numberOfPeopl: 20,
+        servicePrice: 500000,
+        note: "Đưa đón sân bay",
+      },
+      {
+        serviceId: new mongoose.Types.ObjectId("6832a0b981f79edcf2bdd222"), // Bữa ăn đặc biệt
+        numberOfPeopl: 20,
+        servicePrice: 300000,
+        note: "Bữa ăn đặc biệt",
+      },
+    ],
+  },
+];
 // 11. Booking
-const Booking = {
-  _id: "60d21b4667d0d8992e610cb0",
-  userId: "6832a0b981f79edcf2bdd14e",
-  tourId: "60d21b4667d0d8992e610cb5",
-  name: "Nguyễn Văn A",
-  phone: "0909123456",
-  startDate: new Date("2025-03-25"),
-  numberOfPeople: 5,
-  totalPrice: 7000000,
-  status: "Xác nhận",
-};
+// const Booking = {
+//   _id: "60d21b4667d0d8992e610cb0",
+//   userId: "6832a0b981f79edcf2bdd14e",
+//   tourId: "60d21b4667d0d8992e610cb5",
+//   name: "Nguyễn Văn A",
+//   phone: "0909123456",
+//   startDate: new Date("2025-03-25"),
+//   numberOfPeople: 5,
+//   totalPrice: 7000000,
+//   status: "Xác nhận",
+// };
 
-// 12. BookingDetail
-const BookingDetail = {
-  _id: "60d21b4667d0d8992e610cbb",
-  bookingId: "60d21b4667d0d8992e610cb0",
-  tourServiceId: "60d21b4667d0d8992e610cff",
-  itemType: "Service",
-  description: "Dịch vụ đưa đón sân bay",
-  quantity: 2,
-  unitPrice: 500000,
-  totalPrice: 1000000,
-};
+// // 12. BookingDetail
+// const BookingDetail = {
+//   _id: "60d21b4667d0d8992e610cbb",
+//   bookingId: "60d21b4667d0d8992e610cb0",
+//   tourServiceId: "60d21b4667d0d8992e610cff",
+//   itemType: "Service",
+//   description: "Dịch vụ đưa đón sân bay",
+//   quantity: 2,
+//   unitPrice: 500000,
+//   totalPrice: 1000000,
+// };
 // 13. Invoice
-const Invoice = {
-  _id: "60d21b4667d0d8992e610ca1",
-  bookingId: "60d21b4667d0d8992e610cb0",
-  userId: "6832a0b981f79edcf2bdd14e",
-  totalAmount: 7000000,
-  discountAmount: 0,
-  finalAmount: 7000000,
-  paymentStatus: "Đã thanh toán",
-};
+// const Invoice = {
+//   _id: "60d21b4667d0d8992e610ca1",
+//   bookingId: "60d21b4667d0d8992e610cb0",
+//   userId: "6832a0b981f79edcf2bdd14e",
+//   totalAmount: 7000000,
+//   discountAmount: 0,
+//   finalAmount: 7000000,
+//   paymentStatus: "Đã thanh toán",
+// };
 
 // 14. BookingCancellation
-const BookingCancellation = {
-  _id: "60d21b4667d0d8992e610cfa",
-  bookingId: "60d21b4667d0d8992e610cb0",
-  userId: "6832a0b981f79edcf2bdd14e",
-  cancelReason: "Khách bận công việc, không thể tham gia.",
-  invoiceId: "60d21b4667d0d8992e610ca1",
-  status: "Đã hoàn",
-  refundMethod: "Chuyển khoản",
-  refundAccountName: "Nguyễn Văn A",
-  refundAccountNumber: "123456789",
-  refundBankName: "Vietcombank",
-};
+// const BookingCancellation = {
+//   _id: "60d21b4667d0d8992e610cfa",
+//   bookingId: "60d21b4667d0d8992e610cb0",
+//   userId: "6832a0b981f79edcf2bdd14e",
+//   cancelReason: "Khách bận công việc, không thể tham gia.",
+//   invoiceId: "60d21b4667d0d8992e610ca1",
+//   status: "Đã hoàn",
+//   refundMethod: "Chuyển khoản",
+//   refundAccountName: "Nguyễn Văn A",
+//   refundAccountNumber: "123456789",
+//   refundBankName: "Vietcombank",
+// };
 
 // 15. Promotion
 const Promotion = {
@@ -210,7 +228,7 @@ const GroupTourRequest = {
 // Export default object chứa tất cả model mock
 export default {
   Guide,
-  Invoice,
+  // Invoice,
   Itinerary,
   Partner,
   PartnerType,
@@ -221,8 +239,8 @@ export default {
   Tour,
   TourService,
   User,
-  Booking,
-  BookingCancellation,
-  BookingDetail,
+  // Booking,
+  // BookingCancellation,
+  // BookingDetail,
   GroupTourRequest,
 };

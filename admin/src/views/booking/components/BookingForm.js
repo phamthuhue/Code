@@ -10,7 +10,7 @@ import {
   CRow,
   CCol,
 } from '@coreui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import BookingDetailTable from './BookingDetailTable'
 import ServiceSelectModal from './ServiceSelectModal' // bạn cần tạo file này
 
@@ -91,6 +91,9 @@ const BookingFormModal = ({
     onSubmit({ ...formData, bookingDetails })
     onClose()
   }
+  const filteredTourService = useMemo(() => {
+    return tourServices.find((ts) => ts.tourId?._id === formData.tourId)
+  }, [tourServices, formData.tourId])
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="xl">
@@ -215,9 +218,10 @@ const BookingFormModal = ({
         {/* Phần 2: Thông tin chi tiết dịch vụ */}
         <h6 className="fw-bold mt-4 mb-2">Chi tiết dịch vụ</h6>
         <BookingDetailTable
+          formData={formData}
           bookingDetails={bookingDetails}
           onChange={(newDetails) => setBookingDetails(newDetails)}
-          tourServices={tourServices}
+          tourServices={filteredTourService}
         />
       </CModalBody>
 
