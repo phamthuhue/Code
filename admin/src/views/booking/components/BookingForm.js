@@ -40,8 +40,6 @@ const BookingFormModal = ({
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
 
-  console.log('BookingFormModal - tourServices:', tourServices)
-
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -94,7 +92,6 @@ const BookingFormModal = ({
   const filteredTourService = useMemo(() => {
     return tourServices.find((ts) => ts.tourId?._id === formData.tourId)
   }, [tourServices, formData.tourId])
-
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="xl">
       <CModalHeader>{initialData ? 'Chỉnh sửa đặt tour' : 'Thêm mới đặt tour'}</CModalHeader>

@@ -18,6 +18,11 @@ const ServiceSelectModal = ({
   initialData,
   rowDataDetailTable,
 }) => {
+  const [availableServices, setAvailableServices] = useState(tourServices?.services || [])
+  useEffect(() => {
+    setAvailableServices(tourServices?.services || [])
+  }, [tourServices])
+
   const [errors, setErrors] = useState({})
 
   const [selectedServiceId, setSelectedServiceId] = useState(null)
@@ -43,20 +48,21 @@ const ServiceSelectModal = ({
     if (!initialData) {
       if (!validate()) return
     }
-    const selected = tourServices.find((s) => s.serviceId._id === selectedServiceId)
+    const selected = tourServices?.services?.find((s) => s._id === selectedServiceId)
     if (!selected) return
 
     const service = {
-      serviceId: selected.serviceId._id,
+      serviceId: selected._id,
       itemType: 'Service',
-      description: selected.serviceId.description,
+      description: selected.note,
       unitPrice: selected.servicePrice,
-      tourServiceId: selected.serviceId._id,
+      tourServiceId: selected._id,
       quantity: quantity,
       totalPrice: selected.servicePrice * quantity,
     }
 
     onSave(service)
+    setAvailableServices((prev) => prev.filter((s) => s._id !== selected._id))
   }
 
   return (
@@ -74,7 +80,7 @@ const ServiceSelectModal = ({
                 onChange={(e) => setSelectedServiceId(e.target.value)}
               >
                 <option value="">-- Chọn dịch vụ --</option>
-                {tourServices?.services?.map((s) => (
+                {availableServices?.map((s) => (
                   <option key={s._id} value={s._id}>
                     {s.note} ({s.servicePrice.toLocaleString()} VND)
                   </option>

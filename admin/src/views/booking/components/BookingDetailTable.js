@@ -10,11 +10,19 @@ import {
 } from '@coreui/react'
 import ServiceSelectModal from './ServiceSelectModal'
 
-const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServices = [] }) => {
+const BookingDetailTable = ({
+  formData,
+  bookingDetails = [],
+  onChange = () => {},
+  tourServices = [],
+}) => {
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
   const [localBookingDetails, setLocalBookingDetails] = useState(bookingDetails || [])
 
+  useEffect(() => {
+    setLocalBookingDetails([])
+  }, [formData.tourId])
   useEffect(() => {
     setLocalBookingDetails(bookingDetails)
   }, [bookingDetails])
@@ -71,14 +79,14 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {bookingDetails.length === 0 ? (
+          {localBookingDetails.length === 0 ? (
             <CTableRow>
               <CTableDataCell colSpan="6" className="text-center text-muted py-4">
                 Không có chi tiết đặt tour để hiển thị.
               </CTableDataCell>
             </CTableRow>
           ) : (
-            bookingDetails.map((detail, index) => (
+            localBookingDetails.map((detail, index) => (
               <CTableRow key={index}>
                 <CTableDataCell className="text-center">{detail.itemType}</CTableDataCell>
                 <CTableDataCell className="text-center">{detail.description}</CTableDataCell>
