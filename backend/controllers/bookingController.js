@@ -47,6 +47,32 @@ export const updateBooking = async (req, res) => {
   }
 };
 
+export const updateBookingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ success: false, message: "Booking không tồn tại" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật trạng thái booking thành công",
+      data: updatedBooking,
+    });
+  } catch (err) {
+    console.error("Lỗi cập nhật trạng thái:", err);
+    res.status(500).json({ success: false, message: "Lỗi server", error: err.message });
+  }
+};
+
 // Controller: deleteBooking
 export const deleteBooking = async (req, res) => {
   try {

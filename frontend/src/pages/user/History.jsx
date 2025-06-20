@@ -40,6 +40,7 @@ export const History = () => {
   const handleReload = () => {
     console.log("Reload danh sách...");
     reloadBookings();
+    setReloadReviews((prev) => !prev);
   };
 
   const [reviewsbyUser, setReviewsByUser] = useState([]);
@@ -184,7 +185,7 @@ export const History = () => {
                   ): booking.status === "Mới tạo" ? (
                     <div className="flex flex-col gap-2">
                         <span className="text-sm text-red-500">
-                          ⚠️ Bạn cần thanh toán ngay để chỗ.
+                          ⚠️ Bạn cần thanh toán để giữ chỗ.
                         </span>
                         <button
                           onClick={() => handlePayment(booking._id)}
