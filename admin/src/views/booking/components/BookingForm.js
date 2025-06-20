@@ -26,40 +26,43 @@ const BookingFormModal = ({
   promotions,
   users,
 }) => {
-  console.log('bookingDetails: ', bookingDetails)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    tourId: '',
+    tourId: null,
     userId: '',
     totalPrice: 0,
+    numberOfPeople: null,
     status: 'Mới tạo',
-    promotionId: '',
+    promotionId: null,
   })
 
   const [errors, setErrors] = useState({})
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
 
+  const [maxGroupSize, setMaxGroupSize] = useState(0) // Lưu giá trị max
   useEffect(() => {
     if (initialData) {
       setFormData({
         name: initialData.name || '',
         phone: initialData.phone || '',
-        tourId: initialData.tourId || '',
-        userId: initialData.userId || '',
+        tourId: initialData.tourId._id || null,
+        userId: initialData.userId._id || '',
         totalPrice: initialData.totalPrice || 0,
+        numberOfPeople: initialData.numberOfPeople || null,
         status: initialData.status || 'Mới tạo',
-        promotionId: initialData.promotionId || '',
+        promotionId: initialData.promotionId._id || null,
       })
       setBookingDetails(bookingDetails || [])
     } else {
       setFormData({
         name: '',
         phone: '',
-        tourId: '',
+        tourId: null,
         userId: '',
         totalPrice: 0,
+        numberOfPeople: null,
         status: 'Mới tạo',
       })
       setBookingDetails([])
@@ -82,7 +85,17 @@ const BookingFormModal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    // Kiểm tra nếu giá trị số lượng vượt quá maxGroupSize
+    if (name === 'numberOfPeople') {
+      const newValue = Math.min(Number(value), maxGroupSize) // Giới hạn số lượng không vượt quá maxGroupSize
+      setFormData((prev) => ({ ...prev, [name]: newValue }))
+    } else if (name === 'tourId') {
+      const tour = tours.find((el) => el._id == value)
+      setMaxGroupSize(tour.maxGroupSize || 0)
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
   }
 
   const handleSubmit = () => {
@@ -92,13 +105,13 @@ const BookingFormModal = ({
   }
 
   useEffect(() => {
-    const tour = tours.find((t) => t._id === formData.tourId)
-    const numberOfPeople = Number(formData.numberOfPeople || 0)
+    const tour = tours.find((t) => t._id == formData.tourId)
 
+    const numberOfPeople = Number(formData.numberOfPeople || 0)
     const tourPrice = tour ? tour.price * numberOfPeople : 0
 
     const serviceTotal = bookingDetails.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0)
-    console.log('promotions: ', promotions)
+
     const promotion = promotions.find((p) => p._id === formData.promotionId)
     const discount = promotion?.discountValue || 0
     const total = (tourPrice + serviceTotal) * (1 - discount / 100)
@@ -107,6 +120,7 @@ const BookingFormModal = ({
       totalPrice: Math.round(total), // làm tròn nếu muốn
     }))
   }, [
+    initialData,
     formData.tourId,
     formData.numberOfPeople,
     bookingDetails,
@@ -117,6 +131,7 @@ const BookingFormModal = ({
   const filteredTourService = useMemo(() => {
     return tourServices.find((ts) => ts.tourId?._id === formData.tourId)
   }, [tourServices, formData.tourId])
+
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="xl">
       <CModalHeader>{initialData ? 'Chỉnh sửa đặt tour' : 'Thêm mới đặt tour'}</CModalHeader>
@@ -194,6 +209,9 @@ const BookingFormModal = ({
               <CFormInput
                 id="numberOfPeople"
                 name="numberOfPeople"
+                type="number"
+                disabled={!formData.tourId}
+                max={maxGroupSize} // Sử dụng maxGroupSize từ state
                 value={formData.numberOfPeople}
                 onChange={handleChange}
               />

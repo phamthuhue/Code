@@ -223,7 +223,6 @@ const Booking = () => {
   // Mở bookingForm
   const openForm = async (booking = null) => {
     setEditingBooking(booking)
-    setFormModalVisible(true)
 
     if (booking) {
       try {
@@ -239,6 +238,7 @@ const Booking = () => {
     } else {
       setBookingDetails([])
     }
+    setFormModalVisible(true)
   }
   const fetchTourServices = async (filterValues = {}) => {
     try {
@@ -264,9 +264,11 @@ const Booking = () => {
         const updatedBooking = await updateBooking(editingBooking._id, formData)
         setBookings(bookings.map((b) => (b._id === editingBooking._id ? updatedBooking.data : b)))
         addToast(exampleToast('Cập nhật booking thành công'))
+        window.location.reload()
       } else {
         const newBooking = await createBooking(formData)
         setBookings([...bookings, newBooking.data])
+        window.location.reload()
         addToast(exampleToast('Thêm mới booking thành công'))
       }
       closeForm()
@@ -290,6 +292,7 @@ const Booking = () => {
       await deleteBooking(bookingToDelete._id)
       setBookings(bookings.filter((b) => b._id !== bookingToDelete._id))
       addToast(exampleToast('Xóa booking thành công'))
+      window.location.reload()
     } catch (error) {
       console.error('Lỗi khi xóa booking:', error)
       addToast(exampleToast('Xóa booking thất bại'))
@@ -302,6 +305,7 @@ const Booking = () => {
   // Phân trang
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
+
   const totalPages = Math.ceil(bookings?.length / itemsPerPage)
   const currentBookings = bookings?.slice(
     (currentPage - 1) * itemsPerPage,

@@ -2,6 +2,7 @@ import Booking from "../models/Booking.js";
 import BookingDetail from "../models/BookingDetail.js";
 import Promotion from "../models/Promotion.js";
 import Tour from "../models/Tour.js";
+import TourService from "../models/TourService.js";
 
 // Create a new booking
 export const createBooking = async (req, res) => {
@@ -61,6 +62,37 @@ export const createBooking = async (req, res) => {
       bookingDetailTour,
       ...bookingDetailServices,
     ]);
+    // Trừ số lượng trong Tour
+
+    if (tour) {
+      tour.maxGroupSize -= newBooking.numberOfPeople;
+      await tour.save();
+    }
+
+    // Trừ số lượng dịch vụ trong TourService
+    const tourService = await TourService.findOne({
+      tourId: newBooking.tourId,
+    });
+
+    if (tourService) {
+      const bookingDetailsInDB = await BookingDetail.find({
+        bookingId: newBooking._id,
+      });
+
+      for (const detail of bookingDetailsInDB) {
+        if (detail.itemType === "Service") {
+          const service = tourService.services.find(
+            (s) => s._id.toString() === detail.tourServiceId.toString()
+          );
+          console.log("service: ", service);
+          if (service) {
+            service.numberOfPeopl -= detail.quantity;
+          }
+        }
+      }
+
+      await tourService.save();
+    }
 
     return res.status(201).json({
       success: true,
@@ -109,24 +141,37 @@ export const updateBooking = async (req, res) => {
 // Controller: deleteBooking
 export const deleteBooking = async (req, res) => {
   try {
-    const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
+    const { id } = req.params; // Lấy bookingId từ URL params
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID không hợp lệ.",
+      });
+    }
+
+    // 1. Xóa BookingDetail liên quan
+    await BookingDetail.deleteMany({ bookingId: id });
+
+    // 2. Xóa Booking chính
+    const deletedBooking = await Booking.findByIdAndDelete(id);
 
     if (!deletedBooking) {
       return res.status(404).json({
         success: false,
-        message: "Không tìm thấy booking để xóa.",
+        message: "Booking không tồn tại!",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Xóa booking thành công.",
-      data: deletedBooking,
+      message: "Booking và các dịch vụ liên quan đã được xóa thành công.",
     });
-  } catch (err) {
-    res.status(500).json({
+  } catch (error) {
+    console.error("Lỗi khi xóa booking:", error);
+    return res.status(500).json({
       success: false,
-      message: "Lỗi hệ thống khi xóa booking.",
+      message: "Lỗi server khi xóa booking.",
+      error: error.message,
     });
   }
 };
@@ -160,7 +205,8 @@ export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate("tourId", "title")
-      .populate("userId", "username email");
+      .populate("userId", "username email")
+      .populate("promotionId");
     res.status(200).json({
       success: true,
       message: "Lấy danh sách đặt tour thành công.",

@@ -64,7 +64,7 @@ async function seed() {
       const data = mockData[key];
       if (data && key === "User") {
         // Nếu là user, thì chuyển role từ name → roleId
-        data.role = roleMap.staff;
+        data.role = roleMap.user;
       }
       if (data) {
         await Model.deleteMany({});

@@ -19,7 +19,7 @@ const BookingDetailTable = ({
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
   const [localBookingDetails, setLocalBookingDetails] = useState(bookingDetails || [])
-
+  const [deletedServices, setDeletedServices] = useState([]) // Track deleted services
   useEffect(() => {
     setLocalBookingDetails([])
   }, [formData.tourId])
@@ -41,6 +41,11 @@ const BookingDetailTable = ({
     const updated = [...localBookingDetails]
     updated.splice(index, 1)
     setLocalBookingDetails(updated)
+    const objetBookingDetail = localBookingDetails[index]
+    const deletedService = tourServices?.services.find(
+      (el) => el._id == objetBookingDetail.tourServiceId,
+    ) // Get the deleted service
+    setDeletedServices((prevDeletedServices) => [...prevDeletedServices, deletedService])
     onChange(updated)
   }
 
@@ -127,6 +132,7 @@ const BookingDetailTable = ({
         tourServices={tourServices}
         rowDataDetailTable={localBookingDetails}
         initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
+        deletedServices={deletedServices}
       />
     </>
   )
