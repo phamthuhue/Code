@@ -1,11 +1,7 @@
 // mockData.js
 // Đây là file mockData.js chứa dữ liệu mẫu cho các model trong ứng dụng
 // Mỗi model sẽ có một đối tượng chứa dữ liệu mẫu tương ứng
-// 1. Role
-const Role = {
-  _id: "6832a0b981f79edcf2bdd149",
-  name: "staff",
-};
+
 // 2. User
 const User = {
   _id: "6832a0b981f79edcf2bdd14e",
@@ -220,7 +216,6 @@ export default {
   PartnerType,
   Promotion,
   Review,
-  Role,
   Service,
   Staff,
   Tour,

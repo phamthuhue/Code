@@ -76,7 +76,7 @@ const BookingFormModal = ({
     if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Số lượng khách không được để trống'
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
     if (!formData.userId) newErrors.userId = 'Tài khoản khách hàng không được để trống'
-    if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống'
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
