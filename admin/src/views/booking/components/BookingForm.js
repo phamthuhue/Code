@@ -26,12 +26,13 @@ const BookingFormModal = ({
   promotions,
   users,
 }) => {
+  console.log('bookingDetails: ', bookingDetails)
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     tourId: '',
     userId: '',
-    totalPrice: '',
+    totalPrice: 0,
     status: 'Mới tạo',
     promotionId: '',
   })
@@ -47,7 +48,7 @@ const BookingFormModal = ({
         phone: initialData.phone || '',
         tourId: initialData.tourId || '',
         userId: initialData.userId || '',
-        totalPrice: initialData.totalPrice || '',
+        totalPrice: initialData.totalPrice || 0,
         status: initialData.status || 'Mới tạo',
         promotionId: initialData.promotionId || '',
       })
@@ -58,7 +59,7 @@ const BookingFormModal = ({
         phone: '',
         tourId: '',
         userId: '',
-        totalPrice: '',
+        totalPrice: 0,
         status: 'Mới tạo',
       })
       setBookingDetails([])
@@ -89,6 +90,30 @@ const BookingFormModal = ({
     onSubmit({ ...formData, bookingDetails })
     onClose()
   }
+
+  useEffect(() => {
+    const tour = tours.find((t) => t._id === formData.tourId)
+    const numberOfPeople = Number(formData.numberOfPeople || 0)
+
+    const tourPrice = tour ? tour.price * numberOfPeople : 0
+
+    const serviceTotal = bookingDetails.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0)
+    console.log('promotions: ', promotions)
+    const promotion = promotions.find((p) => p._id === formData.promotionId)
+    const discount = promotion?.discountValue || 0
+    const total = (tourPrice + serviceTotal) * (1 - discount / 100)
+    setFormData((prev) => ({
+      ...prev,
+      totalPrice: Math.round(total), // làm tròn nếu muốn
+    }))
+  }, [
+    formData.tourId,
+    formData.numberOfPeople,
+    bookingDetails,
+    tours,
+    formData.promotionId,
+    promotions,
+  ])
   const filteredTourService = useMemo(() => {
     return tourServices.find((ts) => ts.tourId?._id === formData.tourId)
   }, [tourServices, formData.tourId])
@@ -204,6 +229,7 @@ const BookingFormModal = ({
                 id="totalPrice"
                 type="number"
                 name="totalPrice"
+                min={0}
                 value={formData.totalPrice}
                 onChange={handleChange}
                 disabled
@@ -217,7 +243,7 @@ const BookingFormModal = ({
         <BookingDetailTable
           formData={formData}
           bookingDetails={bookingDetails}
-          onChange={(newDetails) => setBookingDetails(newDetails)}
+          onChange={(newDetails) => setBookingDetails((prev) => [...newDetails])}
           tourServices={filteredTourService}
         />
       </CModalBody>

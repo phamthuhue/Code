@@ -1,19 +1,78 @@
 import Booking from "../models/Booking.js";
+import BookingDetail from "../models/BookingDetail.js";
+import Promotion from "../models/Promotion.js";
+import Tour from "../models/Tour.js";
 
 // Create a new booking
 export const createBooking = async (req, res) => {
-  const newBooking = new Booking(req.body);
   try {
-    const savedBooking = await newBooking.save();
-    res.status(200).json({
-      success: true,
-      message: "Đặt tour thành công.",
-      data: savedBooking,
+    const {
+      name,
+      phone,
+      tourId,
+      userId,
+      numberOfPeople,
+      totalPrice,
+      status,
+      promotionId,
+      bookingDetails,
+    } = req.body;
+    if (promotionId) {
+      const promotion = await Promotion.findById(promotionId);
+      if (!promotion) throw new Error("Promotion không tồn tại");
+    }
+    const tour = await Tour.findById(tourId); // lấy giá tour chính
+    // 1. Tạo booking chính
+    const newBooking = await Booking.create({
+      name,
+      phone,
+      tourId,
+      userId,
+      numberOfPeople,
+      totalPrice,
+      status,
+      promotionId,
+      startDate: tour.startDate,
     });
-  } catch (err) {
-    res.status(500).json({
+
+    // 2. Tạo dòng BookingDetail cho chính Tour đã đặt
+    const bookingDetailTour = {
+      bookingId: newBooking._id,
+      itemType: "Tour",
+      description: tour.title,
+      quantity: Number(numberOfPeople),
+      unitPrice: tour.price,
+      totalPrice: tour.price * Number(numberOfPeople),
+    };
+
+    // 3. Mapping các dịch vụ kèm theo (nếu có)
+    const bookingDetailServices = (bookingDetails || []).map((item) => ({
+      bookingId: newBooking._id,
+      tourServiceId: item.tourServiceId || null,
+      itemType: "Service",
+      description: item.description,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      totalPrice: item.totalPrice,
+    }));
+
+    // 4. Gộp lại và lưu BookingDetail
+    await BookingDetail.insertMany([
+      bookingDetailTour,
+      ...bookingDetailServices,
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "Đặt tour thành công!",
+      bookingId: newBooking._id,
+    });
+  } catch (error) {
+    console.error("Lỗi khi tạo booking:", error);
+    return res.status(500).json({
       success: false,
-      message: "Lỗi hệ thống khi đặt tour.",
+      message: "Lỗi server khi tạo booking",
+      error: error.message,
     });
   }
 };
@@ -99,7 +158,9 @@ export const getBooking = async (req, res) => {
 // Get all bookings
 export const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("tourId", "title").populate("userId", "username email");
+    const bookings = await Booking.find()
+      .populate("tourId", "title")
+      .populate("userId", "username email");
     res.status(200).json({
       success: true,
       message: "Lấy danh sách đặt tour thành công.",
