@@ -1,4 +1,5 @@
 import Partner from '../models/Partner.js'
+import Service from "../models/Service.js";
 
 // Lấy danh sách tất cả đối tác
 export const getPartners = async (req, res) => {
@@ -88,24 +89,31 @@ export const updatePartner = async (req, res) => {
 
 // Xoá đối tác
 export const deletePartner = async (req, res) => {
+    const partnerId = req.params.id;
+
     try {
-        const deleted = await Partner.findByIdAndDelete(req.params.id);
-        if (!deleted) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "Không tìm thấy đối tác để xoá",
-                });
+        // 1. Xoá tất cả dịch vụ của partner này
+        await Service.deleteMany({ partnerId: partnerId });
+
+        // 2. Xoá chính partner
+        const deletedPartner = await Partner.findByIdAndDelete(partnerId);
+
+        if (!deletedPartner) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy đối tác để xoá",
+            });
         }
+
         res.status(200).json({
             success: true,
-            message: "Xoá đối tác thành công",
+            message: "Xoá đối tác và tất cả dịch vụ liên quan thành công",
         });
     } catch (error) {
+        console.error("Lỗi khi xoá đối tác:", error);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi xoá đối tác",
+            message: "Lỗi khi xoá đối tác và dịch vụ liên quan",
             error,
         });
     }

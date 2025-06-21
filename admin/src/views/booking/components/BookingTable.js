@@ -63,9 +63,6 @@ const BookingTable = ({
             <CTableHeaderCell className="bg-body-tertiary text-center">Ngày đặt</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Khuyến mãi</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Giảm giá (VND)
-            </CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">
               Tổng giá (VND)
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Trạng thái</CTableHeaderCell>
@@ -100,9 +97,6 @@ const BookingTable = ({
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   {booking.promotionId?.name || 'Không áp dụng'}
-                </CTableDataCell>
-                <CTableDataCell className="text-center">
-                  {booking.discountAmount?.toLocaleString()} VND
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   {booking.totalPrice?.toLocaleString()} VND
