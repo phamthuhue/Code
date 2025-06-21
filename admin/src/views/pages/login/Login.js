@@ -108,7 +108,7 @@ const Login = () => {
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Tên đăng nhập"
+                        placeholder="Email đăng nhập"
                         autoComplete="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)} // Cập nhật giá trị username
