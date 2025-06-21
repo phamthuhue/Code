@@ -205,6 +205,18 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const getUserByEmail = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email })
+    if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng.' })
+
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi máy chủ', error: error.message })
+  }
+}
+
+
 export const getUsersByUserRole = async (req, res) => {
   try {
     // Tìm tất cả user và populate thông tin role

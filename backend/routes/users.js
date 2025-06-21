@@ -5,14 +5,15 @@ import {
   getAllUsers,
   getSingleUser,
   updateUser,
-  getUsersByUserRole
+  getUsersByUserRole,
+  getUserByEmail
 } from "../controllers/userController.js";
 const router = express.Router();
-import { verifyUser, verifyAdmin } from "../utils/verifyToken.js";
 
 //create new user
 router.post("/", createUser);
 router.get("/", getAllUsers);
+router.get('/email/:email', getUserByEmail)
 router.get("/role/user", getUsersByUserRole);
 //update user
 router.put("/:id", updateUser);

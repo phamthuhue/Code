@@ -14,8 +14,6 @@ import {
 } from '@coreui/react'
 import { changePassword } from '../../../services/Api/authService' // Import API login
 
-const backendUrl = import.meta.env.VITE_END_POINT_BACKEND_URL
-
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
     currentPassword: '',
