@@ -10,10 +10,22 @@ import {
 } from '@coreui/react'
 import ServiceSelectModal from './ServiceSelectModal'
 
-const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServices = [] }) => {
+const BookingDetailTable = ({
+  formData,
+  bookingDetails = [],
+  onChange = () => {},
+  tourServices = [],
+}) => {
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
   const [localBookingDetails, setLocalBookingDetails] = useState(bookingDetails || [])
+  const [deletedServices, setDeletedServices] = useState([]) // Track deleted services
+  useEffect(() => {
+    setLocalBookingDetails([])
+  }, [formData.tourId])
+  useEffect(() => {
+    setLocalBookingDetails(bookingDetails)
+  }, [bookingDetails])
 
   const handleAdd = () => {
     setEditingIndex(null)
@@ -29,11 +41,16 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
     const updated = [...localBookingDetails]
     updated.splice(index, 1)
     setLocalBookingDetails(updated)
+    const objetBookingDetail = localBookingDetails[index]
+    const deletedService = tourServices?.services.find(
+      (el) => el._id == objetBookingDetail.tourServiceId,
+    ) // Get the deleted service
+    setDeletedServices((prevDeletedServices) => [...prevDeletedServices, deletedService])
     onChange(updated)
   }
 
   const handleSave = (service) => {
-    const updated = [...localBookingDetails]
+    const updated = localBookingDetails
     if (editingIndex !== null) {
       updated[editingIndex] = service
     } else {
@@ -67,14 +84,14 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {bookingDetails.length === 0 ? (
+          {localBookingDetails.length === 0 ? (
             <CTableRow>
               <CTableDataCell colSpan="6" className="text-center text-muted py-4">
                 Không có chi tiết đặt tour để hiển thị.
               </CTableDataCell>
             </CTableRow>
           ) : (
-            bookingDetails.map((detail, index) => (
+            localBookingDetails.map((detail, index) => (
               <CTableRow key={index}>
                 <CTableDataCell className="text-center">{detail.itemType}</CTableDataCell>
                 <CTableDataCell className="text-center">{detail.description}</CTableDataCell>
@@ -86,7 +103,12 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
                   {detail.totalPrice?.toLocaleString()}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton color="warning" size="sm" onClick={() => handleEdit(index)} className="me-2">
+                  <CButton
+                    color="warning"
+                    size="sm"
+                    onClick={() => handleEdit(index)}
+                    className="me-2"
+                  >
                     Sửa
                   </CButton>
                   <CButton
@@ -108,7 +130,9 @@ const BookingDetailTable = ({ bookingDetails = [], onChange = () => {}, tourServ
         onClose={() => setServiceModalVisible(false)}
         onSave={handleSave}
         tourServices={tourServices}
+        rowDataDetailTable={localBookingDetails}
         initialData={editingIndex !== null ? bookingDetails[editingIndex] : null}
+        deletedServices={deletedServices}
       />
     </>
   )

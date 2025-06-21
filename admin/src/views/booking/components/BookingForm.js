@@ -10,7 +10,7 @@ import {
   CRow,
   CCol,
 } from '@coreui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import BookingDetailTable from './BookingDetailTable'
 import ServiceSelectModal from './ServiceSelectModal' // bạn cần tạo file này
 
@@ -29,38 +29,40 @@ const BookingFormModal = ({
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    tourId: '',
+    tourId: null,
     userId: '',
-    totalPrice: '',
+    totalPrice: 0,
+    numberOfPeople: null,
     status: 'Mới tạo',
-    promotionId: '',
+    promotionId: null,
   })
 
   const [errors, setErrors] = useState({})
   const [serviceModalVisible, setServiceModalVisible] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
 
-  console.log('BookingFormModal - tourServices:', tourServices)
-
+  const [maxGroupSize, setMaxGroupSize] = useState(0) // Lưu giá trị max
   useEffect(() => {
     if (initialData) {
       setFormData({
         name: initialData.name || '',
         phone: initialData.phone || '',
-        tourId: initialData.tourId || '',
-        userId: initialData.userId || '',
-        totalPrice: initialData.totalPrice || '',
+        tourId: initialData.tourId._id || null,
+        userId: initialData.userId._id || '',
+        totalPrice: initialData.totalPrice || 0,
+        numberOfPeople: initialData.numberOfPeople || null,
         status: initialData.status || 'Mới tạo',
-        promotionId: initialData.promotionId || '',
+        promotionId: initialData.promotionId._id || null,
       })
       setBookingDetails(bookingDetails || [])
     } else {
       setFormData({
         name: '',
         phone: '',
-        tourId: '',
+        tourId: null,
         userId: '',
-        totalPrice: '',
+        totalPrice: 0,
+        numberOfPeople: null,
         status: 'Mới tạo',
       })
       setBookingDetails([])
@@ -73,16 +75,27 @@ const BookingFormModal = ({
     const newErrors = {}
     if (!formData.name) newErrors.name = 'Tên khách hàng không được để trống'
     if (!formData.phone) newErrors.phone = 'Số điện thoại không được để trống'
+    if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Số lượng khách không được để trống'
     if (!formData.tourId) newErrors.tourId = 'Tour không được để trống'
     if (!formData.userId) newErrors.userId = 'Tài khoản khách hàng không được để trống'
-    if (!formData.promotionId) newErrors.promotionId = 'Khuyến mãi không được để trống'
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    // Kiểm tra nếu giá trị số lượng vượt quá maxGroupSize
+    if (name === 'numberOfPeople') {
+      const newValue = Math.min(Number(value), maxGroupSize) // Giới hạn số lượng không vượt quá maxGroupSize
+      setFormData((prev) => ({ ...prev, [name]: newValue }))
+    } else if (name === 'tourId') {
+      const tour = tours.find((el) => el._id == value)
+      setMaxGroupSize(tour.maxGroupSize || 0)
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
   }
 
   const handleSubmit = () => {
@@ -90,6 +103,34 @@ const BookingFormModal = ({
     onSubmit({ ...formData, bookingDetails })
     onClose()
   }
+
+  useEffect(() => {
+    const tour = tours.find((t) => t._id == formData.tourId)
+
+    const numberOfPeople = Number(formData.numberOfPeople || 0)
+    const tourPrice = tour ? tour.price * numberOfPeople : 0
+
+    const serviceTotal = bookingDetails.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0)
+
+    const promotion = promotions.find((p) => p._id === formData.promotionId)
+    const discount = promotion?.discountValue || 0
+    const total = (tourPrice + serviceTotal) * (1 - discount / 100)
+    setFormData((prev) => ({
+      ...prev,
+      totalPrice: Math.round(total), // làm tròn nếu muốn
+    }))
+  }, [
+    initialData,
+    formData.tourId,
+    formData.numberOfPeople,
+    bookingDetails,
+    tours,
+    formData.promotionId,
+    promotions,
+  ])
+  const filteredTourService = useMemo(() => {
+    return tourServices.find((ts) => ts.tourId?._id === formData.tourId)
+  }, [tourServices, formData.tourId])
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="xl">
@@ -100,7 +141,9 @@ const BookingFormModal = ({
         <CForm>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="userId">TK khách hàng *</CFormLabel>
+              <CFormLabel htmlFor="userId">
+                TK khách hàng <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormSelect
                 id="userId"
                 name="userId"
@@ -117,7 +160,9 @@ const BookingFormModal = ({
               {errors.userId && <small className="text-danger">{errors.userId}</small>}
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="tourId">Tour *</CFormLabel>
+              <CFormLabel htmlFor="tourId">
+                Tour <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
 
               {initialData ? (
                 <CFormInput disabled value={initialData.tourId?.title || 'Không tìm thấy tour'} />
@@ -142,21 +187,37 @@ const BookingFormModal = ({
           </CRow>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="name">Tên người liên hệ chính*</CFormLabel>
+              <CFormLabel htmlFor="name">
+                Tên người liên hệ chính <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormInput id="name" name="name" value={formData.name} onChange={handleChange} />
               {errors.name && <small className="text-danger">{errors.name}</small>}
             </CCol>
             <CCol md={6}>
-              <CFormLabel htmlFor="phone">Số điện thoại *</CFormLabel>
+              <CFormLabel htmlFor="phone">
+                Số điện thoại <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
               <CFormInput id="phone" name="phone" value={formData.phone} onChange={handleChange} />
               {errors.phone && <small className="text-danger">{errors.phone}</small>}
             </CCol>
           </CRow>
           <CRow className="mb-2">
             <CCol md={6}>
-              <CFormLabel htmlFor="numberOfPeople">Số lượng khách *</CFormLabel>
-              <CFormInput id="numberOfPeople" name="numberOfPeople" value={formData.numberOfPeople} onChange={handleChange} />
-              {errors.numberOfPeople && <small className="text-danger">{errors.numberOfPeople}</small>}
+              <CFormLabel htmlFor="numberOfPeople">
+                Số lượng khách <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput
+                id="numberOfPeople"
+                name="numberOfPeople"
+                type="number"
+                disabled={!formData.tourId}
+                max={maxGroupSize} // Sử dụng maxGroupSize từ state
+                value={formData.numberOfPeople}
+                onChange={handleChange}
+              />
+              {errors.numberOfPeople && (
+                <small className="text-danger">{errors.numberOfPeople}</small>
+              )}
             </CCol>
             <CCol md={6}>
               <CFormLabel htmlFor="promotionId">Khuyến mãi</CFormLabel>
@@ -186,6 +247,7 @@ const BookingFormModal = ({
                 id="totalPrice"
                 type="number"
                 name="totalPrice"
+                min={0}
                 value={formData.totalPrice}
                 onChange={handleChange}
                 disabled
@@ -197,9 +259,10 @@ const BookingFormModal = ({
         {/* Phần 2: Thông tin chi tiết dịch vụ */}
         <h6 className="fw-bold mt-4 mb-2">Chi tiết dịch vụ</h6>
         <BookingDetailTable
+          formData={formData}
           bookingDetails={bookingDetails}
-          onChange={(newDetails) => setBookingDetails(newDetails)}
-          tourServices={tourServices}
+          onChange={(newDetails) => setBookingDetails((prev) => [...newDetails])}
+          tourServices={filteredTourService}
         />
       </CModalBody>
 

@@ -17,7 +17,7 @@ export const createUser = async (req, res) => {
     const hashedPassword = hassPassword(password);
 
     // Tìm role "Staff" trong bảng roles
-    const staffRole = await Role.findOne({ name: "staff" }); // Tìm role Staff
+    const userRole = await Role.findOne({ name: role });
 
     if (!staffRole) {
       return res.status(400).json({ message: "Không tìm thấy role Staff." });
@@ -30,7 +30,7 @@ export const createUser = async (req, res) => {
       address,
       gender,
       yearob,
-      role: staffRole._id, // Sử dụng _id của role Staff
+      role: userRole._id, // Sử dụng _id của role Staff
 
       password: hashedPassword,
     });
@@ -79,7 +79,25 @@ export const updateUser = async (req, res) => {
     }
 
     // Xóa email khỏi dữ liệu request để tránh sửa email
-    const { email, ...updateData } = req.body;
+    const { email, role, ...rest } = req.body;
+
+    const updateData = { ...rest };
+    // ⚠️ Không cho sửa email
+    if (email && email !== oldUser.email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Không được phép thay đổi email" });
+    }
+    // ✅ Nếu có truyền role (chuỗi: "admin", "user" ...)
+    if (role) {
+      const roleDoc = await Role.findOne({ name: role });
+      if (!roleDoc) {
+        return res
+          .status(400)
+          .json({ success: false, message: `Không tìm thấy role ${role}` });
+      }
+      updateData.role = roleDoc._id;
+    }
 
     // Cập nhật thông tin người dùng (ngoại trừ email)
     const updatedUser = await User.findByIdAndUpdate(
@@ -190,21 +208,21 @@ export const getAllUsers = async (req, res) => {
 export const getUsersByUserRole = async (req, res) => {
   try {
     // Tìm tất cả user và populate thông tin role
-    const allUsers = await User.find().populate('role');
+    const allUsers = await User.find().populate("role");
 
     // Lọc những user có role.name === "user"
-    const filteredUsers = allUsers.filter(user => user.role?.name === 'user');
+    const filteredUsers = allUsers.filter((user) => user.role?.name === "user");
 
     res.status(200).json({
       success: true,
-      message: 'Lấy danh sách người dùng thành công',
+      message: "Lấy danh sách người dùng thành công",
       data: filteredUsers,
     });
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách user:', error);
+    console.error("Lỗi khi lấy danh sách user:", error);
     res.status(500).json({
       success: false,
-      message: 'Lỗi khi lấy danh sách user',
+      message: "Lỗi khi lấy danh sách user",
     });
   }
 };
