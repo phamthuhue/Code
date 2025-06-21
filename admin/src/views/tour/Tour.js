@@ -127,6 +127,7 @@ const Tour = () => {
         addToast(exampleToast('Thêm mới tour thành công'))
       }
       closeForm()
+      fetchTours()
     } catch (error) {
       console.error('Error submitting form:', error)
       addToast(exampleToast('Có lỗi xảy ra. Vui lòng thử lại.'))
