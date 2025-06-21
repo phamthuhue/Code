@@ -111,11 +111,20 @@ export const History = () => {
             >
               {/* Phần ảnh (bên trái) */}
               <div className="w-1/2 flex justify-center">
-                <img
+                {/* <img
                   src={
                     booking.tourId?.photos?.[0] ||
                     "https://via.placeholder.com/150"
                   } // Ảnh mặc định
+                  alt="Tour avatar"
+                  className="w-full rounded-lg object-cover border"
+                /> */}
+                <img
+                  src={
+                    booking.tourId?.photos?.[0]
+                      ? `http://localhost:8000/${booking.tourId.photos[0]}`
+                      : "https://via.placeholder.com/150"
+                  }
                   alt="Tour avatar"
                   className="w-full rounded-lg object-cover border"
                 />
