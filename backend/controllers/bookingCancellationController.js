@@ -144,41 +144,56 @@ export const confirmMultipleBookingCancellations = async (req, res) => {
     const rawIds = req.body.selectedCancellationBookingIds || [];
 
     if (!Array.isArray(rawIds) || rawIds.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "Vui lòng chọn ít nhất một phiếu hủy để từ chối." });
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng chọn ít nhất một phiếu hủy để xác nhận hoàn.",
+      });
     }
+
     const bookingCancellationIds = rawIds.map((id) => new ObjectId(id));
+
+    // Lấy danh sách các phiếu hủy
     const cancellations = await BookingCancellation.find({
       _id: { $in: bookingCancellationIds },
     });
 
     for (const cancellation of cancellations) {
       const bookingId = cancellation.bookingId;
-      const invoiceId = cancellation.invoiceId;
 
-      // ✅ 1. Cập nhật trạng thái phiếu hủy sang "Đã hoàn"
+      // 1. Cập nhật phiếu hủy sang "Đã hoàn"
       await BookingCancellation.updateOne(
         { _id: cancellation._id },
         { status: "Đã hoàn" }
       );
 
-      // ✅ 2. Cập nhật trạng thái booking sang "Đã hủy"
-      await Booking.updateOne({ _id: bookingId }, { status: "Đã hủy" });
+      // 2. Cập nhật trạng thái booking sang "Đã hủy"
+      await Booking.updateOne(
+        { _id: bookingId },
+        { status: "Đã hủy" }
+      );
 
-      // ✅ 3. Cập nhật hóa đơn liên quan sang "Đã hoàn tiền"
-      await Invoice.updateMany(
-        { _id: invoiceId },
-        { status: "Đã hoàn tiền" }
+      // 3. Tìm và cập nhật hóa đơn theo bookingId
+      console.log("Tìm invoice theo bookingId:", bookingId);
+      const invoices = await Invoice.find({ bookingId });
+      console.log("Tìm thấy hóa đơn:", invoices);
+
+      await Invoice.updateOne(
+        { bookingId: bookingId },
+        { paymentStatus: "Đã hoàn tiền" }
       );
     }
 
-    res
-      .status(200)
-      .json({ message: "Xác nhận hoàn tiền cho các phiếu hủy thành công." });
+    res.status(200).json({
+      success: true,
+      message: "Đã xác nhận hoàn tiền cho các phiếu hủy thành công.",
+    });
   } catch (error) {
-    console.error("Lỗi khi xác nhận phiếu hủy:", error);
-    res.status(500).json({ error: "Đã xảy ra lỗi trong quá trình xác nhận." });
+    console.error("Lỗi khi xác nhận hoàn tiền:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi xác nhận hoàn tiền các phiếu hủy.",
+      error,
+    });
   }
 };
 
