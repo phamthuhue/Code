@@ -21,12 +21,14 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     address: '',
     gender: '',
     yearob: '',
+    role: '', // 👈 thêm dòng này
   })
 
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false) // Thêm trạng thái loading
   useEffect(() => {
     if (initialData) {
+      console.log('initialData: ', initialData)
       setFormData({
         username: initialData.username || '',
         email: initialData.email || '',
@@ -34,6 +36,7 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         address: initialData.address || '',
         gender: initialData.gender || '',
         yearob: initialData.yearob || '',
+        role: initialData.role.name || '', // 👈 thêm dòng này
       })
     } else {
       setFormData({
@@ -54,7 +57,7 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
     if (!formData.username.trim()) newErrors.username = 'Tên đăng nhập không được để trống'
     if (!formData.email.trim()) newErrors.email = 'Email không được để trống'
     if (!formData.gender.trim()) newErrors.gender = 'Giới tính không được để trống'
-
+    if (!formData.role.trim()) newErrors.role = 'Vai trò không được để trống'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -117,8 +120,16 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             </CCol>
 
             <CCol md={6}>
-              <CFormLabel>Địa chỉ</CFormLabel>
-              <CFormInput name="address" value={formData.address} onChange={handleChange} />
+              <CFormLabel>
+                Vai trò <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormSelect name="role" value={formData.role} onChange={handleChange}>
+                <option value="">-- Chọn vai trò --</option>
+                <option value="user">Người dùng</option>
+                <option value="admin">Quản trị viên</option>
+                <option value="staff">Nhân viên</option>
+              </CFormSelect>
+              {errors.role && <small className="text-danger">{errors.role}</small>}
             </CCol>
           </CRow>
 
@@ -145,6 +156,12 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
                 value={formData.yearob}
                 onChange={handleChange}
               />
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol md={12}>
+              <CFormLabel>Địa chỉ</CFormLabel>
+              <CFormInput name="address" value={formData.address} onChange={handleChange} />
             </CCol>
           </CRow>
         </CForm>
