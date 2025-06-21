@@ -233,9 +233,9 @@ export const resetPassword = async (req, res) => {
 
 // user change password
 export const changePassword = async (req, res) => {
-    const { userId, currentPassword, newPassword } = req.body;
+    const { email, currentPassword, newPassword } = req.body;
 
-    if (!userId || !currentPassword || !newPassword) {
+    if (!email || !currentPassword || !newPassword) {
         return res.status(400).json({
             success: false,
             message:
@@ -245,7 +245,7 @@ export const changePassword = async (req, res) => {
 
     try {
         // Tìm user theo id
-        const user = await User.findById(userId);
+        const user = await User.findOne({ email }) // ✅ nếu bạn gửi email từ frontend
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -266,7 +266,10 @@ export const changePassword = async (req, res) => {
         const hashedPassword = hassPassword(newPassword);
         user.password = hashedPassword;
 
-        await user.save();
+        await User.updateOne(
+            { email },
+            { $set: { password: hashedPassword } }
+        )
 
         return res.status(200).json({
             success: true,

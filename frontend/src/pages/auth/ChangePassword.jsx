@@ -25,7 +25,7 @@ export const ChangePassword = () => {
     try {
       setLoading(true);
       await axiosInstance.post("/auth/change-password", {
-        userId: user.info._id,
+        email: user.info.email,
         currentPassword,
         newPassword,
       });
