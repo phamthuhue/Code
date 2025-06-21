@@ -21,6 +21,8 @@ import {
   cilCommand,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+const user = JSON.parse(localStorage.getItem('user'))
+const isAdmin = user?._id === '68197088c5516375b00c7960'
 
 const _nav = [
   {
@@ -127,18 +129,22 @@ const _nav = [
     to: '/review',
     icon: <CIcon icon={cilSpeech} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Quản lý tài khoản',
-    to: '/account',
-    icon: <CIcon icon={cilContact} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Docs',
-    href: 'https://coreui.io/react/docs/templates/installation/',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-  },
+  ...(isAdmin
+    ? [
+        {
+          component: CNavItem,
+          name: 'Quản lý tài khoản',
+          to: '/account',
+          icon: <CIcon icon={cilContact} customClassName="nav-icon" />,
+        },
+      ]
+    : []),
+  // {
+  //   component: CNavItem,
+  //   name: 'Docs',
+  //   href: 'https://coreui.io/react/docs/templates/installation/',
+  //   icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+  // },
 ]
 
 export default _nav

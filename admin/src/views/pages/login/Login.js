@@ -77,7 +77,7 @@ const Login = () => {
         localStorage.setItem('token', token)
         addToast(exampleToast('Đăng nhập thành công'))
         // Chuyển hướng tới trang Dashboard sau khi đăng nhập thành công
-        navigate('/dashboard')
+        window.location.href = '/dashboard'
       } else {
         addToast(exampleToast('Đăng nhập thất bại'))
         dispatch(setError('Đăng nhập thất bại'))
