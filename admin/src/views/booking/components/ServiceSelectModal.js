@@ -27,10 +27,29 @@ const ServiceSelectModal = ({
     // Khi không có dịch vụ nào còn lại và có dịch vụ đã xóa, sử dụng dịch vụ đã xóa
     if (deletedServices.length > 0 && availableServices.length === 0) {
       setAvailableServices(deletedServices)
+    } else if (Array.isArray(tourServices)) {
+      let customTourServices = tourServices.map((el) => {
+        return {
+          ...el,
+          disabled: true,
+        }
+      })
+
+      // B2: Nếu có dịch vụ đã xóa → bỏ disabled cho chúng
+      if (Array.isArray(deletedServices) && deletedServices.length > 0) {
+        customTourServices = customTourServices.map((service) => {
+          const wasDeleted = deletedServices.find((d) => d._id === service._id)
+          return {
+            ...service,
+            disabled: wasDeleted ? false : service.disabled,
+          }
+        })
+      }
+      setAvailableServices(customTourServices)
     } else {
       setAvailableServices(tourServices?.services || [])
     }
-  }, [tourServices, deletedServices]) // Chỉ theo dõi tourServices và deletedServices
+  }, [tourServices, deletedServices, availableServices.length]) // Chỉ theo dõi tourServices và deletedServices
 
   const [errors, setErrors] = useState({})
 
@@ -57,21 +76,41 @@ const ServiceSelectModal = ({
   const handleSave = () => {
     if (!initialData) {
       if (!validate()) return
-      const selected = tourServices?.services?.find((s) => s._id === selectedServiceId)
-      if (!selected) return
+      let selected = null
+      if (Array.isArray(tourServices)) {
+        selected = tourServices?.find((s) => s._id === selectedServiceId)
+        if (!selected) return
+        const service = {
+          serviceId: selected._id,
+          itemType: 'Service',
+          description: selected.note,
+          unitPrice: selected.servicePrice,
+          tourServiceId: selected._id,
+          quantity: quantity,
+          totalPrice: selected.servicePrice * quantity,
+          numberOfPeopl: selected.numberOfPeopl,
+        }
+        onSave(service)
+        setAvailableServices((prev) => prev.filter((s) => s._id !== selected._id)).map(
+          (el = { ...el, disabled: true }),
+        )
+      } else {
+        selected = tourServices?.services?.find((s) => s._id === selectedServiceId)
+        if (!selected) return
 
-      const service = {
-        serviceId: selected._id,
-        itemType: 'Service',
-        description: selected.note,
-        unitPrice: selected.servicePrice,
-        tourServiceId: selected._id,
-        quantity: quantity,
-        totalPrice: selected.servicePrice * quantity,
-        numberOfPeopl: selected.numberOfPeopl,
+        const service = {
+          serviceId: selected._id,
+          itemType: 'Service',
+          description: selected.note,
+          unitPrice: selected.servicePrice,
+          tourServiceId: selected._id,
+          quantity: quantity,
+          totalPrice: selected.servicePrice * quantity,
+          numberOfPeopl: selected.numberOfPeopl,
+        }
+        onSave(service)
+        setAvailableServices((prev) => prev.filter((s) => s._id !== selected._id))
       }
-      onSave(service)
-      setAvailableServices((prev) => prev.filter((s) => s._id !== selected._id))
     } else {
       initialData.quantity = quantity
       initialData.totalPrice = initialData.unitPrice * quantity
@@ -103,11 +142,13 @@ const ServiceSelectModal = ({
               </CFormLabel>
               <CFormSelect
                 value={selectedServiceId}
-                onChange={(e) => setSelectedServiceId(e.target.value)}
+                onChange={(e) => {
+                  setSelectedServiceId(e.target.value)
+                }}
               >
                 <option value="">-- Chọn dịch vụ --</option>
                 {availableServices?.map((s) => (
-                  <option key={s._id} value={s._id}>
+                  <option key={s._id} value={s._id} disabled={s.disabled}>
                     {s.note} ({s.servicePrice?.toLocaleString()} VND)
                   </option>
                 ))}
