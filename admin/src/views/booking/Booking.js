@@ -251,6 +251,7 @@ const Booking = () => {
   }
 
   const closeForm = () => {
+    window.location.reload()
     setFormModalVisible(false)
     setEditingBooking(null)
   }

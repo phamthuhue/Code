@@ -55,6 +55,7 @@ const BookingFormModal = ({
         promotionId: initialData.promotionId._id || null,
       })
       setBookingDetails(bookingDetails || [])
+      setMaxGroupSize(initialData.numberOfPeople + initialData.tourId.maxGroupSize)
     } else {
       setFormData({
         name: '',
@@ -262,7 +263,7 @@ const BookingFormModal = ({
           formData={formData}
           bookingDetails={bookingDetails}
           onChange={(newDetails) => setBookingDetails((prev) => [...newDetails])}
-          tourServices={filteredTourService}
+          tourServices={!initialData ? filteredTourService : tourServices}
         />
       </CModalBody>
 

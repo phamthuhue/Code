@@ -1,5 +1,6 @@
 import Booking from "../models/Booking.js";
 import BookingDetail from "../models/BookingDetail.js";
+import Invoice from "../models/Invoice.js";
 import Promotion from "../models/Promotion.js";
 import Tour from "../models/Tour.js";
 import TourService from "../models/TourService.js";
@@ -64,6 +65,26 @@ export const createBooking = async (req, res) => {
       bookingDetailTour,
       ...bookingDetailServices,
     ]);
+    const invoiceData = {
+      bookingId: newBooking._id,
+      userId: newBooking.userId, // Giả sử bạn đã có `userId` trong `booking`
+      totalAmount: totalPrice, // Tổng tiền cần thanh toán
+      promotionId: promotionId, // Giả sử chưa có khuyến mãi
+
+      finalAmount: totalPrice, // Giá cuối cùng sau giảm giá (nếu có)
+      paymentStatus: "Chưa thanh toán", // Trạng thái thanh toán ban đầu
+    };
+    if (promotionId) {
+      const promotion = await Promotion.findById(promotionId);
+      if (!promotion) throw new Error("Promotion không tồn tại");
+      invoiceData.discountAmount = promotion.discountValue;
+    } else {
+      invoiceData.discountAmount = 0;
+    }
+    // Tạo Invoice cho việc thanh toán
+    const invoice = new Invoice(invoiceData);
+
+    const savedInvoice = await invoice.save();
     // Trừ số lượng trong Tour
 
     if (tour) {
@@ -100,6 +121,7 @@ export const createBooking = async (req, res) => {
       success: true,
       message: "Đặt tour thành công!",
       bookingId: newBooking._id,
+      savedInvoice,
     });
   } catch (error) {
     console.error("Lỗi khi tạo booking:", error);
@@ -111,31 +133,145 @@ export const createBooking = async (req, res) => {
   }
 };
 
-// Controller: updateBooking
 export const updateBooking = async (req, res) => {
   try {
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      req.params.id, // Lấy ID từ URL (req.params)
-      { $set: req.body }, // Cập nhật toàn bộ nội dung (hoặc chọn lọc)
-      { new: true } // Trả về dữ liệu mới sau khi update
-    );
+    const { id } = req.params;
+    const {
+      name,
+      phone,
+      numberOfPeople,
+      status,
+      promotionId,
+      bookingDetails = [],
+    } = req.body;
 
-    if (!updatedBooking) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy booking để cập nhật.",
-      });
+    const booking = await Booking.findById(id);
+    if (!booking)
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking không tồn tại" });
+
+    const tour = await Tour.findById(booking.tourId);
+    const tourService = await TourService.findOne({ tourId: booking.tourId });
+
+    if (!tour || !tourService) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "Tour hoặc TourService không tồn tại",
+        });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Cập nhật booking thành công.",
-      data: updatedBooking,
+    // 1. Cập nhật lại maxGroupSize nếu thay đổi số lượng người
+    const deltaPeople = numberOfPeople - booking.numberOfPeople;
+    tour.maxGroupSize -= deltaPeople;
+    await tour.save();
+
+    // 2. Lấy BookingDetail hiện tại từ DB
+    const existingDetails = await BookingDetail.find({
+      bookingId: id,
+      itemType: "Service",
     });
-  } catch (err) {
-    res.status(500).json({
+
+    const existingMap = new Map(
+      existingDetails.map((d) => [d._id.toString(), d])
+    );
+
+    // 3. Phân loại bookingDetails mới
+    const toUpdate = [];
+    const toInsert = [];
+    const incomingIds = [];
+
+    for (const detail of bookingDetails) {
+      if (detail._id && existingMap.has(detail._id)) {
+        // Cập nhật số lượng
+        const old = existingMap.get(detail._id);
+        const deltaQty = detail.quantity - old.quantity;
+
+        const service = tourService.services.find(
+          (s) => s._id.toString() === detail.tourServiceId.toString()
+        );
+        if (service) {
+          service.numberOfPeopl -= deltaQty;
+        }
+
+        toUpdate.push({
+          updateOne: {
+            filter: { _id: detail._id },
+            update: {
+              $set: {
+                quantity: detail.quantity,
+                totalPrice: detail.unitPrice * detail.quantity,
+              },
+            },
+          },
+        });
+
+        incomingIds.push(detail._id);
+        existingMap.delete(detail._id);
+      } else {
+        // Thêm mới
+        const service = tourService.services.find(
+          (s) => s._id.toString() === detail.tourServiceId.toString()
+        );
+        if (service) {
+          service.numberOfPeopl -= detail.quantity;
+        }
+
+        toInsert.push({
+          bookingId: id,
+          tourServiceId: detail.tourServiceId,
+          itemType: "Service",
+          description: detail.description,
+          quantity: detail.quantity,
+          unitPrice: detail.unitPrice,
+          totalPrice: detail.unitPrice * detail.quantity,
+        });
+      }
+    }
+
+    // 4. Những cái còn lại trong existingMap là bị xóa
+    for (const deleted of existingMap.values()) {
+      const service = tourService.services.find(
+        (s) => s._id.toString() === deleted.tourServiceId.toString()
+      );
+      if (service) {
+        service.numberOfPeopl += deleted.quantity;
+      }
+
+      await BookingDetail.findByIdAndDelete(deleted._id);
+    }
+
+    // 5. Áp dụng update và insert
+    if (toUpdate.length) {
+      await BookingDetail.bulkWrite(toUpdate);
+    }
+
+    if (toInsert.length) {
+      await BookingDetail.insertMany(toInsert);
+    }
+
+    await tourService.save();
+
+    // 6. Cập nhật booking
+    booking.name = name;
+    booking.phone = phone;
+    booking.numberOfPeople = numberOfPeople;
+    booking.status = status;
+    booking.promotionId = promotionId;
+    await booking.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Cập nhật booking thành công!",
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật booking:", error);
+    return res.status(500).json({
       success: false,
-      message: "Lỗi hệ thống khi cập nhật booking.",
+      message: "Lỗi server khi cập nhật booking",
+      error: error.message,
     });
   }
 };
@@ -191,10 +327,41 @@ export const deleteBooking = async (req, res) => {
         message: "Booking không tồn tại!",
       });
     }
+    // 2. Lấy danh sách BookingDetail liên quan
+    const bookingDetails = await BookingDetail.find({ bookingId: id });
+
+    // 3. Cộng lại số lượng Tour (maxGroupSize)
+    const tour = await Tour.findById(booking.tourId);
+    if (tour) {
+      tour.maxGroupSize += booking.numberOfPeople;
+      await tour.save();
+    }
+    // 4. Cộng lại số lượng dịch vụ trong TourService
+    const tourService = await TourService.findOne({ tourId: booking.tourId });
+    if (tourService) {
+      for (const detail of bookingDetails) {
+        if (detail.itemType === "Service") {
+          const service = tourService.services.find(
+            (s) => s._id.toString() === detail.tourServiceId?.toString()
+          );
+          if (service) {
+            service.numberOfPeopl += detail.quantity;
+          }
+        }
+      }
+      await tourService.save();
+    }
+    // 5. Xóa BookingDetail
+    await BookingDetail.deleteMany({ bookingId: id });
+
+    // 6. Xóa Booking chính
+    await Booking.findByIdAndDelete(id);
+    // 7. (Optional) Xóa hóa đơn nếu có
+    await Invoice.deleteOne({ bookingId: id });
 
     return res.status(200).json({
       success: true,
-      message: "Booking và các dịch vụ liên quan đã được xóa thành công.",
+      message: "Đã xóa booking và khôi phục số lượng thành công.",
     });
   } catch (error) {
     console.error("Lỗi khi xóa booking:", error);
@@ -234,7 +401,7 @@ export const getBooking = async (req, res) => {
 export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate("tourId", "title")
+      .populate("tourId")
       .populate("userId", "username email")
       .populate("promotionId");
     res.status(200).json({

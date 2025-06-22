@@ -42,9 +42,14 @@ const BookingDetailTable = ({
     updated.splice(index, 1)
     setLocalBookingDetails(updated)
     const objetBookingDetail = localBookingDetails[index]
-    const deletedService = tourServices?.services.find(
-      (el) => el._id == objetBookingDetail.tourServiceId,
-    ) // Get the deleted service
+    let deletedService = null
+    if (Array.isArray(tourServices)) {
+      deletedService = tourServices.find((el) => el._id == objetBookingDetail.tourServiceId) // Get the deleted service
+    } else {
+      deletedService = tourServices?.services.find(
+        (el) => el._id == objetBookingDetail.tourServiceId,
+      ) // Get the deleted service
+    }
     setDeletedServices((prevDeletedServices) => [...prevDeletedServices, deletedService])
     onChange(updated)
   }
