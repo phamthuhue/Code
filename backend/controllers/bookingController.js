@@ -140,52 +140,51 @@ export const updateBooking = async (req, res) => {
       numberOfPeople,
       status,
       promotionId,
-      bookingDetails = [], // dịch vụ cập nhật từ client
+      bookingDetails = [],
     } = req.body;
 
     const booking = await Booking.findById(id);
-    if (!booking) {
+    if (!booking)
       return res
         .status(404)
-        .json({ success: false, message: "Booking không tồn tại!" });
-    }
+        .json({ success: false, message: "Booking không tồn tại" });
 
     const tour = await Tour.findById(booking.tourId);
     const tourService = await TourService.findOne({ tourId: booking.tourId });
 
     if (!tour || !tourService) {
-      return res.status(404).json({
-        success: false,
-        message: "Tour hoặc dịch vụ tour không tồn tại!",
-      });
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "Tour hoặc TourService không tồn tại",
+        });
     }
 
-    // 1. Cập nhật lại số lượng người trong tour (nếu thay đổi)
-    const oldNumberOfPeople = booking.numberOfPeople;
-    const deltaPeople = numberOfPeople - oldNumberOfPeople;
-    tour.maxGroupSize -= deltaPeople; // giảm nếu tăng người, tăng lại nếu giảm
+    // 1. Cập nhật lại maxGroupSize nếu thay đổi số lượng người
+    const deltaPeople = numberOfPeople - booking.numberOfPeople;
+    tour.maxGroupSize -= deltaPeople;
     await tour.save();
 
-    // 2. Xử lý dịch vụ:
-    const oldDetails = await BookingDetail.find({
+    // 2. Lấy BookingDetail hiện tại từ DB
+    const existingDetails = await BookingDetail.find({
       bookingId: id,
       itemType: "Service",
     });
 
-    // Tạo map dịch vụ cũ từ DB
-    const oldDetailsMap = new Map();
-    for (const old of oldDetails) {
-      oldDetailsMap.set(old._id.toString(), old);
-    }
+    const existingMap = new Map(
+      existingDetails.map((d) => [d._id.toString(), d])
+    );
 
-    const newDetailsMap = new Map();
-    const updates = [];
-    const inserts = [];
+    // 3. Phân loại bookingDetails mới
+    const toUpdate = [];
+    const toInsert = [];
+    const incomingIds = [];
 
     for (const detail of bookingDetails) {
-      if (detail._id && oldDetailsMap.has(detail._id)) {
-        // sửa số lượng
-        const old = oldDetailsMap.get(detail._id);
+      if (detail._id && existingMap.has(detail._id)) {
+        // Cập nhật số lượng
+        const old = existingMap.get(detail._id);
         const deltaQty = detail.quantity - old.quantity;
 
         const service = tourService.services.find(
@@ -195,7 +194,7 @@ export const updateBooking = async (req, res) => {
           service.numberOfPeopl -= deltaQty;
         }
 
-        updates.push({
+        toUpdate.push({
           updateOne: {
             filter: { _id: detail._id },
             update: {
@@ -207,9 +206,10 @@ export const updateBooking = async (req, res) => {
           },
         });
 
-        oldDetailsMap.delete(detail._id); // đánh dấu đã xử lý
+        incomingIds.push(detail._id);
+        existingMap.delete(detail._id);
       } else {
-        // thêm mới
+        // Thêm mới
         const service = tourService.services.find(
           (s) => s._id.toString() === detail.tourServiceId.toString()
         );
@@ -217,7 +217,7 @@ export const updateBooking = async (req, res) => {
           service.numberOfPeopl -= detail.quantity;
         }
 
-        inserts.push({
+        toInsert.push({
           bookingId: id,
           tourServiceId: detail.tourServiceId,
           itemType: "Service",
@@ -229,9 +229,8 @@ export const updateBooking = async (req, res) => {
       }
     }
 
-    // Xóa những dịch vụ còn lại trong map cũ (tức là bị xóa)
-    const deletes = Array.from(oldDetailsMap.values());
-    for (const deleted of deletes) {
+    // 4. Những cái còn lại trong existingMap là bị xóa
+    for (const deleted of existingMap.values()) {
       const service = tourService.services.find(
         (s) => s._id.toString() === deleted.tourServiceId.toString()
       );
@@ -242,17 +241,18 @@ export const updateBooking = async (req, res) => {
       await BookingDetail.findByIdAndDelete(deleted._id);
     }
 
-    if (updates.length) {
-      await BookingDetail.bulkWrite(updates);
+    // 5. Áp dụng update và insert
+    if (toUpdate.length) {
+      await BookingDetail.bulkWrite(toUpdate);
     }
 
-    if (inserts.length) {
-      await BookingDetail.insertMany(inserts);
+    if (toInsert.length) {
+      await BookingDetail.insertMany(toInsert);
     }
 
     await tourService.save();
 
-    // 3. Cập nhật thông tin Booking
+    // 6. Cập nhật booking
     booking.name = name;
     booking.phone = phone;
     booking.numberOfPeople = numberOfPeople;
@@ -268,7 +268,7 @@ export const updateBooking = async (req, res) => {
     console.error("Lỗi khi cập nhật booking:", error);
     return res.status(500).json({
       success: false,
-      message: "Lỗi server khi cập nhật booking.",
+      message: "Lỗi server khi cập nhật booking",
       error: error.message,
     });
   }
