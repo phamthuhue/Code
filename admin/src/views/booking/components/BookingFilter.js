@@ -12,6 +12,7 @@ const BookingFilter = ({ filters, onFilterChange, promotions = [], tours = [] })
   }
 
   return (
+    <div className="mb-3">
     <CRow className="mb-3">
       <CCol md={4}>
         <CInputGroup>
@@ -46,7 +47,10 @@ const BookingFilter = ({ filters, onFilterChange, promotions = [], tours = [] })
           </CFormSelect>
         </CInputGroup>
       </CCol>
-      <CCol md={4}>
+      
+    </CRow>
+    <CRow className='mb-3'>
+        <CCol md={4}>
         <CInputGroup>
           <CInputGroupText>Số điện thoại</CInputGroupText>
           <CFormInput name="phone" value={localFilters.phone} onChange={handleChange} />
@@ -66,6 +70,7 @@ const BookingFilter = ({ filters, onFilterChange, promotions = [], tours = [] })
         </CInputGroup>
       </CCol>
     </CRow>
+    </div>
   )
 }
 

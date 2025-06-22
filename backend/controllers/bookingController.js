@@ -5,7 +5,6 @@ import Promotion from "../models/Promotion.js";
 import Tour from "../models/Tour.js";
 import TourService from "../models/TourService.js";
 import BookingCancellation from "../models/BookingCancellation.js";
-import Invoice from "../models/Invoice.js";
 import Review from "../models/Review.js";
 // Create a new booking
 export const createBooking = async (req, res) => {
