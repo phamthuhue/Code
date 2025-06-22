@@ -1,4 +1,6 @@
 import PartnerType from '../models/PartnerType.js'
+import Partner from "../models/Partner.js";
+import Service from "../models/Service.js";
 
 // Lấy tất cả loại đối tác
 export const getPartnerTypes = async (req, res) => {
@@ -80,21 +82,38 @@ export const updatePartnerType = async (req, res) => {
 
 // Xóa loại đối tác
 export const deletePartnerType = async (req, res) => {
+    const partnerTypeId = req.params.id;
+
     try {
-        const deleted = await PartnerType.findByIdAndDelete(req.params.id);
-        if (!deleted) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "Không tìm thấy loại đối tác để xóa",
-                });
+        // 1. Tìm tất cả partner thuộc loại này
+        const partners = await Partner.find({ partnerTypeId: partnerTypeId });
+
+        // 2. Lặp qua từng partner và xóa các service liên quan
+        for (const partner of partners) {
+            await Service.deleteMany({ partnerId: partner._id });
         }
-        res.status(200).json({ success: true, message: "Xóa thành công" });
+
+        // 3. Xóa các partner
+        await Partner.deleteMany({ partnerTypeId: partnerTypeId });
+
+        // 4. Xóa loại đối tác
+        const deleted = await PartnerType.findByIdAndDelete(partnerTypeId);
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                message: "Không tìm thấy loại đối tác để xóa",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Xóa loại đối tác và toàn bộ dữ liệu liên quan thành công",
+        });
     } catch (error) {
+        console.error("Lỗi khi xóa loại đối tác:", error);
         res.status(500).json({
             success: false,
-            message: "Lỗi khi xóa loại đối tác",
+            message: "Lỗi khi xóa loại đối tác và dữ liệu liên quan",
             error,
         });
     }

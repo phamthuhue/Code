@@ -77,7 +77,7 @@ const Login = () => {
         localStorage.setItem('token', token)
         addToast(exampleToast('Đăng nhập thành công'))
         // Chuyển hướng tới trang Dashboard sau khi đăng nhập thành công
-        navigate('/dashboard')
+        window.location.href = '/dashboard'
       } else {
         addToast(exampleToast('Đăng nhập thất bại'))
         dispatch(setError('Đăng nhập thất bại'))
@@ -108,7 +108,7 @@ const Login = () => {
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Tên đăng nhập"
+                        placeholder="Email đăng nhập"
                         autoComplete="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)} // Cập nhật giá trị username

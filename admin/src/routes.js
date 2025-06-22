@@ -15,9 +15,12 @@ const GroupBooking = React.lazy(() => import('./views/groupBooking/groupBooking'
 const Invoice = React.lazy(() => import('./views/invoice/invoice'))
 const Account = React.lazy(() => import('./views/account/account'))
 const Review = React.lazy(() => import('./views/review/review'))
-
+const ChangePassword = React.lazy(() => import('./views/pages/changePassword/changePassword'))
+const EditProfile = React.lazy(() => import('./views/pages/editProfile/EditProfile'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/edit-profile', name: 'Chỉnh sửa thông tin cá nhân', element: EditProfile },
+  { path: '/change-password', name: 'Đổi mật khẩu', element: ChangePassword },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/tour', name: 'Tour', element: Tour },
   { path: '/booking', name: 'Danh sách phiếu đặt', element: Booking },

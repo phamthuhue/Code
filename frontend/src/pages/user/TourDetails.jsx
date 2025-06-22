@@ -88,11 +88,17 @@ export const TourDetails = () => {
                     {/*Image*/}
                     <div className="relative">
                         {photos && photos.length > 0 && (
+                            // <img
+                            //     src={photos[currentPhotoIndex]}
+                            //     alt="tour landscape"
+                            //     className="rounded w-full h-auto"
+                            // />
                             <img
-                                src={photos[currentPhotoIndex]}
-                                alt="tour landscape"
-                                className="rounded w-full h-auto"
+                            src={`http://localhost:8000/${photos[currentPhotoIndex]}`}
+                            alt="tour landscape"
+                            className="rounded w-full h-auto"
                             />
+
                         )}
                         {photos && photos.length > 1 && (
                             <div className="absolute top-1/2 left-0 right-0 flex justify-between px-2">

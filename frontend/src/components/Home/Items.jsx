@@ -12,8 +12,13 @@ export const Items = ({ photo, title, city, price, id }) => {
             onClick={() => navigate(`/tours/${id}`)}
             className="shadow-lg rounded-lg hover:scale-105 duration-300 bg-white"
         >
-            <img
+            {/* <img
                 src={photo}
+                alt={title}
+                className="w-full h-[200px] object-cover rounded-t-lg"
+            /> */}
+            <img
+                src={`http://localhost:8000/${photo}`}
                 alt={title}
                 className="w-full h-[200px] object-cover rounded-t-lg"
             />

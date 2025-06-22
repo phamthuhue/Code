@@ -4,7 +4,9 @@ import Invoice from "../models/Invoice.js";
 import Promotion from "../models/Promotion.js";
 import Tour from "../models/Tour.js";
 import TourService from "../models/TourService.js";
-
+import BookingCancellation from "../models/BookingCancellation.js";
+import Invoice from "../models/Invoice.js";
+import Review from "../models/Review.js";
 // Create a new booking
 export const createBooking = async (req, res) => {
   try {
@@ -274,20 +276,52 @@ export const updateBooking = async (req, res) => {
   }
 };
 
+export const updateBookingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ success: false, message: "Booking không tồn tại" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật trạng thái booking thành công",
+      data: updatedBooking,
+    });
+  } catch (err) {
+    console.error("Lỗi cập nhật trạng thái:", err);
+    res.status(500).json({ success: false, message: "Lỗi server", error: err.message });
+  }
+};
+
 // Controller: deleteBooking
 export const deleteBooking = async (req, res) => {
   try {
-    const { id } = req.params; // Lấy bookingId từ URL params
-    if (!id) {
+    const bookingId = req.params.id;
+    if (!bookingId) {
       return res.status(400).json({
         success: false,
         message: "Booking ID không hợp lệ.",
       });
     }
 
-    // 1. Tìm booking để lấy dữ liệu liên quan (tourId, numberOfPeople,...)
-    const booking = await Booking.findById(id);
-    if (!booking) {
+    // 1. Xoá các bản ghi liên quan
+    await BookingDetail.deleteMany({ bookingId });
+    await BookingCancellation.deleteMany({ bookingId });
+    await Invoice.deleteMany({ bookingId });
+    await Review.deleteMany({ bookingId });
+    // 2. Xóa Booking chính
+    const deletedBooking = await Booking.findByIdAndDelete(bookingId);
+
+    if (!deletedBooking) {
       return res.status(404).json({
         success: false,
         message: "Booking không tồn tại!",

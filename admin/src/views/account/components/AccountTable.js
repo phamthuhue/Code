@@ -41,7 +41,7 @@ const UserTable = ({
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Địa chỉ</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Giới tính</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">Ngày sinh</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary text-center">Năm sinh</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Vai trò</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Hành động</CTableHeaderCell>
           </CTableRow>

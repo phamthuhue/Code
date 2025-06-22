@@ -290,10 +290,11 @@ const Booking = () => {
 
   const confirmDelete = async () => {
     try {
+      console.log("DeleteBooking:", bookingToDelete)
       await deleteBooking(bookingToDelete._id)
       setBookings(bookings.filter((b) => b._id !== bookingToDelete._id))
       addToast(exampleToast('Xóa booking thành công'))
-      window.location.reload()
+      fetchBookings()
     } catch (error) {
       console.error('Lỗi khi xóa booking:', error)
       addToast(exampleToast('Xóa booking thất bại'))

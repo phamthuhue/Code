@@ -7,3 +7,7 @@ export const getUsersByUserRole = (params) => axiosConfig.get(`${API}/role/user`
 export const createUser = (data) => axiosConfig.post(API, data)
 export const updateUser = (id, data) => axiosConfig.put(`${API}/${id}`, data)
 export const deleteUser = (id) => axiosConfig.delete(`${API}/${id}`)
+// services/Api/accountService.js
+export const getUserByEmail = (email) =>
+  axiosConfig.get(`${API}/email/${email}`) // endpoint này bạn cần tạo sẵn ở backend
+

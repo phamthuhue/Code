@@ -48,6 +48,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null, guides 
     if (initialData) {
       setFormData({
         ...initialData,
+        guideId: initialData.guideId._id,
         startDate: initialData.startDate?.slice(0, 10),
         endDate: initialData.endDate?.slice(0, 10),
       })
@@ -282,7 +283,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null, guides 
               <CFormSelect
                 id="guideId"
                 name="guideId"
-                disabled={!!initialData}
+                // disabled={!!initialData}
                 value={formData.guideId}
                 onChange={handleChange}
               >

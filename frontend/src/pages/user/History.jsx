@@ -40,6 +40,7 @@ export const History = () => {
   const handleReload = () => {
     console.log("Reload danh sách...");
     reloadBookings();
+    setReloadReviews((prev) => !prev);
   };
 
   const [reviewsbyUser, setReviewsByUser] = useState([]);
@@ -110,11 +111,20 @@ export const History = () => {
             >
               {/* Phần ảnh (bên trái) */}
               <div className="w-1/2 flex justify-center">
-                <img
+                {/* <img
                   src={
                     booking.tourId?.photos?.[0] ||
                     "https://via.placeholder.com/150"
                   } // Ảnh mặc định
+                  alt="Tour avatar"
+                  className="w-full rounded-lg object-cover border"
+                /> */}
+                <img
+                  src={
+                    booking.tourId?.photos?.[0]
+                      ? `http://localhost:8000/${booking.tourId.photos[0]}`
+                      : "https://via.placeholder.com/150"
+                  }
                   alt="Tour avatar"
                   className="w-full rounded-lg object-cover border"
                 />
@@ -184,7 +194,7 @@ export const History = () => {
                   ): booking.status === "Mới tạo" ? (
                     <div className="flex flex-col gap-2">
                         <span className="text-sm text-red-500">
-                          ⚠️ Bạn cần thanh toán ngay để chỗ.
+                          ⚠️ Bạn cần thanh toán để giữ chỗ.
                         </span>
                         <button
                           onClick={() => handlePayment(booking._id)}

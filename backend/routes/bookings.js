@@ -8,6 +8,7 @@ import {
   deleteBooking,
   getBookingById,
   confirmMultipleBookings,
+  updateBookingStatus
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get("/user/:userId", getBookingsByUser);
 router.get("/", getAllBookings);
 router.get("/:bookingId", getBookingById);
 router.put("/:id", updateBooking);
+router.put("/:id/status", updateBookingStatus);
 router.delete("/:id", deleteBooking);
 router.get("/details/:id", getBookingWithDetails);
 
