@@ -251,9 +251,9 @@ const Booking = () => {
   }
 
   const closeForm = () => {
+    window.location.reload()
     setFormModalVisible(false)
     setEditingBooking(null)
-    window.location.reload()
   }
 
   const [formModalVisible, setFormModalVisible] = useState(false)

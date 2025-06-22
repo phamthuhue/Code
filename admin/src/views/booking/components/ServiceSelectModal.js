@@ -79,6 +79,7 @@ const ServiceSelectModal = ({
       let selected = null
       if (Array.isArray(tourServices)) {
         selected = tourServices?.find((s) => s._id === selectedServiceId)
+        console.log('selected: ', selected)
         if (!selected) return
         const service = {
           serviceId: selected._id,
@@ -91,8 +92,18 @@ const ServiceSelectModal = ({
           numberOfPeopl: selected.numberOfPeopl,
         }
         onSave(service)
-        setAvailableServices((prev) => prev.filter((s) => s._id !== selected._id)).map(
-          (el = { ...el, disabled: true }),
+
+        setAvailableServices((prev) =>
+          prev.map((el) => {
+            if (el._id === selected._id) {
+              return {
+                ...el,
+                disabled: true,
+              }
+            } else {
+              return el
+            }
+          }),
         )
       } else {
         selected = tourServices?.services?.find((s) => s._id === selectedServiceId)
