@@ -92,7 +92,7 @@ export const Payment = () => {
                     "http://localhost:8000/api/v1/momo/create",
                     {
                         amount: totalPrice,
-                        redirectUrl: "http://localhost:3000/payment-success",
+                        redirectUrl: "http://localhost:3000/payment-failed",
                     }
                 );
 
