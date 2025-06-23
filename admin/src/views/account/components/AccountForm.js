@@ -72,38 +72,41 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   }
 
   const handleSubmit = async () => {
-    if (!validate()) return;
+    if (!validate()) return
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
-      // 👇 Kiểm tra trùng email hoặc username
-      const res = await checkUserExists(formData.username, formData.email);
-      if (res.data.success === false) {
-        const conflicts = res.data.conflicts;
-        const newErrors = {};
-        if (conflicts.includes("username")) newErrors.username = "Tên đăng nhập đã tồn tại";
-        if (conflicts.includes("email")) newErrors.email = "Email đã tồn tại";
-        setErrors(newErrors);
-        setIsLoading(false);
-        return;
+      //  Nếu đang thêm mới user thì mới kiểm tra trùng
+      if (!initialData) {
+        const res = await checkUserExists(formData.username, formData.email)
+        if (res.data.success === false) {
+          const conflicts = res.data.conflicts
+          const newErrors = {}
+          if (conflicts.includes('username')) newErrors.username = 'Tên đăng nhập đã tồn tại'
+          if (conflicts.includes('email')) newErrors.email = 'Email đã tồn tại'
+          setErrors(newErrors)
+          setIsLoading(false)
+          return
+        }
       }
 
-      await onSubmit(formData);
-      onClose();
+      // Gửi lên parent
+      await onSubmit(formData)
+      onClose()
     } catch (err) {
-      console.error(err);
+      console.error(err)
       if (err.response?.status === 409) {
-        const conflicts = err.response.data.conflicts;
-        const newErrors = {};
-        if (conflicts.includes("username")) newErrors.username = "Tên đăng nhập đã tồn tại";
-        if (conflicts.includes("email")) newErrors.email = "Email đã tồn tại";
-        setErrors(newErrors);
+        const conflicts = err.response.data.conflicts
+        const newErrors = {}
+        if (conflicts.includes('username')) newErrors.username = 'Tên đăng nhập đã tồn tại'
+        if (conflicts.includes('email')) newErrors.email = 'Email đã tồn tại'
+        setErrors(newErrors)
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
