@@ -108,14 +108,14 @@ const BookingDetailTable = ({
                   {detail.totalPrice?.toLocaleString()}
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
-                  <CButton
+                  {/* <CButton
                     color="warning"
                     size="sm"
                     onClick={() => handleEdit(index)}
                     className="me-2"
                   >
                     Sửa
-                  </CButton>
+                  </CButton> */}
                   <CButton
                     disabled={detail.itemType === 'Tour'}
                     color="danger"

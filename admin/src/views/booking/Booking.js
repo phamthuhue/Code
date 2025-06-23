@@ -251,7 +251,7 @@ const Booking = () => {
   }
 
   const closeForm = () => {
-    window.location.reload()
+    // window.location.reload()
     setFormModalVisible(false)
     setEditingBooking(null)
   }
@@ -265,11 +265,13 @@ const Booking = () => {
         const updatedBooking = await updateBooking(editingBooking._id, formData)
         setBookings(bookings.map((b) => (b._id === editingBooking._id ? updatedBooking.data : b)))
         addToast(exampleToast('Cập nhật booking thành công'))
-        window.location.reload()
+        // window.location.reload()
+        fetchBookings()
       } else {
         const newBooking = await createBooking(formData)
         setBookings([...bookings, newBooking.data])
-        window.location.reload()
+        // window.location.reload()
+        fetchBookings()
         addToast(exampleToast('Thêm mới booking thành công'))
       }
       closeForm()

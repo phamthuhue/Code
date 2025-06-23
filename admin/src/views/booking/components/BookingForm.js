@@ -52,7 +52,7 @@ const BookingFormModal = ({
         totalPrice: initialData.totalPrice || 0,
         numberOfPeople: initialData.numberOfPeople || null,
         status: initialData.status || 'Mới tạo',
-        promotionId: initialData.promotionId._id || null,
+        promotionId: initialData.promotionId?. _id || '',
       })
       setBookingDetails(bookingDetails || [])
       setMaxGroupSize(initialData.numberOfPeople + initialData.tourId.maxGroupSize)
@@ -86,13 +86,17 @@ const BookingFormModal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    // Kiểm tra nếu giá trị số lượng vượt quá maxGroupSize
+
     if (name === 'numberOfPeople') {
-      const newValue = Math.min(Number(value), maxGroupSize) // Giới hạn số lượng không vượt quá maxGroupSize
+      let num = Number(value)
+      if (isNaN(num)) num = 1 // fallback nếu không hợp lệ
+
+      // Giới hạn giá trị từ 1 đến maxGroupSize
+      const newValue = Math.max(1, Math.min(num, maxGroupSize))
       setFormData((prev) => ({ ...prev, [name]: newValue }))
     } else if (name === 'tourId') {
       const tour = tours.find((el) => el._id == value)
-      setMaxGroupSize(tour.maxGroupSize || 0)
+      setMaxGroupSize(tour?.maxGroupSize || 0)
       setFormData((prev) => ({ ...prev, [name]: value }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
@@ -101,7 +105,17 @@ const BookingFormModal = ({
 
   const handleSubmit = () => {
     if (!validate()) return
-    onSubmit({ ...formData, bookingDetails })
+    const cleanedFormData = {
+      ...formData,
+      bookingDetails,
+    }
+
+    // Xóa promotionId nếu là ''
+    if (!cleanedFormData.promotionId) {
+      delete cleanedFormData.promotionId
+    }
+
+    onSubmit(cleanedFormData)
     onClose()
   }
 
@@ -171,7 +185,7 @@ const BookingFormModal = ({
                 <CFormSelect
                   id="tourId"
                   name="tourId"
-                  value={formData.tourId}
+                  value={formData.tourId || ""}
                   onChange={handleChange}
                 >
                   <option value="">-- Chọn tour --</option>
@@ -212,6 +226,7 @@ const BookingFormModal = ({
                 name="numberOfPeople"
                 type="number"
                 disabled={!formData.tourId}
+                min={1}
                 max={maxGroupSize} // Sử dụng maxGroupSize từ state
                 value={formData.numberOfPeople}
                 onChange={handleChange}
@@ -225,7 +240,7 @@ const BookingFormModal = ({
               <CFormSelect
                 id="promotionId"
                 name="promotionId"
-                value={formData.promotionId}
+                value={formData.promotionId || ""}
                 onChange={handleChange}
               >
                 <option value="">-- Không áp dụng khuyến mãi --</option>

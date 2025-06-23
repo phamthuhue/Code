@@ -154,12 +154,10 @@ export const updateBooking = async (req, res) => {
     const tourService = await TourService.findOne({ tourId: booking.tourId });
 
     if (!tour || !tourService) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Tour hoặc TourService không tồn tại",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Tour hoặc TourService không tồn tại",
+      });
     }
 
     const deltaPeople = numberOfPeople - booking.numberOfPeople;
@@ -246,12 +244,34 @@ export const updateBooking = async (req, res) => {
 
     await tourService.save();
 
-    // Tính lại tổng tiền như trên frontend
+    // Cập nhật hoặc tạo BookingDetail cho tour
+    const tourBookingDetail = await BookingDetail.findOne({
+      bookingId: id,
+      itemType: "Tour",
+    });
+
     const tourPrice = tour.price * numberOfPeople;
 
+    if (tourBookingDetail) {
+      tourBookingDetail.quantity = numberOfPeople;
+      tourBookingDetail.totalPrice = tour.price * numberOfPeople;
+      tourBookingDetail.unitPrice = tour.price;
+      await tourBookingDetail.save();
+    } else {
+      await BookingDetail.create({
+        bookingId: id,
+        tourServiceId: null,
+        itemType: "Tour",
+        description: tour.title,
+        quantity: numberOfPeople,
+        unitPrice: tour.price,
+        totalPrice: tourPrice,
+      });
+    }
+
+    // Tính lại tổng tiền
     const allDetails = await BookingDetail.find({
       bookingId: id,
-      itemType: "Service",
     });
 
     const serviceTotal = allDetails.reduce(
@@ -265,7 +285,7 @@ export const updateBooking = async (req, res) => {
       if (promotion) discount = promotion.discountValue || 0;
     }
 
-    const total = (tourPrice + serviceTotal) * (1 - discount / 100);
+    const total = serviceTotal * (1 - discount / 100);
 
     booking.name = name;
     booking.phone = phone;
