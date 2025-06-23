@@ -65,7 +65,7 @@ const TourFormModal = ({ visible, onClose, onSubmit, initialData = null, guides 
         photos: [],
         featured: true,
         guideId: '',
-        avgRating: 4.8,
+        avgRating: 5,
         createdAt: '2025-05-27T10:22:20.271Z',
         updatedAt: '2025-05-27T10:22:20.271Z',
         __v: 0,
