@@ -21,6 +21,9 @@ const AppHeaderDropdown = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const user = JSON.parse(localStorage.getItem('user'))
+  const username = user?.username || 'Người dùng'
+
   const handleLogout = (event) => {
     event.preventDefault()
     // Xoá token và thông tin người dùng từ Redux store và localStorage
@@ -37,6 +40,7 @@ const AppHeaderDropdown = () => {
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
         <CAvatar src={avatar} size="md" />
+        <span className="ms-2 fw-semibold d-none d-md-inline">{username}</span>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Tài khoản</CDropdownHeader>
