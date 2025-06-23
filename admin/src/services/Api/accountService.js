@@ -11,3 +11,8 @@ export const deleteUser = (id) => axiosConfig.delete(`${API}/${id}`)
 export const getUserByEmail = (email) =>
   axiosConfig.get(`${API}/email/${email}`) // endpoint này bạn cần tạo sẵn ở backend
 
+// ✅ Kiểm tra xem username hoặc email đã tồn tại chưa
+export const checkUserExists = (username, email) =>
+  axiosConfig.get(`${API}/check-exists`, {
+    params: { username, email },
+  })

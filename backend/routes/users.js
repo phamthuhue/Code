@@ -6,13 +6,15 @@ import {
   getSingleUser,
   updateUser,
   getUsersByUserRole,
-  getUserByEmail
+  getUserByEmail,
+  checkUserExists
 } from "../controllers/userController.js";
 const router = express.Router();
 
 //create new user
 router.post("/", createUser);
 router.get("/", getAllUsers);
+router.get('/check-exists', checkUserExists)
 router.get('/email/:email', getUserByEmail)
 router.get("/role/user", getUsersByUserRole);
 //update user

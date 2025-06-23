@@ -238,3 +238,30 @@ export const getUsersByUserRole = async (req, res) => {
     });
   }
 };
+
+export const checkUserExists = async (req, res) => {
+  const { username, email } = req.query;
+
+  try {
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (existingUser) {
+      const conflicts = [];
+      if (existingUser.username === username) conflicts.push("username");
+      if (existingUser.email === email) conflicts.push("email");
+
+      return res.status(409).json({
+        success: false,
+        message: `Tồn tại ${conflicts.join(" và ")} trong hệ thống`,
+        conflicts,
+      });
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Lỗi kiểm tra user:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

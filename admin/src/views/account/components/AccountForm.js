@@ -12,6 +12,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import { useState, useEffect } from 'react'
+import { checkUserExists } from '../../../services/Api/accountService' // cập nhật đường dẫn phù hợp
 
 const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
@@ -71,19 +72,38 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
   }
 
   const handleSubmit = async () => {
-    if (!validate()) return
+    if (!validate()) return;
 
-    setIsLoading(true) // Bật loading khi gửi dữ liệu
+    setIsLoading(true);
 
     try {
-      await onSubmit(formData) // Gửi dữ liệu khi submit
-      setIsLoading(false) // Tắt loading khi hoàn thành
-      onClose() // Đóng modal sau khi thành công
-    } catch (error) {
-      console.error(error)
-      setIsLoading(false) // Tắt loading khi có lỗi
+      // 👇 Kiểm tra trùng email hoặc username
+      const res = await checkUserExists(formData.username, formData.email);
+      if (res.data.success === false) {
+        const conflicts = res.data.conflicts;
+        const newErrors = {};
+        if (conflicts.includes("username")) newErrors.username = "Tên đăng nhập đã tồn tại";
+        if (conflicts.includes("email")) newErrors.email = "Email đã tồn tại";
+        setErrors(newErrors);
+        setIsLoading(false);
+        return;
+      }
+
+      await onSubmit(formData);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      if (err.response?.status === 409) {
+        const conflicts = err.response.data.conflicts;
+        const newErrors = {};
+        if (conflicts.includes("username")) newErrors.username = "Tên đăng nhập đã tồn tại";
+        if (conflicts.includes("email")) newErrors.email = "Email đã tồn tại";
+        setErrors(newErrors);
+      }
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <CModal alignment="center" visible={visible} onClose={onClose} size="lg">
