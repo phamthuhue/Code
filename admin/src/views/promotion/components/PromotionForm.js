@@ -110,7 +110,7 @@ const PromotionFormModal = ({ visible, onClose, onSubmit, initialData = null }) 
                         >
                           <option value="">- Tất cả -</option>
                           <option value="Phần trăm (%)">Phần trăm (%)</option>
-                          <option value="VNĐ">VNĐ</option>
+                          {/* <option value="VNĐ">VNĐ</option> */}
               </CFormSelect>
               {errors.discountType && <small className="text-danger">{errors.discountType}</small>}
             </CCol>
