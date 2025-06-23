@@ -162,12 +162,10 @@ export const updateBooking = async (req, res) => {
         });
     }
 
-    // 1. Cập nhật lại maxGroupSize nếu thay đổi số lượng người
     const deltaPeople = numberOfPeople - booking.numberOfPeople;
     tour.maxGroupSize -= deltaPeople;
     await tour.save();
 
-    // 2. Lấy BookingDetail hiện tại từ DB
     const existingDetails = await BookingDetail.find({
       bookingId: id,
       itemType: "Service",
@@ -177,14 +175,12 @@ export const updateBooking = async (req, res) => {
       existingDetails.map((d) => [d._id.toString(), d])
     );
 
-    // 3. Phân loại bookingDetails mới
     const toUpdate = [];
     const toInsert = [];
     const incomingIds = [];
 
     for (const detail of bookingDetails) {
       if (detail._id && existingMap.has(detail._id)) {
-        // Cập nhật số lượng
         const old = existingMap.get(detail._id);
         const deltaQty = detail.quantity - old.quantity;
 
@@ -210,7 +206,6 @@ export const updateBooking = async (req, res) => {
         incomingIds.push(detail._id);
         existingMap.delete(detail._id);
       } else {
-        // Thêm mới
         const service = tourService.services.find(
           (s) => s._id.toString() === detail.tourServiceId.toString()
         );
@@ -230,7 +225,6 @@ export const updateBooking = async (req, res) => {
       }
     }
 
-    // 4. Những cái còn lại trong existingMap là bị xóa
     for (const deleted of existingMap.values()) {
       const service = tourService.services.find(
         (s) => s._id.toString() === deleted.tourServiceId.toString()
@@ -242,7 +236,6 @@ export const updateBooking = async (req, res) => {
       await BookingDetail.findByIdAndDelete(deleted._id);
     }
 
-    // 5. Áp dụng update và insert
     if (toUpdate.length) {
       await BookingDetail.bulkWrite(toUpdate);
     }
@@ -253,12 +246,34 @@ export const updateBooking = async (req, res) => {
 
     await tourService.save();
 
-    // 6. Cập nhật booking
+    // Tính lại tổng tiền như trên frontend
+    const tourPrice = tour.price * numberOfPeople;
+
+    const allDetails = await BookingDetail.find({
+      bookingId: id,
+      itemType: "Service",
+    });
+
+    const serviceTotal = allDetails.reduce(
+      (sum, item) => sum + Number(item.totalPrice || 0),
+      0
+    );
+
+    let discount = 0;
+    if (promotionId) {
+      const promotion = await Promotion.findById(promotionId);
+      if (promotion) discount = promotion.discountValue || 0;
+    }
+
+    const total = (tourPrice + serviceTotal) * (1 - discount / 100);
+
     booking.name = name;
     booking.phone = phone;
     booking.numberOfPeople = numberOfPeople;
     booking.status = status;
-    booking.promotionId = promotionId;
+    booking.promotionId = promotionId || null;
+    booking.totalPrice = Math.round(total);
+
     await booking.save();
 
     return res.status(200).json({
