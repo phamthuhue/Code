@@ -107,17 +107,22 @@ export const updateUser = async (req, res) => {
     );
 
     // So sánh dữ liệu cũ và mới để xác định những trường đã thay đổi
-    const changes = [];
+    const changes = []
     for (let key in updateData) {
-      if (oldUser[key] !== updatedUser[key]) {
+      const oldValue = oldUser[key]
+      const newValue = updatedUser[key]
+
+      const oldValStr = typeof oldValue === 'object' && oldValue !== null ? oldValue.toString() : oldValue
+      const newValStr = typeof newValue === 'object' && newValue !== null ? newValue.toString() : newValue
+
+      if (oldValStr !== newValStr) {
         changes.push({
           field: key,
-          oldValue: oldUser[key],
-          newValue: updatedUser[key],
-        });
+          oldValue: oldValStr,
+          newValue: newValStr,
+        })
       }
     }
-
     // Nếu có thay đổi, gửi email thông báo
     if (changes.length > 0) {
       // Nếu có thay đổi, gửi email thông báo
