@@ -33,12 +33,6 @@ const InvoiceTable = ({
               Khuyến mãi
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Tổng tiền
-            </CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">
-              Giảm giá
-            </CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary text-center">
               Thực nhận/trả
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">
@@ -68,12 +62,6 @@ const InvoiceTable = ({
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   {invoice.promotionId?.name || 'Không áp dụng'}
-                </CTableDataCell>
-                <CTableDataCell className="text-center">
-                  {invoice.totalAmount?.toLocaleString()} đ
-                </CTableDataCell>
-                <CTableDataCell className="text-center">
-                  {invoice.discountAmount?.toLocaleString()} đ
                 </CTableDataCell>
                 <CTableDataCell className="text-center">
                   {invoice.finalAmount?.toLocaleString()} đ
