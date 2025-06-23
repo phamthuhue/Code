@@ -45,7 +45,7 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
         phone: '',
         address: '',
         gender: '',
-        yearob: '2025-06-07',
+        yearob: '',
       })
     }
 
@@ -148,12 +148,14 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
             </CCol>
 
             <CCol md={6}>
-              <CFormLabel htmlFor="yearob">Ngày sinh</CFormLabel>
+              <CFormLabel htmlFor="yearob">Năm sinh</CFormLabel>
               <CFormInput
                 id="yearob"
-                type="date"
+                type="number"
                 name="yearob"
-                value={formData.yearob}
+                min="1900"
+                max={new Date().getFullYear()}
+                value={formData.yearob || ''}
                 onChange={handleChange}
               />
             </CCol>

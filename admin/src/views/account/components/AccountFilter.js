@@ -19,7 +19,7 @@ const UserFilter = ({ filters, onFilterChange, roles = [] }) => {
     <CRow className="mb-3">
       <CCol md={3}>
         <CInputGroup>
-          <CInputGroupText>Tên đăng nhập</CInputGroupText>
+          <CInputGroupText>Tên người dùng</CInputGroupText>
           <CFormInput name="username" value={localFilters.username} onChange={handleChange} />
         </CInputGroup>
       </CCol>
@@ -48,11 +48,9 @@ const UserFilter = ({ filters, onFilterChange, roles = [] }) => {
           <CInputGroupText>Vai trò</CInputGroupText>
           <CFormSelect name="role" value={localFilters.role} onChange={handleChange}>
             <option value="">-- Tất cả --</option>
-            {roles.map((role) => (
-              <option key={role._id} value={role._id}>
-                {role.name}
-              </option>
-            ))}
+            <option value="user">Người dùng</option>
+            <option value="admin">Quản trị viên</option>
+            <option value="staff">Nhân viên</option>
           </CFormSelect>
         </CInputGroup>
       </CCol>

@@ -33,7 +33,7 @@ const UserTable = ({
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary text-center">
-              Tên đăng nhập
+              Tên người dùng
             </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">Email</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary text-center">

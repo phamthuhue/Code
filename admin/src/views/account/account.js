@@ -40,12 +40,36 @@ const User = () => {
     username: '',
     email: '',
     gender: '',
+    role:'',
   })
 
   const fetchUsers = async (filterValues = filters) => {
     try {
       const res = await getUsers(filterValues)
-      setUsers(res.data.data || [])
+      let data = res.data.data
+      if (filterValues.username) {
+        data = data.filter(p =>
+          p.username?.toLowerCase().includes(filterValues.username.toLowerCase())
+        )
+      }
+
+      if (filterValues.email) {
+        data = data.filter(p =>
+          p.email?.toLowerCase().includes(filterValues.email.toLowerCase())
+        )
+      }
+      if (filterValues.gender) {
+        data = data.filter(p =>
+          p.gender?.toLowerCase().includes(filterValues.gender.toLowerCase())
+        )
+      }
+
+      if (filterValues.role) {
+        data = data.filter(p =>
+          p.role.name.toLowerCase().includes(filterValues.role.toLowerCase())
+        )
+      }
+      setUsers(data || [])
     } catch (error) {
       console.error(error)
       addToast(exampleToast('Không thể tải danh sách người dùng.'))
