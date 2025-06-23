@@ -19,7 +19,7 @@ export const createUser = async (req, res) => {
     // Tìm role "Staff" trong bảng roles
     const userRole = await Role.findOne({ name: role });
 
-    if (!staffRole) {
+    if (!userRole ) {
       return res.status(400).json({ message: "Không tìm thấy role Staff." });
     }
     // Tạo mới người dùng với mật khẩu đã mã hóa
