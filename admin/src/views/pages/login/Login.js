@@ -161,10 +161,6 @@ const Login = () => {
                       Chưa có tài khoản? Đăng ký ngay với adminstator để có thể truy cập vào hệ
                       thống của chúng tôi cung cấp!
                     </p>
-
-                    <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                      Đăng Ký Ngay!
-                    </CButton>
                   </div>
                 </CCardBody>
               </CCard>
