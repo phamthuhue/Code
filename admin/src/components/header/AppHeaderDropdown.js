@@ -44,11 +44,11 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Tài khoản</CDropdownHeader>
-        <CDropdownItem onClick={() => navigate('/edit-profile')}>
+        <CDropdownItem href="#" onClick={() => navigate('/edit-profile')}>
           <CIcon icon={cilUser} className="me-2" />
           Thông tin cá nhân
         </CDropdownItem>
-        <CDropdownItem onClick={() => navigate('/change-password')}>
+        <CDropdownItem href="#" onClick={() => navigate('/change-password')}>
           <CIcon icon={cilLoop} className="me-2" />
           Đổi mật khẩu
         </CDropdownItem>
