@@ -340,6 +340,7 @@ export const updateBookingStatus = async (req, res) => {
 export const deleteBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
+
     if (!bookingId) {
       return res.status(400).json({
         success: false,
@@ -347,29 +348,25 @@ export const deleteBooking = async (req, res) => {
       });
     }
 
-    // 1. Xoá các bản ghi liên quan
-    await BookingDetail.deleteMany({ bookingId });
-    await BookingCancellation.deleteMany({ bookingId });
-    await Invoice.deleteMany({ bookingId });
-    await Review.deleteMany({ bookingId });
-    // 2. Xóa Booking chính
-    const deletedBooking = await Booking.findByIdAndDelete(bookingId);
-
-    if (!deletedBooking) {
+    // 1. Lấy thông tin Booking
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
       return res.status(404).json({
         success: false,
         message: "Booking không tồn tại!",
       });
     }
-    // 2. Lấy danh sách BookingDetail liên quan
-    const bookingDetails = await BookingDetail.find({ bookingId: id });
 
-    // 3. Cộng lại số lượng Tour (maxGroupSize)
+    // 2. Lấy danh sách BookingDetail liên quan trước khi xoá
+    const bookingDetails = await BookingDetail.find({ bookingId });
+
+    // 3. Cộng lại số lượng Tour
     const tour = await Tour.findById(booking.tourId);
     if (tour) {
       tour.maxGroupSize += booking.numberOfPeople;
       await tour.save();
     }
+
     // 4. Cộng lại số lượng dịch vụ trong TourService
     const tourService = await TourService.findOne({ tourId: booking.tourId });
     if (tourService) {
@@ -379,19 +376,21 @@ export const deleteBooking = async (req, res) => {
             (s) => s._id.toString() === detail.tourServiceId?.toString()
           );
           if (service) {
-            service.numberOfPeopl += detail.quantity;
+            service.numberOfPeopl += detail.quantity; // Có vẻ bị sai chính tả: numberOfPeopl => numberOfPeople?
           }
         }
       }
       await tourService.save();
     }
-    // 5. Xóa BookingDetail
-    await BookingDetail.deleteMany({ bookingId: id });
+
+    // 5. Xoá các bản ghi liên quan
+    await BookingDetail.deleteMany({ bookingId });
+    await BookingCancellation.deleteMany({ bookingId });
+    await Invoice.deleteMany({ bookingId });
+    await Review.deleteMany({ bookingId });
 
     // 6. Xóa Booking chính
-    await Booking.findByIdAndDelete(id);
-    // 7. (Optional) Xóa hóa đơn nếu có
-    await Invoice.deleteOne({ bookingId: id });
+    await Booking.findByIdAndDelete(bookingId);
 
     return res.status(200).json({
       success: true,

@@ -40,14 +40,28 @@ const ServiceSelectModal = ({
       }))
 
       // Nếu có dịch vụ bị xóa, cho phép chọn lại
+      // if (Array.isArray(deletedServices) && deletedServices.length > 0) {
+      //   customTourServices = customTourServices.map((service) => {
+      //     const wasDeleted = deletedServices.find((d) => d._id === service._id)
+      //     return {
+      //       ...service,
+      //       disabled: wasDeleted ? false : service.disabled,
+      //     }
+      //   })
+      // }
       if (Array.isArray(deletedServices) && deletedServices.length > 0) {
         customTourServices = customTourServices.map((service) => {
-          const wasDeleted = deletedServices.find((d) => d._id === service._id)
+          if (!service || !service._id) return service; // tránh lỗi nếu service không hợp lệ
+
+          const wasDeleted = deletedServices.find(
+            (d) => d && d._id && d._id === service._id
+          );
+
           return {
             ...service,
             disabled: wasDeleted ? false : service.disabled,
-          }
-        })
+          };
+        });
       }
 
       setAvailableServices(customTourServices)

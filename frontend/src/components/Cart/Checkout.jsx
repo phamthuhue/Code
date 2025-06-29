@@ -276,7 +276,7 @@ export const Checkout = ({
                                             </label>
                                             <span className="font-medium text-right">
                                                 {service.servicePrice?.toLocaleString()}{" "}
-                                                VNĐ/người
+                                                VNĐ
                                             </span>
                                         </div>
                                         {selectedService && (
@@ -325,7 +325,43 @@ export const Checkout = ({
                     </div>
                     <div className="self-center">
                         <button
-                            onClick={handleCheckoutClick}
+                            onClick={() => {
+                                const userData = localStorage.getItem("user");
+
+                                if (!userData) {
+                                    notify(
+                                    "error",
+                                    "Lỗi",
+                                    "Vui lòng đăng nhập để tiếp tục đặt tour."
+                                );
+                                    return;
+                                }
+
+                                let user = null;
+
+                                try {
+                                    user = JSON.parse(userData);
+                                } catch (err) {
+                                    notify(
+                                        "error",
+                                        "Lỗi",
+                                        "Dữ liệu người dùng không hợp lệ. Vui lòng đăng nhập lại."
+                                    );
+                                    return;
+                                }
+
+                                if (!user || !user.token) {
+                                    notify(
+                                        "error",
+                                        "Lỗi",
+                                        "Vui lòng đăng nhập để tiếp tục đặt tour."
+                                    );
+                                    return;
+                                }
+
+                                // Nếu đã có token, gọi hàm xử lý tiếp
+                                handleCheckoutClick();
+                            }}
                             className="submitButton rounded-full px-8"
                             disabled={loading}
                         >
