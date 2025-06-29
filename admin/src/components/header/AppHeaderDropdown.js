@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   CAvatar,
   CBadge,
@@ -44,14 +45,32 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Tài khoản</CDropdownHeader>
-        <CDropdownItem href="#" onClick={() => navigate('/edit-profile')}>
+        <CDropdownItem
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate('/edit-profile');
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <CIcon icon={cilUser} className="me-2" />
           Thông tin cá nhân
         </CDropdownItem>
-        <CDropdownItem href="#" onClick={() => navigate('/change-password')}>
-          <CIcon icon={cilLoop} className="me-2" />
+        <CDropdownItem
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate('/change-password');
+          }}
+          style={{ cursor: 'pointer' }}
+        >
+          <CIcon icon={cilUser} className="me-2" />
           Đổi mật khẩu
         </CDropdownItem>
+        {/* <CDropdownItem onClick={() => navigate('/change-password')}>
+          <CIcon icon={cilLoop} className="me-2" />
+          Đổi mật khẩu
+        </CDropdownItem> */}
         <CDropdownDivider />
         <CDropdownItem href="#" onClick={handleLogout}>
           <CIcon icon={cilPowerStandby} className="me-2" />
