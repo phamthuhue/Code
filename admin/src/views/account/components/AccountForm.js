@@ -116,7 +116,7 @@ const UserFormModal = ({ visible, onClose, onSubmit, initialData = null }) => {
           <CRow className="mb-3">
             <CCol md={6}>
               <CFormLabel>
-                Tên đăng nhập <span style={{ color: 'red' }}>*</span>
+                Tên hiển thị <span style={{ color: 'red' }}>*</span>
               </CFormLabel>
               <CFormInput name="username" value={formData.username} onChange={handleChange} />
               {errors.username && <small className="text-danger">{errors.username}</small>}
