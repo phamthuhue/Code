@@ -1,5 +1,7 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
+import PieChartComponent from './PieChartComponent'
+import BarChartComponent from './BarChartComponent'
 import {
   CButton,
   CButtonGroup,
@@ -27,11 +29,40 @@ import {
   cilTruck,
 } from '@coreui/icons'
 
-import { getDashboardCount } from '../../services/Api/dashboardService'
+import { getDashboardCount, getTop5Tours, getTop5Services } from '../../services/Api/dashboardService'
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null)
   const [bookingStatusStats, setBookingStatusStats] = useState([])
+  const [topTours, setTopTours] = useState([])
+  const [topServices, setTopServices] = useState([])
+
+  const fetchTop5Tours = async () => {
+    const res = await getTop5Tours()
+    return res.data.data
+  }
+
+  const fetchTop5Services = async () => {
+    const res = await getTop5Services()
+    return res.data.data
+  }
+
+  useEffect(() => {
+    const fetchTopStats = async () => {
+      try {
+        const [topToursData, topServicesData] = await Promise.all([
+          fetchTop5Tours(),
+          fetchTop5Services(),
+        ])
+        setTopTours(topToursData)
+        setTopServices(topServicesData)
+      } catch (error) {
+        console.error('Lỗi khi load top tours/services:', error)
+      }
+    }
+
+    fetchTopStats()
+  }, []) // ✅ chỉ gọi 1 lần khi component mount
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -54,7 +85,7 @@ const Dashboard = () => {
 
         const finalStats = statusWithExtras.map(item => {
           const value = statusMap[item.name] || 0
-          const percent = Math.round((value / total) * 100)
+          const percent = Number(((value / total) * 100).toFixed(2))
           return {
             title: item.name,
             value,
@@ -114,7 +145,7 @@ const Dashboard = () => {
     title: item.name,
     icon: getPartnerTypeIcon(item.name),
     value: item.count,
-    percent: Math.round((item.count * 100) / totalPartners),
+    percent: Number(((item.count * 100) / totalPartners).toFixed(2)),
   }))
   .sort(sortByPartnerTypeOrder)
 
@@ -123,7 +154,7 @@ const Dashboard = () => {
     title: item.name,
     value: item.count,
     icon: getPartnerTypeIcon(item.name),
-    percent: Math.round((item.count * 100) / totalServices),
+    percent: Number(((item.count * 100) / totalServices).toFixed(2)),
   }))
   .sort(sortByPartnerTypeOrder)
 
@@ -133,13 +164,13 @@ const Dashboard = () => {
         title: 'Đơn khách lẻ',
         icon: cilUser,
         value: stats.totalBookings - stats.totalGroupRequests,
-        percent: Math.round(((stats.totalBookings - stats.totalGroupRequests) * 100) / stats.totalBookings),
+        percent: Number((((stats.totalBookings - stats.totalGroupRequests) * 100) / stats.totalBookings).toFixed(2))
       },
       {
         title: 'Đơn khách đoàn',
         icon: cilGroup,
         value: stats.totalGroupRequests,
-        percent: Math.round((stats.totalGroupRequests * 100) / stats.totalBookings),
+        percent: Number(((stats.totalGroupRequests * 100) / stats.totalBookings).toFixed(2))
       },
     ]
   : []
@@ -178,114 +209,54 @@ const Dashboard = () => {
       </CCard>
 
       <CRow>
-        <CCol xs>
+        <CCol xs={12} md={6}>
           <CCard className="mb-4">
-            <CCardHeader>Đơn đặt {' & '} Dịch vụ</CCardHeader>
+            <CCardHeader>Top 5 Tour được đặt nhiều nhất</CCardHeader>
+            <CCardBody style={{ height: '350px' }}>
+              <BarChartComponent data={topTours} dataKey="totalPeople" nameKey="name" barColor="#28a745" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        <CCol xs={12} md={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Top 5 Dịch vụ được đặt nhiều nhất</CCardHeader>
+            <CCardBody style={{ height: '350px' }}>
+              <BarChartComponent data={topServices} dataKey="totalBooked" nameKey="name" barColor="#fd7e14" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol xs={12} md={6} xl={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Đơn đặt theo trạng thái</CCardHeader>
             <CCardBody>
-              <CRow>
-                <CCol xs={12} md={6} xl={6}>
-                  <CRow>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-info py-1 px-3">
-                        <div className="text-body-secondary text-truncate small">Đối tác</div>
-                        <div className="fs-5 fw-semibold">{stats?.totalPartners ?? 'Đang tải...'}</div>
-                      </div>
-                    </CCol>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Dịch vụ</div>
-                        <div className="fs-5 fw-semibold">{stats?.totalServices ?? 'Đang tải...'}</div>
-                      </div>
-                    </CCol>
-                  </CRow>
-                  <hr className="mt-0" />
-                  <h6 id="progressGroupPartnerTypes" className="card-title mb-0">Thống kê đối tác theo loại</h6>
-                  <hr className="mt-4" />
-                  {progressGroupPartnerTypes.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">{item.value} <span className="text-body-secondary small">({item.percent}%)</span></span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="info" value={item.percent} />
-                      </div>
-                    </div>
-                  ))}
+              <PieChartComponent data={bookingStatusStats} />
+            </CCardBody>
+          </CCard>
 
-                  <hr className="mt-4" />
+          <CCard className="mb-4">
+            <CCardHeader>Đơn khách lẻ / đoàn</CCardHeader>
+            <CCardBody>
+              <PieChartComponent data={progressGroupExample2} />
+            </CCardBody>
+          </CCard>
+        </CCol>
 
-                  <h6 id="serviceTypeStats" className="card-title mb-0">Thống kê dịch vụ theo loại đối tác</h6>
-                  <hr className="mt-4" />
-                  {serviceTypeStats.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">{item.value} <span className="text-body-secondary small">({item.percent}%)</span></span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="danger" value={item.percent} />
-                      </div>
-                    </div>
-                  ))}
+        <CCol xs={12} md={6} xl={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Đối tác theo loại</CCardHeader>
+            <CCardBody>
+              <PieChartComponent data={progressGroupPartnerTypes} />
+            </CCardBody>
+          </CCard>
 
-                </CCol>
-                <CCol xs={12} md={6} xl={6}>
-                  <CRow>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-success py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Đơn đặt</div>
-                        <div className="fs-5 fw-semibold">{stats?.totalBookings ?? 'Đang tải...'}</div>
-                      </div>
-                    </CCol>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Đơn theo đoàn</div>
-                        <div className="fs-5 fw-semibold">{stats?.totalGroupRequests ?? 'Đang tải...'}</div>
-                      </div>
-                    </CCol>
-                  </CRow>
-
-                  <hr className="mt-0" />
-                  
-                  <h6 id="serviceTypeStats" className="card-title mb-0">Thống kê đơn đặt theo trạng thái</h6>
-                  <hr className="mt-4" />
-                  {bookingStatusStats.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-body-secondary small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
-                  ))}
-                  
-                  <hr className="mt-4" />
-
-                  <h6 id="progressGroupExample2" className="card-title mb-0">Thống kê đơn đặt theo loại lẻ/đoàn</h6>
-                  <hr className="mt-4" />
-                  {progressGroupExample2.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">{item.percent}%</span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="warning" value={item.percent} />
-                      </div>
-                    </div>
-                  ))}
-                </CCol>
-              </CRow>
+          <CCard className="mb-4">
+            <CCardHeader>Dịch vụ theo loại đối tác</CCardHeader>
+            <CCardBody>
+              <PieChartComponent data={serviceTypeStats} />
             </CCardBody>
           </CCard>
         </CCol>

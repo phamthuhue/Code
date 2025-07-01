@@ -8,6 +8,7 @@ import PartnerType from '../models/PartnerType.js'
 import GroupTourRequest from '../models/GroupTourRequest.js';
 import BookingCancellation from '../models/BookingCancellation.js'
 import Promotion from '../models/Promotion.js'
+import BookingDetail from '../models/BookingDetail.js'
 import Role from '../models/Role.js' // Đừng quên import nếu bạn lọc user theo role
 
 export const getDashboardCount = async (req, res) => {
@@ -145,5 +146,85 @@ export const getDashboardCount = async (req, res) => {
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Lỗi khi lấy thống kê dashboard' })
+  }
+}
+
+export const getTop5MostBookedTours = async (req, res) => {
+  try {
+    const topTours = await Booking.aggregate([
+      {
+        $group: {
+          _id: '$tourId',
+          totalPeople: { $sum: '$numberOfPeople' }, // ✅ tính tổng số người
+        },
+      },
+      {
+        $sort: { totalPeople: -1 },
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $lookup: {
+          from: 'tours',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'tour',
+        },
+      },
+      {
+        $unwind: {
+          path: '$tour',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          tourId: '$_id',
+          name: '$tour.title',
+          totalPeople: 1,
+        },
+      },
+    ])
+
+    res.status(200).json({ data: topTours })
+  } catch (error) {
+    console.error('Lỗi khi lấy top 5 tour:', error)
+    res.status(500).json({ error: 'Lỗi server khi lấy top 5 tour theo tổng số người' })
+  }
+}
+
+export const getTop5BookedServices = async (req, res) => {
+  try {
+    const topServices = await BookingDetail.aggregate([
+      {
+        $match: { itemType: 'Service' },
+      },
+      {
+        $group: {
+          _id: '$description',
+          totalBooked: { $sum: '$quantity' },
+        },
+      },
+      {
+        $sort: { totalBooked: -1 },
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$_id',
+          totalBooked: 1,
+        },
+      },
+    ])
+
+    res.status(200).json({ data: topServices })
+  } catch (error) {
+    console.error('Lỗi khi lấy top 5 dịch vụ:', error)
+    res.status(500).json({ error: 'Lỗi server khi lấy top 5 dịch vụ được đặt nhiều nhất' })
   }
 }
