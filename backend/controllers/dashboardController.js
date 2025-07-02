@@ -162,7 +162,7 @@ export const getTop5MostBookedTours = async (req, res) => {
         $sort: { totalPeople: -1 },
       },
       {
-        $limit: 5,
+        $limit: 10,
       },
       {
         $lookup: {
@@ -211,7 +211,7 @@ export const getTop5BookedServices = async (req, res) => {
         $sort: { totalBooked: -1 },
       },
       {
-        $limit: 5,
+        $limit: 10,
       },
       {
         $project: {
@@ -226,5 +226,137 @@ export const getTop5BookedServices = async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi lấy top 5 dịch vụ:', error)
     res.status(500).json({ error: 'Lỗi server khi lấy top 5 dịch vụ được đặt nhiều nhất' })
+  }
+}
+
+export const getTop5LeastBookedTours = async (req, res) => {
+  try {
+    const leastTours = await Booking.aggregate([
+      {
+        $group: {
+          _id: '$tourId',
+          totalPeople: { $sum: '$numberOfPeople' },
+        },
+      },
+      {
+        $sort: { totalPeople: 1 }, // ✅ ít nhất lên trước
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $lookup: {
+          from: 'tours',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'tour',
+        },
+      },
+      {
+        $unwind: {
+          path: '$tour',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          tourId: '$_id',
+          name: '$tour.title',
+          totalPeople: 1,
+        },
+      },
+    ])
+
+    res.status(200).json({ data: leastTours })
+  } catch (error) {
+    console.error('Lỗi khi lấy top tour ít người:', error)
+    res.status(500).json({ error: 'Lỗi server khi lấy tour ít được đặt nhất' })
+  }
+}
+
+export const getTop5LeastBookedServices = async (req, res) => {
+  try {
+    const leastServices = await BookingDetail.aggregate([
+      {
+        $match: { itemType: 'Service' },
+      },
+      {
+        $group: {
+          _id: '$description',
+          totalBooked: { $sum: '$quantity' },
+        },
+      },
+      {
+        $sort: { totalBooked: 1 }, // ✅ ít nhất lên trước
+      },
+      {
+        $limit: 5,
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$_id',
+          totalBooked: 1,
+        },
+      },
+    ])
+
+    res.status(200).json({ data: leastServices })
+  } catch (error) {
+    console.error('Lỗi khi lấy dịch vụ ít đặt nhất:', error)
+    res.status(500).json({ error: 'Lỗi server khi lấy dịch vụ ít được đặt nhất' })
+  }
+}
+
+export const getTopCustomersByRevenue = async (req, res) => {
+  try {
+    const topCustomers = await Booking.aggregate([
+      {
+        $match: {
+          status: { $ne: 'Đã hủy' }, // Loại bỏ đơn đã hủy nếu không tính vào doanh thu
+        },
+      },
+      {
+        $group: {
+          _id: '$userId',
+          totalRevenue: { $sum: '$totalPrice' },
+          totalBookings: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { totalRevenue: -1 },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'userInfo',
+        },
+      },
+      {
+        $unwind: '$userInfo',
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: '$_id',
+          name: '$userInfo.name',
+          email: '$userInfo.email',
+          phone: '$userInfo.phone',
+          totalRevenue: 1,
+          totalBookings: 1,
+        },
+      },
+    ])
+
+    res.status(200).json({ data: topCustomers })
+  } catch (error) {
+    console.error('Lỗi khi lấy top khách hàng:', error)
+    res.status(500).json({ error: 'Lỗi server khi lấy top khách hàng theo doanh thu' })
   }
 }

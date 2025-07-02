@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import PieChartComponent from './PieChartComponent'
 import BarChartComponent from './BarChartComponent'
+import DualBarChart from './DualBarChart'
 import {
   CButton,
   CButtonGroup,
@@ -29,13 +30,21 @@ import {
   cilTruck,
 } from '@coreui/icons'
 
-import { getDashboardCount, getTop5Tours, getTop5Services } from '../../services/Api/dashboardService'
+import { getDashboardCount, getTop5Tours, getTop5Services, getLeast5Tours, getLeast5Services, getTopCustomers } from '../../services/Api/dashboardService'
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null)
   const [bookingStatusStats, setBookingStatusStats] = useState([])
   const [topTours, setTopTours] = useState([])
   const [topServices, setTopServices] = useState([])
+  const [leastTours, setLeastTours] = useState([])
+  const [leastServices, setLeastServices] = useState([])
+  const [topCustomers, setTopCustomers] = useState([])
+
+  const fetchTopCustomers = async () => {
+    const res = await getTopCustomers()
+    return res.data.data
+  }
 
   const fetchTop5Tours = async () => {
     const res = await getTop5Tours()
@@ -47,17 +56,33 @@ const Dashboard = () => {
     return res.data.data
   }
 
+  const fetchLeast5Tours = async () => {
+    const res = await getLeast5Tours()
+    return res.data.data
+  }
+
+  const fetchLeast5Services = async () => {
+    const res = await getLeast5Services()
+    return res.data.data
+  }
+
   useEffect(() => {
     const fetchTopStats = async () => {
       try {
-        const [topToursData, topServicesData] = await Promise.all([
+        const [topToursData, topServicesData, leastToursData, leastServicesData, topCustomersData] = await Promise.all([
           fetchTop5Tours(),
           fetchTop5Services(),
+          fetchLeast5Tours(),
+          fetchLeast5Services(),
+          fetchTopCustomers()
         ])
         setTopTours(topToursData)
         setTopServices(topServicesData)
+        setLeastTours(leastToursData)
+        setLeastServices(leastServicesData)
+        setTopCustomers(topCustomersData)
       } catch (error) {
-        console.error('Lỗi khi load top tours/services:', error)
+        console.error('Lỗi khi load top/least tours/services:', error)
       }
     }
 
@@ -209,9 +234,20 @@ const Dashboard = () => {
       </CCard>
 
       <CRow>
+  <CCol xs={12}>
+    <CCard className="mb-4">
+      <CCardHeader>Top Khách hàng theo Tổng doanh thu và Số đơn đặt</CCardHeader>
+      <CCardBody style={{ height: '400px' }}>
+        <DualBarChart data={topCustomers} />
+      </CCardBody>
+    </CCard>
+  </CCol>
+</CRow>
+
+      <CRow>
         <CCol xs={12} md={6}>
           <CCard className="mb-4">
-            <CCardHeader>Top 5 Tour được đặt nhiều nhất</CCardHeader>
+            <CCardHeader>Top Tour được đặt nhiều nhất</CCardHeader>
             <CCardBody style={{ height: '350px' }}>
               <BarChartComponent data={topTours} dataKey="totalPeople" nameKey="name" barColor="#28a745" />
             </CCardBody>
@@ -220,9 +256,27 @@ const Dashboard = () => {
 
         <CCol xs={12} md={6}>
           <CCard className="mb-4">
-            <CCardHeader>Top 5 Dịch vụ được đặt nhiều nhất</CCardHeader>
+            <CCardHeader>Top Tour ít đặt nhất</CCardHeader>
             <CCardBody style={{ height: '350px' }}>
-              <BarChartComponent data={topServices} dataKey="totalBooked" nameKey="name" barColor="#fd7e14" />
+              <BarChartComponent data={leastTours} dataKey="totalPeople" nameKey="name" barColor="#dc3545" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        <CCol xs={12} md={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Top Dịch vụ được đặt nhiều nhất</CCardHeader>
+            <CCardBody style={{ height: '350px' }}>
+              <BarChartComponent data={topServices} dataKey="totalBooked" nameKey="name" barColor="#4dabf7" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        <CCol xs={12} md={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Top Dịch vụ ít đặt nhất</CCardHeader>
+            <CCardBody style={{ height: '350px' }}>
+              <BarChartComponent data={leastServices} dataKey="totalBooked" nameKey="name" barColor="#fd7e14" />
             </CCardBody>
           </CCard>
         </CCol>

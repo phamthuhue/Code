@@ -15,7 +15,7 @@ const BarChartComponent = ({
   dataKey = 'count',          // dùng cho tour: count, service: totalBooked
   nameKey = 'name',
   barColor = '#8884d8',
-  height = 300,
+  height = 350,
 }) => {
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -28,8 +28,8 @@ const BarChartComponent = ({
         <YAxis allowDecimals={false} />
         <Tooltip />
         <Legend />
-        <Bar dataKey={dataKey} fill={barColor}>
-          <LabelList dataKey={dataKey} position="top" />
+        <Bar dataKey={dataKey} fill={barColor} name="Số lượng đặt">
+            <LabelList dataKey={dataKey} position="top" />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
